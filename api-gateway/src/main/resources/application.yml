@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      routes:
+        - id: auth-service
+          uri: http://localhost:9092
+          predicates:
+            - Path=/api/auth/**
+        - id: user-service
+          uri: http://localhost:9092
+          predicates:
+            - Path=/api/users/**
+        - id: character-service
+          uri: http://localhost:9092
+          predicates:
+            - Path=/api/characters/**
+        - id: thread-service
+          uri: http://localhost:9092
+          predicates:
+            - Path=/api/threads/**
+        - id: notification-service
+          uri: http://localhost:9092
+          predicates:
+            - Path=/api/notifications/**
+  kafka:
+    bootstrap-servers: localhost:9092
