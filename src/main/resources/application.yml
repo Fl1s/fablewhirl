@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: fablewhirl
+  kafka:
+    bootstrap-servers: localhost:9093
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.JsonDeserializer
+    listener:
+      missing-topics-fatal: false

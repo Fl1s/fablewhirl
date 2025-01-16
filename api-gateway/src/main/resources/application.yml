@@ -1,32 +1,30 @@
 server:
-  port: 9000  # Порт для API Gateway
+  port: 9000
 
 spring:
   cloud:
-    config:
-      enabled: false
     gateway:
       routes:
         - id: auth-service
           uri: http://localhost:8081
           predicates:
             - Path=/api/auth/**
-#        - id: user-service
-#          uri: http://localhost:8082
-#          predicates:
-#            - Path=/api/users/**
-#        - id: character-service
-#          uri: http://localhost:8083
-#          predicates:
-#            - Path=/api/characters/**
-#        - id: thread-service
-#          uri: http://localhost:8084
-#          predicates:
-#            - Path=/api/threads/**
-#        - id: notification-service
-#          uri: http://localhost:8085
-#          predicates:
-#            - Path=/api/notifications/**
+        - id: user-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/users/**
+        - id: character-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/characters/**
+        - id: thread-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/threads/**
+        - id: notification-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/notifications/**
 
   kafka:
     bootstrap-servers: localhost:9093
@@ -53,3 +51,37 @@ keycloak:
   realm: fablewhirl
   resource: api-gateway
   public-client: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  health:
+    circuitbreakers:
+      enabled: 'true'
+  endpoint:
+    health:
+      show-details: always
+resilience4j:
+  retry:
+    configs:
+      default:
+        wait-duration: 2s
+        max-attempts: '3'
+  circuitbreaker:
+    configs:
+      default:
+        failure-rate-threshold: '50'
+        register-health-indicator: 'true'
+        sliding-window-type: COUNT_BASED
+        automatic-transition-from-open-to-half-open-enabled: 'true'
+        sliding-window-size: '10'
+        minimum-number-of-calls: '5'
+        permitted-number-of-calls-in-half-open-state: '3'
+        wait-duration-in-open-state: 5s
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 3s
