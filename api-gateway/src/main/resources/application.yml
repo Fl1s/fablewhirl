@@ -1,31 +1,55 @@
 server:
-  port: 8080
+  port: 9000  # Порт для API Gateway
 
 spring:
   cloud:
+    config:
+      enabled: false
     gateway:
-      default-filters:
-        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
       routes:
         - id: auth-service
-          uri: http://localhost:9092
+          uri: http://localhost:8081
           predicates:
             - Path=/api/auth/**
-        - id: user-service
-          uri: http://localhost:9092
-          predicates:
-            - Path=/api/users/**
-        - id: character-service
-          uri: http://localhost:9092
-          predicates:
-            - Path=/api/characters/**
-        - id: thread-service
-          uri: http://localhost:9092
-          predicates:
-            - Path=/api/threads/**
-        - id: notification-service
-          uri: http://localhost:9092
-          predicates:
-            - Path=/api/notifications/**
+#        - id: user-service
+#          uri: http://localhost:8082
+#          predicates:
+#            - Path=/api/users/**
+#        - id: character-service
+#          uri: http://localhost:8083
+#          predicates:
+#            - Path=/api/characters/**
+#        - id: thread-service
+#          uri: http://localhost:8084
+#          predicates:
+#            - Path=/api/threads/**
+#        - id: notification-service
+#          uri: http://localhost:8085
+#          predicates:
+#            - Path=/api/notifications/**
+
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:9093
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/fablewhirl
+      client:
+        registration:
+          keycloak:
+            client-id: api-gateway
+            client-secret: NCUXmnfHhtexvr0KzMcGaYGQ6EMgZHSU
+            scope: openid
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8090/realms/fablewhirl
+
+keycloak:
+  auth-server-url: http://localhost:8090
+  realm: fablewhirl
+  resource: api-gateway
+  public-client: true

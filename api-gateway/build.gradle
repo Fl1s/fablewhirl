@@ -31,17 +31,16 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway-mvc'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.keycloak:keycloak-spring-boot-starter:25.0.3'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.github.resilience4j:resilience4j-spring-boot2'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-
 }
 
 
