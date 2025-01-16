@@ -17,70 +17,75 @@ services:
 
   # Kafka, Zookeeper, Redis, Prometheus, Grafana, Elasticsearch, Kibana (same as before)
   kafka:
+    container_name: kafka
     image: wurstmeister/kafka:latest
     environment:
+      - KAFKA_KRAFT_MODE=true
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9093
       - KAFKA_LISTENER_SECURITY_PROTOCOL=PLAINTEXT
       - KAFKA_LISTENER_NAMES=PLAINTEXT
       - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9093
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_LISTENER_PORT=9093
+      - KAFKA_BROKER_ID=1
+      - KAFKA_LOG_DIRS=/var/lib/kafka/data
     ports:
       - "9093:9093"
-    depends_on:
-      - zookeeper
     networks:
       - fablewhirl-net
-
-  zookeeper:
-    image: wurstmeister/zookeeper:latest
-    environment:
-      - ZOOKEEPER_CLIENT_PORT=2181
-    ports:
-      - "2181:2181"
-    networks:
-      - fablewhirl-net
-
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    networks:
-      - fablewhirl-net
+      - /var/lib/kafka/data
 
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
     ports:
-      - "3000:3000"
-    depends_on:
-      - prometheus
-    networks:
-      - fablewhirl-net
+      - "9094:9094"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "local"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:9093"
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
-    environment:
-      - discovery.type=single-node
-    ports:
-      - "9200:9200"
-    networks:
-      - fablewhirl-net
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.3
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-    networks:
-      - fablewhirl-net
+#  prometheus:
+#    image: prom/prometheus:latest
+#    container_name: prometheus
+#    volumes:
+#      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+#    ports:
+#      - "9090:9090"
+#    networks:
+#      - fablewhirl-net
+#
+#  grafana:
+#    image: grafana/grafana:latest
+#    container_name: grafana
+#    environment:
+#      - GF_SECURITY_ADMIN_PASSWORD=admin
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - prometheus
+#    networks:
+#      - fablewhirl-net
+#
+#  elasticsearch:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+#    environment:
+#      - discovery.type=single-node
+#    ports:
+#      - "9200:9200"
+#    networks:
+#      - fablewhirl-net
+#
+#  kibana:
+#    image: docker.elastic.co/kibana/kibana:7.9.3
+#    environment:
+#      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+#    ports:
+#      - "5601:5601"
+#    depends_on:
+#      - elasticsearch
+#    networks:
+#      - fablewhirl-net
 
 networks:
   fablewhirl-net:
