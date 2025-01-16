@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: auth-service
+
+server:
+  port: 8081
+
+security:
+  oauth2:
+    resourceserver:
+      jwt:
+        issuer-uri: http://localhost:8090/realms/fablewhirl
+    client:
+      registration:
+        keycloak:
+          client-id: auth-service
+          client-secret: CFPx1o86fsmdnIODJTjgC4fgpxhGlYSG
+          scope: openid
+          authorization-grant-type: authorization_code
+          redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+      provider:
+        keycloak:
+          issuer-uri: http://localhost:8090/realms/fablewhirl
+
+keycloak:
+  auth-server-url: http://localhost:8090/auth
+  realm: fablewhirl
+  resource: auth-service
+  credentials:
+    secret: CFPx1o86fsmdnIODJTjgC4fgpxhGlYSG
+  use-resource-role-mappings: true
+  principal-attribute: preferred_username
+  bearer-only: true
+  enable-basic-auth: false

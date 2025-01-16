@@ -8,7 +8,7 @@ services:
     environment:
       - JENKINS_OPTS=--prefix=/jenkins  # Set URL context for Jenkins
     ports:
-      - "8089:8080"  # Jenkins UI
+      - "8091:8091"  # Jenkins UI
       - "50000:50000"  # For Jenkins agent communication
     volumes:
       - jenkins_home:/var/jenkins_home  # Persist Jenkins data
@@ -87,4 +87,4 @@ networks:
     driver: bridge
 
 volumes:
-  jenkins_home:  # Persistent volume for Jenkins data
+  jenkins_home:
