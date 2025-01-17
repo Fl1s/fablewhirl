@@ -6,28 +6,16 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=secret
-      - KC_DB=postgres
-      - KC_DB_URL=jdbc:postgresql://keycloak-db:5432/keycloak
-      - KC_DB_USERNAME=keycloak
-      - KC_DB_PASSWORD=keycloak
     ports:
       - "8090:8080"
     command: start-dev
     depends_on:
-      - keycloak-db
+       - redis
 
-  keycloak-db:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: keycloak
-    ports:
-      - "5433:5432"
 
   redis:
     image: redis:latest
-    container_name: redis
+    container_name: tokens
     ports:
       - "6379:6379"
     command: redis-server --appendonly yes

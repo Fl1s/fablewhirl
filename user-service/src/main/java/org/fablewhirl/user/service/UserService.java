@@ -1,5 +1,6 @@
 package org.fablewhirl.user.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.dto.UserDto;
 import org.fablewhirl.user.dto.UserMediaDto;
@@ -8,6 +9,7 @@ import org.fablewhirl.user.entity.UserEntity;
 import org.fablewhirl.user.entity.UserMediaEntity;
 import org.fablewhirl.user.repository.UserMediaRepository;
 import org.fablewhirl.user.repository.UserRepository;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -22,23 +24,29 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMediaRepository userMediaRepository;
 
-    @Transactional
-    public UserDto registerUser(UserRegistrationDto userRegistrationDTO) {
-        String hashedPassword = hashPassword(userRegistrationDTO.getPassword());
+    @KafkaListener(topics = "user-registration-topic", groupId = "user-group")
+    public void registerUser(String userRegistrationDtoString) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            UserRegistrationDto userRegistrationDTO = objectMapper.readValue(userRegistrationDtoString, UserRegistrationDto.class);
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(userRegistrationDTO.getUsername());
-        userEntity.setEmail(userRegistrationDTO.getEmail());
-        userEntity.setPassword(hashedPassword);
-        userEntity.setBio(userRegistrationDTO.getBio());
-        userEntity.setRoles("USER");
-        userEntity.setCreatedDate(LocalDateTime.now());
-        userEntity.setUpdatedDate(LocalDateTime.now());
+            String hashedPassword = hashPassword(userRegistrationDTO.getPassword());
 
-        userRepository.save(userEntity);
+            UserEntity userEntity = new UserEntity();
+            userEntity.setUsername(userRegistrationDTO.getUsername());
+            userEntity.setEmail(userRegistrationDTO.getEmail());
+            userEntity.setPassword(hashedPassword);
+            userEntity.setBio(userRegistrationDTO.getBio());
+            userEntity.setRoles("USER");
+            userEntity.setCreatedDate(LocalDateTime.now());
+            userEntity.setUpdatedDate(LocalDateTime.now());
 
-        return new UserDto(userEntity.getId(), userEntity.getUsername(), userEntity.getEmail(),
-                userEntity.getBio(), userEntity.getRoles(), userEntity.getCreatedDate(), userEntity.getUpdatedDate());
+            userRepository.save(userEntity);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public UserDto getUserById(Long id) {
@@ -85,9 +93,9 @@ public class UserService {
     }
 
     private String hashPassword(String password) {
-        return org.springframework.
-                security.crypto.bcrypt.BCrypt.
-                hashpw(password, org.springframework.security.crypto.bcrypt.BCrypt.gensalt());
+        return org.springframework.security.crypto.bcrypt.BCrypt
+                .hashpw(password, org.springframework.security.crypto.bcrypt.BCrypt.gensalt());
     }
 }
+
 
