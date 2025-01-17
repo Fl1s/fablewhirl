@@ -14,11 +14,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
-    public UserDto registerUser(@RequestBody UserRegistrationDto userRegistrationDto) {
-        return userService.registerUser(userRegistrationDto);
-    }
-
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable Long id) {
         return userService.getUserById(id);

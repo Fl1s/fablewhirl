@@ -21,7 +21,7 @@ services:
     image: wurstmeister/kafka:latest
     environment:
       - KAFKA_KRAFT_MODE=true
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9093
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9093
       - KAFKA_LISTENER_SECURITY_PROTOCOL=PLAINTEXT
       - KAFKA_LISTENER_NAMES=PLAINTEXT
       - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9093
@@ -42,7 +42,7 @@ services:
       - "9094:9094"
     environment:
       KAFKA_CLUSTERS_0_NAME: "local"
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:9093"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "localhost:9093"
 
 
 #  prometheus:
