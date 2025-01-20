@@ -53,7 +53,7 @@ public class AuthService {
                 .build();
     }
 
-    public void logout(String username, String refreshToken) {
+    public void logout(String username) {
         String redisKey = "refresh_token:" + username;
         redisCommands.del(redisKey);
     }

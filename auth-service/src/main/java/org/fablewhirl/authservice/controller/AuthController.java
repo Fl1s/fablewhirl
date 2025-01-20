@@ -38,6 +38,6 @@ public class AuthController {
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
     public void logout(@RequestParam String username, @RequestParam String refreshToken) {
-        authService.logout(username, refreshToken);
+        authService.logout(username);
     }
 }
