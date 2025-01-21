@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
@@ -39,12 +40,17 @@ public class UserMediaService {
         userMediaRepository.save(mediaEntity);
     }
 
-    public UserMediaDto getUserMedia(String userId) {
+    public byte[] getUserMedia(String userId) {
         UserMediaEntity mediaEntity = userMediaRepository.findByUserId(userId);
+
         if (mediaEntity == null) {
             throw new IllegalArgumentException("Media not found for user: " + userId);
         }
-        return new UserMediaDto(mediaEntity.getAvatar(), mediaEntity.getBanner());
+
+        byte[] avatarData = mediaEntity.getAvatar();
+        byte[] bannerData = mediaEntity.getBanner();
+
+        return avatarData != null ? avatarData : bannerData;
     }
 }
 
