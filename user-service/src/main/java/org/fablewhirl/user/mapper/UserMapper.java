@@ -1,5 +1,5 @@
 package org.fablewhirl.user.mapper;
-import org.fablewhirl.user.dto.UserDto;
+import org.fablewhirl.user.dto.UserCreateEditDto;
 import org.fablewhirl.user.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -8,8 +8,8 @@ import org.mapstruct.MappingTarget;
         componentModel = "spring"
 )
 public interface UserMapper {
-    UserEntity toEntity(UserDto userDto);
-    UserDto toDto(UserEntity userEntity);
+    UserEntity toEntity(UserCreateEditDto userCreateEditDto);
+    UserCreateEditDto toDto(UserEntity userEntity);
 
-    void updateEntityFromDto(UserDto userDto,@MappingTarget UserEntity userEntity);
+    void updateEntityFromDto(UserCreateEditDto userCreateEditDto, @MappingTarget UserEntity userEntity);
 }

@@ -2,25 +2,15 @@ package org.fablewhirl.user.dto;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
-    private String id;
-
+public class UserCreateEditDto {
     private String username;
     private String email;
+    private String password;
     private String bio;
-    private String roles;
-
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
 }
-
-
-

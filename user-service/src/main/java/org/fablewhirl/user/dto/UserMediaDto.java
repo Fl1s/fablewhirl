@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserMediaDto {
-    private String avatarUrl;
-    private String bannerUrl;
+    private byte[] avatar;
+    private byte[] banner;
 }
 

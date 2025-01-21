@@ -9,14 +9,11 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegistrationDto {
+public class UserReadDto {
     private String username;
     private String email;
-    private String password;
     private String bio;
     private String roles;
-
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
-

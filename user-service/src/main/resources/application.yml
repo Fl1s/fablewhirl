@@ -31,4 +31,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
+  data:
+    mongodb:
+      uri: mongodb://admin:secret@localhost:27017/user_media
