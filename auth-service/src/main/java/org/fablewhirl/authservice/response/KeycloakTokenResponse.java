@@ -1,4 +1,4 @@
-package org.fablewhirl.authservice.request;
+package org.fablewhirl.authservice.response;
 
 import lombok.Builder;
 import lombok.Data;

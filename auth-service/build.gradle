@@ -24,14 +24,12 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.cloud:spring-cloud-starter-feign:1.4.7.RELEASE'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.0'
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.keycloak:keycloak-admin-client:21.1.1'
-	implementation 'io.lettuce.core:lettuce-core:6.2.5'
-	implementation 'io.lettuce:lettuce-core:6.5.2.RELEASE'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'

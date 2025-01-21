@@ -1,4 +1,4 @@
-package org.fablewhirl.apigateway.routes;
+package org.fablewhirl.apigateway.config;
 
 import org.springframework.cloud.gateway.server.mvc.filter.CircuitBreakerFilterFunctions;
 import org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions;
@@ -14,7 +14,7 @@ import java.net.URI;
 import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
 
 @Configuration
-public class Routes {
+public class GatewayConfig {
 
     @Bean
     public RouterFunction<ServerResponse> authServiceRoute() {
