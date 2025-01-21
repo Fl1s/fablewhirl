@@ -17,4 +17,5 @@ public class RegistrationEvent {
     private String email;
     private String bio;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 import lombok.Data;
 
 @Data
@@ -14,8 +16,7 @@ import lombok.Data;
 @Table(name = "user_info")
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private String username;
     private String email;
@@ -29,6 +30,9 @@ public class UserEntity {
     @PrePersist
     public void prePersist() {
         createdDate = LocalDateTime.now();
+            if (id == null || id.isEmpty()) {
+                id = UUID.randomUUID().toString();
+            }
     }
 
     @PreUpdate
