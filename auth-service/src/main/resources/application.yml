@@ -1,5 +1,2 @@
-keycloak:
-  server-url: http://localhost:8090/auth
-  realm: fablewhirl
-  client-id: my-client
-  client-secret: my-client-secret
+server:
+  port: 8081

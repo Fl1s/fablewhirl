@@ -1,4 +1,4 @@
-package org.fablewhirl.authservice.request;
+package org.fablewhirl.authservice.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,10 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
+public class RegistrationEvent {
     private String userId;
     private String username;
+    private String password;
     private String email;
     private String bio;
     private LocalDateTime createdAt;

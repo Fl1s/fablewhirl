@@ -1,10 +1,10 @@
 package org.fablewhirl.authservice.service;
 
-import org.fablewhirl.authservice.client.UserServiceClient;
 import org.fablewhirl.authservice.dto.RegisterDto;
-import org.fablewhirl.authservice.request.KeycloakTokenResponse;
+import org.fablewhirl.authservice.producer.KafkaProducer;
+import org.fablewhirl.authservice.response.KeycloakTokenResponse;
 import org.fablewhirl.authservice.request.LoginRequest;
-import org.fablewhirl.authservice.request.RegisterRequest;
+import org.fablewhirl.authservice.event.RegistrationEvent;
 import org.fablewhirl.authservice.dto.TokenDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class AuthService {
 
     private final KeycloakService keycloakService;
     private final RedisCommands<String, String> redisCommands;
-    private final UserServiceClient userServiceClient;
+    private final KafkaProducer eventProducer;
 
     public TokenDto login(LoginRequest request) {
         KeycloakTokenResponse keycloakTokens = keycloakService.getTokens(request.getUsername(), request.getPassword());
@@ -31,8 +31,19 @@ public class AuthService {
                 .build();
     }
 
-    public ResponseEntity<RegisterDto> register(RegisterRequest registerRequest) {
-        return userServiceClient.save(registerRequest);
+    public ResponseEntity<RegisterDto> register(RegistrationEvent registerRequest) {
+        String userId = keycloakService.registerUser(registerRequest);
+
+        RegistrationEvent event = RegistrationEvent.builder()
+                .userId(userId)
+                .username(registerRequest.getUsername())
+                .email(registerRequest.getEmail())
+                .bio(registerRequest.getBio())
+                .createdAt(registerRequest.getCreatedAt())
+                .build();
+
+        eventProducer.sendRegistration(event);
+        return null;
     }
 
     public TokenDto refreshToken(String username, String refreshToken) {
@@ -53,7 +64,7 @@ public class AuthService {
                 .build();
     }
 
-    public void logout(String username, String refreshToken) {
+    public void logout(String username) {
         String redisKey = "refresh_token:" + username;
         redisCommands.del(redisKey);
     }

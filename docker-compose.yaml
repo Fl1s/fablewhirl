@@ -1,95 +1,51 @@
 version: '3.8'
 
 services:
-  # Jenkins - CI/CD automation server
-  jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
-    environment:
-      - JENKINS_OPTS=--prefix=/jenkins  # Set URL context for Jenkins
+  zookeeper:
+    container_name: zookeeper
+    image: "docker.io/bitnami/zookeeper:latest"
     ports:
-      - "8091:8091"  # Jenkins UI
-      - "50000:50000"  # For Jenkins agent communication
+      - "2181:2181"
     volumes:
-      - jenkins_home:/var/jenkins_home  # Persist Jenkins data
-    networks:
-      - fablewhirl-net
+      - "zookeeper_data:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
 
-  # Kafka, Zookeeper, Redis, Prometheus, Grafana, Elasticsearch, Kibana (same as before)
   kafka:
     container_name: kafka
-    image: wurstmeister/kafka:latest
-    environment:
-      - KAFKA_KRAFT_MODE=true
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9093
-      - KAFKA_LISTENER_SECURITY_PROTOCOL=PLAINTEXT
-      - KAFKA_LISTENER_NAMES=PLAINTEXT
-      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9093
-      - KAFKA_LISTENER_PORT=9093
-      - KAFKA_BROKER_ID=1
-      - KAFKA_LOG_DIRS=/var/lib/kafka/data
+    image: "docker.io/bitnami/kafka:latest"
     ports:
-      - "9093:9093"
-    networks:
-      - fablewhirl-net
+      - "9092:9092"
+    expose:
+      - "9093"
     volumes:
-      - /var/lib/kafka/data
+      - "kafka_data:/bitnami"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_ADVERTISED_LISTENERS=INSIDE://kafka:9093,OUTSIDE://localhost:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      - KAFKA_LISTENERS=INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+    depends_on:
+      - zookeeper
 
   kafka-ui:
-    image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
+    image: "provectuslabs/kafka-ui:latest"
     ports:
-      - "9094:9094"
+      - "9090:8080"
+    restart: always
     environment:
-      KAFKA_CLUSTERS_0_NAME: "local"
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "localhost:9093"
-
-
-#  prometheus:
-#    image: prom/prometheus:latest
-#    container_name: prometheus
-#    volumes:
-#      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-#    ports:
-#      - "9090:9090"
-#    networks:
-#      - fablewhirl-net
-#
-#  grafana:
-#    image: grafana/grafana:latest
-#    container_name: grafana
-#    environment:
-#      - GF_SECURITY_ADMIN_PASSWORD=admin
-#    ports:
-#      - "3000:3000"
-#    depends_on:
-#      - prometheus
-#    networks:
-#      - fablewhirl-net
-#
-#  elasticsearch:
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
-#    environment:
-#      - discovery.type=single-node
-#    ports:
-#      - "9200:9200"
-#    networks:
-#      - fablewhirl-net
-#
-#  kibana:
-#    image: docker.elastic.co/kibana/kibana:7.9.3
-#    environment:
-#      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-#    ports:
-#      - "5601:5601"
-#    depends_on:
-#      - elasticsearch
-#    networks:
-#      - fablewhirl-net
-
-networks:
-  fablewhirl-net:
-    driver: bridge
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9093
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=localhost:2181
 
 volumes:
-  jenkins_home:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+  postgres_data:
+    driver: local

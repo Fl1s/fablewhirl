@@ -7,6 +7,7 @@ import org.fablewhirl.user.dto.UserMediaDto;
 import org.fablewhirl.user.dto.UserRegistrationDto;
 import org.fablewhirl.user.entity.UserEntity;
 import org.fablewhirl.user.entity.UserMediaEntity;
+import org.fablewhirl.user.event.RegistrationEvent;
 import org.fablewhirl.user.repository.UserMediaRepository;
 import org.fablewhirl.user.repository.UserRepository;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -24,16 +25,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMediaRepository userMediaRepository;
 
-    @KafkaListener(topics = "user-registration-topic", groupId = "user-group")
-    public void registerUser(String userRegistrationDtoString) {
+    public void registerUser(RegistrationEvent userRegistrationEvent) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            UserRegistrationDto userRegistrationDTO = objectMapper.readValue(userRegistrationDtoString, UserRegistrationDto.class);
 
-            String hashedPassword = hashPassword(userRegistrationDTO.getPassword());
+/*
+            String hashedPassword = hashPassword(userRegistrationEvent.getPassword);
 
             UserEntity userEntity = new UserEntity();
-            userEntity.setUsername(userRegistrationDTO.getUsername());
+            userEntity.setUsername(userRegistrationDto.getUsername());
             userEntity.setEmail(userRegistrationDTO.getEmail());
             userEntity.setPassword(hashedPassword);
             userEntity.setBio(userRegistrationDTO.getBio());
@@ -43,6 +42,7 @@ public class UserService {
 
             userRepository.save(userEntity);
 
+*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,11 +78,7 @@ public class UserService {
         Optional<UserMediaEntity> userMediaEntityOptional = userMediaRepository.findById(userId);
         UserMediaEntity userMediaEntity;
 
-        if (userMediaEntityOptional.isPresent()) {
-            userMediaEntity = userMediaEntityOptional.get();
-        } else {
-            userMediaEntity = new UserMediaEntity();
-        }
+        userMediaEntity = userMediaEntityOptional.orElseGet(UserMediaEntity::new);
 
         userMediaEntity.setAvatarUrl(userMediaDto.getAvatarUrl());
         userMediaEntity.setBannerUrl(userMediaDto.getBannerUrl());

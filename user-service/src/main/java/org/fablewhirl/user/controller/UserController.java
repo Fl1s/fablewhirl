@@ -8,7 +8,7 @@ import org.fablewhirl.user.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
