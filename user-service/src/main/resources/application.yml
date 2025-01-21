@@ -1,11 +1,19 @@
 server:
   port: '8082'
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
+
 spring:
   application:
     name: user-service
   kafka:
-    topic:
-      name: user-registration
     consumer:
       bootstrap-servers: localhost:9092
       group-id: user
@@ -15,7 +23,7 @@ spring:
       spring.json.trusted.packages: '*'
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/users-db
+    url: jdbc:postgresql://localhost:5432/users
     username: admin
     password: secret
     driver-class-name: org.postgresql.Driver

@@ -5,14 +5,21 @@ import org.fablewhirl.user.dto.UserDto;
 import org.fablewhirl.user.dto.UserMediaDto;
 import org.fablewhirl.user.dto.UserRegistrationDto;
 import org.fablewhirl.user.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void register(@RequestBody UserRegistrationDto userData) {
+        userService.register(userData);
+    }
 
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable Long id) {
