@@ -1,77 +1,54 @@
 package org.fablewhirl.apigateway.config;
 
-import org.springframework.cloud.gateway.server.mvc.filter.CircuitBreakerFilterFunctions;
-import org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.function.RequestPredicates;
-import org.springframework.web.servlet.function.RouterFunction;
-import org.springframework.web.servlet.function.ServerResponse;
-
-import java.net.URI;
-
-import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
 
 @Configuration
 public class GatewayConfig {
 
     @Bean
-    public RouterFunction<ServerResponse> authServiceRoute() {
-        return route("auth_service")
-                .route(RequestPredicates.path("/api/auth/**"),
-                        HandlerFunctions.http("http://localhost:8081"))
-                .filter(CircuitBreakerFilterFunctions.circuitBreaker("authServiceCircuitBreaker",
-                        URI.create("forward:/fallbackRoute")))
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder.routes()
+/*                .route("auth_service", r -> r.path("/auth/**")
+                        .filters(f -> f.circuitBreaker(c -> c.setName("authServiceCircuitBreaker")
+                                .setFallbackUri("forward:/fallbackRoute")))
+                        .uri("http://localhost:8081"))*/
+
+                .route("user_service", r -> r.path("/users/**")
+                        .filters(f -> f.circuitBreaker(c -> c.setName("userServiceCircuitBreaker")
+                                .setFallbackUri("forward:/fallbackRoute")))
+                        .uri("http://localhost:8082"))
+
+                .route("character_service", r -> r.path("/characters/**")
+                        .filters(f -> f.circuitBreaker(c -> c.setName("characterServiceCircuitBreaker")
+                                .setFallbackUri("forward:/fallbackRoute")))
+                        .uri("http://localhost:8083"))
+
+                .route("thread_service", r -> r.path("/threads/**")
+                        .filters(f -> f.circuitBreaker(c -> c.setName("threadServiceCircuitBreaker")
+                                .setFallbackUri("forward:/fallbackRoute")))
+                        .uri("http://localhost:8084"))
+
+                .route("notification_service", r -> r.path("/notifications/**")
+                        .filters(f -> f.circuitBreaker(c -> c.setName("notificationServiceCircuitBreaker")
+                                .setFallbackUri("forward:/fallbackRoute")))
+                        .uri("http://localhost:8085"))
+
+                .route("fallbackRoute", r -> r.path("/fallbackRoute")
+                        .filters(f -> f.rewritePath("/fallbackRoute", "/"))
+                        .uri("forward:/fallback"))
+
                 .build();
     }
 
     @Bean
-    public RouterFunction<ServerResponse> userServiceRoute() {
-        return route("user_service")
-                .route(RequestPredicates.path("/api/users/**"),
-                        HandlerFunctions.http("http://localhost:8082"))
-                .filter(CircuitBreakerFilterFunctions.circuitBreaker("userServiceCircuitBreaker",
-                        URI.create("forward:/fallbackRoute")))
-                .build();
-    }
-
-    @Bean
-    public RouterFunction<ServerResponse> characterServiceRoute() {
-        return route("character_service")
-                .route(RequestPredicates.path("/api/characters/**"),
-                        HandlerFunctions.http("http://localhost:8083"))
-                .filter(CircuitBreakerFilterFunctions.circuitBreaker("characterServiceCircuitBreaker",
-                        URI.create("forward:/fallbackRoute")))
-                .build();
-    }
-
-    @Bean
-    public RouterFunction<ServerResponse> threadServiceRoute() {
-        return route("thread_service")
-                .route(RequestPredicates.path("/api/threads/**"),
-                        HandlerFunctions.http("http://localhost:8084"))
-                .filter(CircuitBreakerFilterFunctions.circuitBreaker("threadServiceCircuitBreaker",
-                        URI.create("forward:/fallbackRoute")))
-                .build();
-    }
-
-    @Bean
-    public RouterFunction<ServerResponse> notificationServiceRoute() {
-        return route("notification_service")
-                .route(RequestPredicates.path("/api/notifications/**"),
-                        HandlerFunctions.http("http://localhost:8085"))
-                .filter(CircuitBreakerFilterFunctions.circuitBreaker("notificationServiceCircuitBreaker",
-                        URI.create("forward:/fallbackRoute")))
-                .build();
-    }
-
-    @Bean
-    public RouterFunction<ServerResponse> fallbackRoute() {
-        return route("fallbackRoute")
-                .GET("/fallbackRoute",
-                        request -> ServerResponse.status(HttpStatus.SERVICE_UNAVAILABLE)
-                                .body("[ 'Service Unavailable yet... Please try again later.' ]"))
+    public org.springframework.web.reactive.function.server.RouterFunction<org.springframework.web.reactive.function.server.ServerResponse> fallbackHandler() {
+        return org.springframework.web.reactive.function.server.RouterFunctions.route()
+                .GET("/fallback", request -> org.springframework.web.reactive.function.server.ServerResponse
+                        .status(org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE)
+                        .bodyValue("[ 'Service Unavailable. Please try again later.' ]"))
                 .build();
     }
 }
