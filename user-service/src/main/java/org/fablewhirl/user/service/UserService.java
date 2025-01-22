@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserMediaRepository userMediaRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -36,19 +36,26 @@ public class UserService {
     }
 
     @Transactional
-    public UserCreateEditDto updateUser(String id, UserCreateEditDto userRegistrationDto) {
+    public void updateUser(String id, UserCreateEditDto userRegistrationDto) {
         UserEntity userEntity = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        userEntity.setUsername(userRegistrationDto.getUsername());
-        userEntity.setEmail(userRegistrationDto.getEmail());
-        userEntity.setBio(userRegistrationDto.getBio());
+        Optional.ofNullable(userRegistrationDto.getUsername())
+                .ifPresent(userEntity::setUsername);
+        Optional.ofNullable(userRegistrationDto.getPassword())
+                .ifPresent(userEntity::setPassword);
+        Optional.ofNullable(userRegistrationDto.getEmail())
+                .ifPresent(userEntity::setEmail);
+        Optional.ofNullable(userRegistrationDto.getBio())
+                .ifPresent(userEntity::setBio);
         userEntity.setUpdatedDate(LocalDateTime.now());
 
         userRepository.save(userEntity);
+    }
 
-        return new UserCreateEditDto(userEntity.getUsername(), userEntity.getEmail(),
-                userEntity.getBio(), userEntity.getRoles());
+    @Transactional
+    public void deleteUser(String id) {
+        userRepository.deleteById(id);
     }
 }
 

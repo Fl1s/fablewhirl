@@ -26,7 +26,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserCreateEditDto updateUser(@PathVariable String id, @RequestBody UserCreateEditDto userRegistrationDto) {
-        return userService.updateUser(id, userRegistrationDto);
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateUser(@PathVariable String id, @RequestBody UserCreateEditDto userRegistrationDto) {
+        userService.updateUser(id, userRegistrationDto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable String id) {
+        userService.deleteUser(id);
     }
 }

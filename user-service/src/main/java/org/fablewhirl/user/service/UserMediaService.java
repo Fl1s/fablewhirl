@@ -1,14 +1,13 @@
 package org.fablewhirl.user.service;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.fablewhirl.user.dto.UserMediaDto;
 import org.fablewhirl.user.entity.UserMediaEntity;
 import org.fablewhirl.user.repository.UserMediaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +50,16 @@ public class UserMediaService {
         byte[] bannerData = mediaEntity.getBanner();
 
         return avatarData != null ? avatarData : bannerData;
+    }
+    @NotNull
+    public byte[] getAvatar(String userId) {
+        UserMediaEntity mediaEntity = userMediaRepository.findByUserId(userId);
+        return mediaEntity.getAvatar();
+    }
+    @NotNull
+    public byte[] getBanner(String userId) {
+        UserMediaEntity mediaEntity = userMediaRepository.findByUserId(userId);
+        return mediaEntity.getBanner();
     }
 }
 
