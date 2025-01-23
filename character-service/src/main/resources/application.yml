@@ -1,0 +1,17 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: character-service
+  data:
+    mongodb:
+      uri: mongodb://admin:secret@localhost:27018/character_data
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
