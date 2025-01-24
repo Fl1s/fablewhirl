@@ -11,6 +11,7 @@ import org.fablewhirl.character.mapper.SpellsMapper;
 import org.fablewhirl.character.repository.CharacterRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,13 +25,13 @@ public class CharacterService {
     private final SpellsMapper spellsMapper;
 
     @Transactional
-    public void createCharacter(String userId,CharacterDto characterDto) {
-        CharacterEntity character = characterMapper.toEntity(characterDto);
+    public CharacterDto createCharacter(String userId) {
+        CharacterEntity character = new CharacterEntity();
         character.setUserId(userId);
-        characterRepository.save(character);
+        return characterMapper.toDto(characterRepository.save(character));
     }
 
-    public void updateCharacter(String characterId, CharacterDto characterDto) {
+    public CharacterDto updateCharacter(String characterId, CharacterDto characterDto) {
         CharacterEntity character = characterRepository.findById(characterId).orElse(null);
 
         if (character == null) {
@@ -42,7 +43,7 @@ public class CharacterService {
         character.setSpells(spellsMapper.toEntity(characterDto.getSpells()));
         character.setData(characterDto.getData());
 
-        characterRepository.save(character);
+        return characterMapper.toDto(characterRepository.save(character));
     }
 
     public Optional<CharacterDto> getCharacterById(String characterId) {

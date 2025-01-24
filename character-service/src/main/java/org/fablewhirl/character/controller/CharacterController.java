@@ -3,7 +3,6 @@ package org.fablewhirl.character.controller;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.character.dto.CharacterDto;
 import org.fablewhirl.character.service.CharacterService;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.ResponseEntity;
@@ -18,9 +17,8 @@ public class CharacterController {
     private final CharacterService characterService;
 
     @PostMapping("/users/{userId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createCharacter(@PathVariable String userId, @RequestBody CharacterDto characterDto) {
-        characterService.createCharacter(userId, characterDto);
+    public ResponseEntity<CharacterDto> createCharacter(@PathVariable String userId) {
+        return ResponseEntity.ok(characterService.createCharacter(userId));
     }
 
     @GetMapping("/users/{userId}")
@@ -37,9 +35,8 @@ public class CharacterController {
     }
 
     @PutMapping("/{characterId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateCharacter(@PathVariable String characterId, @RequestBody CharacterDto updatedDto) {
-        characterService.updateCharacter(characterId, updatedDto);
+    public ResponseEntity<CharacterDto> updateCharacter(@PathVariable String characterId, @RequestBody CharacterDto updatedDto) {
+        return ResponseEntity.ok(characterService.updateCharacter(characterId, updatedDto));
     }
 
     @DeleteMapping("/{characterId}")
