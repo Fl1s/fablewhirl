@@ -3,6 +3,7 @@ package org.fablewhirl.character.controller;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.character.dto.CharacterDto;
 import org.fablewhirl.character.service.CharacterService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.ResponseEntity;

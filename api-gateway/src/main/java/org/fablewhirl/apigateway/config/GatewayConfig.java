@@ -31,10 +31,15 @@ public class GatewayConfig {
                                 .setFallbackUri("forward:/fallbackRoute")))
                         .uri("http://localhost:8084"))
 
+                .route("comment_service", r -> r.path("/comments/**")
+                        .filters(f -> f.circuitBreaker(c -> c.setName("commentServiceCircuitBreaker")
+                                .setFallbackUri("forward:/fallbackRoute")))
+                        .uri("http://localhost:8085"))
+
                 .route("notification_service", r -> r.path("/notifications/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("notificationServiceCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
-                        .uri("http://localhost:8085"))
+                        .uri("http://localhost:8086"))
 
                 .route("fallbackRoute", r -> r.path("/fallbackRoute")
                         .filters(f -> f.rewritePath("/fallbackRoute", "/"))

@@ -30,6 +30,17 @@ public class CharacterService {
         character.setUserId(userId);
         return characterMapper.toDto(characterRepository.save(character));
     }
+    public List<CharacterDto> getAllCharactersByUserId(String userId) {
+        List<CharacterEntity> entities = characterRepository.findByUserId(userId);
+        return entities.stream()
+                .map(characterMapper::toDto)
+                .toList();
+    }
+
+    public Optional<CharacterDto> getCharacterById(String characterId) {
+        return characterRepository.findById(characterId)
+                .map(characterMapper::toDto);
+    }
 
     public CharacterDto updateCharacter(String characterId, CharacterDto characterDto) {
         CharacterEntity character = characterRepository.findById(characterId).orElse(null);
@@ -46,23 +57,11 @@ public class CharacterService {
         return characterMapper.toDto(characterRepository.save(character));
     }
 
-    public Optional<CharacterDto> getCharacterById(String characterId) {
-        return characterRepository.findById(characterId)
-                .map(characterMapper::toDto);
-    }
-
     public boolean deleteCharacter(String characterId) {
         if (characterRepository.existsById(characterId)) {
             characterRepository.deleteById(characterId);
             return true;
         }
         return false;
-    }
-
-    public List<CharacterDto> getAllCharactersByUserId(String userId) {
-        List<CharacterEntity> entities = characterRepository.findByUserId(userId);
-        return entities.stream()
-                .map(characterMapper::toDto)
-                .toList();
     }
 }
