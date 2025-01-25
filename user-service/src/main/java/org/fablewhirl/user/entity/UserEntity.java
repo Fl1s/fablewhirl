@@ -1,13 +1,13 @@
 package org.fablewhirl.user.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import lombok.Data;
 
 @Data
 @Entity
@@ -16,13 +16,25 @@ import lombok.Data;
 @Table(name = "user_info")
 public class UserEntity {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
+    @NotNull
+    @Size(min = 3, max = 50)
     private String username;
+
+    @NotNull
+    @Email
     private String email;
+
+    @NotNull
+    @Size(min = 8)
     private String password;
+
     private String bio;
-    private String roles;
+
+    @NotNull
+    private String roles = "USER";
 
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
@@ -30,9 +42,9 @@ public class UserEntity {
     @PrePersist
     public void prePersist() {
         createdDate = LocalDateTime.now();
-            if (id == null || id.isEmpty()) {
-                id = UUID.randomUUID().toString();
-            }
+        if (id == null) {
+            id = UUID.randomUUID();
+        }
     }
 
     @PreUpdate
@@ -40,5 +52,3 @@ public class UserEntity {
         updatedDate = LocalDateTime.now();
     }
 }
-
-
