@@ -1,8 +1,10 @@
 package org.fablewhirl.user.service;
 
 import org.fablewhirl.user.dto.UserCreateEditDto;
+import org.fablewhirl.user.dto.UserReadDto;
 import org.fablewhirl.user.entity.UserEntity;
-import org.fablewhirl.user.mapper.UserMapper;
+import org.fablewhirl.user.mapper.UserCreateEditMapper;
+import org.fablewhirl.user.mapper.UserReadMapper;
 import org.fablewhirl.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +28,9 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private UserMapper userMapper;
+    private UserCreateEditMapper userCreateEditMapper;
+
+    @Mock UserReadMapper userReadMapper;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -33,19 +38,21 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    private UserCreateEditDto userDto;
+    private UserCreateEditDto userCreateEditDto;
+    private UserReadDto userReadDto;
     private UserEntity userEntity;
-    private UUID userId;
+    private String userId;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        userId = UUID.randomUUID();
-        userDto = new UserCreateEditDto("testUser", "test@example.com", "password", "bio");
+        userId = "12";
+        userCreateEditDto = new UserCreateEditDto("testUser", "test@example.com", "password", "bio");
+        userReadDto = new UserReadDto("testUser", "test@example.com", "bio", "USER", LocalDateTime.now(),LocalDateTime.now());
 
         userEntity = new UserEntity();
-        userEntity.setId(UUID.fromString(userId.toString()));
+        userEntity.setId(userId);
         userEntity.setUsername("testUser");
         userEntity.setEmail("test@example.com");
         userEntity.setPassword("encodedPassword");
@@ -55,40 +62,40 @@ class UserServiceTest {
     @Test
     @DisplayName("Register user - success")
     void register_Success() {
-        when(userMapper.toEntity(userDto)).thenReturn(userEntity);
-        when(passwordEncoder.encode(userDto.getPassword())).thenReturn("encodedPassword");
+        when(userCreateEditMapper.toEntity(userCreateEditDto)).thenReturn(userEntity);
+        when(passwordEncoder.encode(userCreateEditDto.getPassword())).thenReturn("encodedPassword");
         when(userRepository.save(userEntity)).thenReturn(userEntity);
-        when(userMapper.toDto(userEntity)).thenReturn(userDto);
+        when(userCreateEditMapper.toDto(userEntity)).thenReturn(userCreateEditDto);
 
-        UserCreateEditDto result = userService.register(userDto);
+        UserCreateEditDto result = userService.register(userCreateEditDto);
 
         assertNotNull(result);
-        assertEquals(userDto.getUsername(), result.getUsername());
+        assertEquals(userCreateEditDto.getUsername(), result.getUsername());
         verify(userRepository).save(userEntity);
     }
 
     @Test
     @DisplayName("Get user by ID - success")
     void getUserById_Success() {
-        when(userRepository.findById(userId.toString())).thenReturn(Optional.of(userEntity));
-        when(userMapper.toDto(userEntity)).thenReturn(userDto);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(userReadMapper.toDto(userEntity)).thenReturn(userReadDto);
 
-        UserCreateEditDto result = userService.getUserById(userId.toString());
+        UserReadDto result = userService.getUserById(userId);
 
         assertNotNull(result);
-        assertEquals(userDto.getUsername(), result.getUsername());
-        verify(userRepository).findById(userId.toString());
+        assertEquals(userReadDto.getUsername(), result.getUsername());
+        verify(userRepository).findById(userId);
     }
 
     @Test
     @DisplayName("Get user by ID - not found")
     void getUserById_NotFound() {
-        when(userRepository.findById(userId.toString())).thenReturn(Optional.empty());
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userService.getUserById(userId.toString()));
+                () -> userService.getUserById(userId));
 
         assertEquals("User not found", exception.getMessage());
-        verify(userRepository).findById(userId.toString());
+        verify(userRepository).findById(userId);
     }
 
 
@@ -107,47 +114,47 @@ class UserServiceTest {
     @Test
     @DisplayName("Update user - success")
     void updateUser_Success() {
-        when(userRepository.findById(userId.toString())).thenReturn(Optional.of(userEntity));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
         when(userRepository.save(userEntity)).thenReturn(userEntity);
-        when(userMapper.toDto(userEntity)).thenReturn(userDto);
+        when(userCreateEditMapper.toDto(userEntity)).thenReturn(userCreateEditDto);
 
-        UserCreateEditDto result = userService.updateUser(userId.toString(), userDto);
+        UserCreateEditDto result = userService.updateUser(userId, userCreateEditDto);
 
         assertNotNull(result);
-        assertEquals(userDto.getUsername(), result.getUsername());
+        assertEquals(userCreateEditDto.getUsername(), result.getUsername());
         verify(userRepository).save(userEntity);
     }
 
     @Test
     @DisplayName("Update user - not found")
     void updateUser_NotFound() {
-        when(userRepository.findById(userId.toString())).thenReturn(Optional.empty());
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userService.updateUser(userId.toString(), userDto));
+                () -> userService.updateUser(userId, userCreateEditDto));
 
         assertEquals("User not found", exception.getMessage());
-        verify(userRepository).findById(userId.toString());
+        verify(userRepository).findById(userId);
     }
 
     @Test
     @DisplayName("Delete user - success")
     void deleteUser_Success() {
-        doNothing().when(userRepository).deleteById(userId.toString());
+        doNothing().when(userRepository).deleteById(userId);
 
-        assertDoesNotThrow(() -> userService.deleteUser(userId.toString()));
-        verify(userRepository).deleteById(userId.toString());
+        assertDoesNotThrow(() -> userService.deleteUser(userId));
+        verify(userRepository).deleteById(userId);
     }
 
     @Test
     @DisplayName("Delete user - not found")
     void deleteUser_NotFound() {
-        doThrow(new IllegalArgumentException("User not found")).when(userRepository).deleteById(userId.toString());
+        doThrow(new IllegalArgumentException("User not found")).when(userRepository).deleteById(userId);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userService.deleteUser(userId.toString()));
+                () -> userService.deleteUser(userId));
 
         assertEquals("User not found", exception.getMessage());
-        verify(userRepository).deleteById(userId.toString());
+        verify(userRepository).deleteById(userId);
     }
 }

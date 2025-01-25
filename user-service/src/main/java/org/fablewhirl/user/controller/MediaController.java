@@ -2,7 +2,6 @@ package org.fablewhirl.user.controller;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.service.UserMediaService;
 import org.springframework.core.io.ByteArrayResource;
@@ -23,7 +22,7 @@ public class MediaController {
     @PutMapping("/uploadAvatar")
     public ResponseEntity<Void> uploadAvatar(
             @PathVariable @NotBlank String userId,
-            @RequestParam("file") @NotNull @Size(max = 5 * 1024 * 1024) MultipartFile file) throws IOException {
+            @RequestParam("file") @NotNull MultipartFile file) throws IOException {
 
         if (!file.getContentType().startsWith("image")) {
             throw new IllegalArgumentException("File must be an image");
@@ -36,7 +35,7 @@ public class MediaController {
     @PutMapping("/uploadBanner")
     public ResponseEntity<Void> uploadBanner(
             @PathVariable @NotBlank String userId,
-            @RequestParam("file") @NotNull @Size(max = 10 * 1024 * 1024) MultipartFile file) throws IOException {
+            @RequestParam("file") @NotNull MultipartFile file) throws IOException {
 
         if (!file.getContentType().startsWith("image")) {
             throw new IllegalArgumentException("File must be an image");
