@@ -16,8 +16,7 @@ import java.util.UUID;
 @Table(name = "user_info")
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private String id;
 
     @NotNull
     @Size(min = 3, max = 50)
@@ -42,8 +41,8 @@ public class UserEntity {
     @PrePersist
     public void prePersist() {
         createdDate = LocalDateTime.now();
-        if (id == null) {
-            id = UUID.randomUUID();
+        if (id == null || id.isEmpty()) {
+            id = UUID.randomUUID().toString();
         }
     }
 

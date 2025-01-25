@@ -2,8 +2,10 @@ package org.fablewhirl.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.dto.UserCreateEditDto;
+import org.fablewhirl.user.dto.UserReadDto;
 import org.fablewhirl.user.entity.UserEntity;
-import org.fablewhirl.user.mapper.UserMapper;
+import org.fablewhirl.user.mapper.UserCreateEditMapper;
+import org.fablewhirl.user.mapper.UserReadMapper;
 import org.fablewhirl.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,8 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserCreateEditMapper userCreateEditMapper;
+    private final UserReadMapper userReadMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -27,13 +30,13 @@ public class UserService {
         if (userRepository.existsByEmail(userDto.getEmail()))
             throw new IllegalArgumentException("Email is already in use.");
 
-        UserEntity user = userMapper.toEntity(userDto);
+        UserEntity user = userCreateEditMapper.toEntity(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userMapper.toDto(userRepository.save(user));
+        return userCreateEditMapper.toDto(userRepository.save(user));
     }
 
-    public UserCreateEditDto getUserById(String id) {
-        return userMapper.toDto(
+    public UserReadDto getUserById(String id) {
+        return userReadMapper.toDto(
                 userRepository.findById(id)
                         .orElseThrow(() -> new IllegalArgumentException("User not found")));
     }
@@ -57,7 +60,7 @@ public class UserService {
                 .ifPresent(userEntity::setBio);
         userEntity.setUpdatedDate(LocalDateTime.now());
 
-        return userMapper.toDto(userRepository.save(userEntity));
+        return userCreateEditMapper.toDto(userRepository.save(userEntity));
     }
 
     @Transactional

@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.dto.UserCreateEditDto;
-import org.fablewhirl.user.mapper.UserMapper;
+import org.fablewhirl.user.dto.UserReadDto;
+import org.fablewhirl.user.mapper.UserCreateEditMapper;
+import org.fablewhirl.user.mapper.UserReadMapper;
 import org.fablewhirl.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,8 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
+    private final UserCreateEditMapper userCreateEditMapper;
+    private final UserReadMapper userReadMapper;
 
     @PostMapping("/register")
     public ResponseEntity<UserCreateEditDto> register(
@@ -28,10 +31,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserCreateEditDto> getUserById(
+    public ResponseEntity<UserReadDto> getUserById(
             @PathVariable @NotBlank String id) {
 
-        UserCreateEditDto user = userService.getUserById(id);
+        UserReadDto user = userService.getUserById(id);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -40,9 +43,9 @@ public class UserController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<UserCreateEditDto>> getAllUsers() {
-        List<UserCreateEditDto> users = userService.getAll().stream()
-                .map(userMapper::toDto)
+    public ResponseEntity<List<UserReadDto>> getAllUsers() {
+        List<UserReadDto> users = userService.getAll().stream()
+                .map(userReadMapper::toDto)
                 .toList();
         return ResponseEntity.ok(users);
     }
