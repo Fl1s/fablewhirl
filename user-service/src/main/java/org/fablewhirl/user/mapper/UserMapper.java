@@ -4,6 +4,8 @@ import org.fablewhirl.user.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
+
 @Mapper(
         componentModel = "spring"
 )
@@ -12,4 +14,5 @@ public interface UserMapper {
     UserCreateEditDto toDto(UserEntity userEntity);
 
     void updateEntityFromDto(UserCreateEditDto userCreateEditDto, @MappingTarget UserEntity userEntity);
+
 }

@@ -1,12 +1,11 @@
 package org.fablewhirl.user.controller;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.fablewhirl.user.dto.UserMediaDto;
 import org.fablewhirl.user.service.UserMediaService;
-import org.fablewhirl.user.service.UserService;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,36 +17,54 @@ import java.io.IOException;
 @RequestMapping("/users/{userId}")
 @RequiredArgsConstructor
 public class MediaController {
+
     private final UserMediaService userMediaService;
 
-    @GetMapping("/media")
-    public ResponseEntity<ByteArrayResource> getUserMedia(@PathVariable String userId) {
-        byte[] imageData = userMediaService.getUserMedia(userId);
+    @PutMapping("/uploadAvatar")
+    public ResponseEntity<Void> uploadAvatar(
+            @PathVariable @NotBlank String userId,
+            @RequestParam("file") @NotNull @Size(max = 5 * 1024 * 1024) MultipartFile file) throws IOException {
 
-        if (imageData == null) {
-            return ResponseEntity.notFound().build();
+        if (!file.getContentType().startsWith("image")) {
+            throw new IllegalArgumentException("File must be an image");
         }
 
-        ByteArrayResource resource = new ByteArrayResource(imageData);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"user_media.png\"");
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE);
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentLength(imageData.length)
-                .body(resource);
-    }
-    @PutMapping("/uploadAvatar")
-    @ResponseStatus(HttpStatus.OK)
-    public void uploadAvatar(@PathVariable String userId, @RequestParam("file") MultipartFile file) throws IOException {
-        userMediaService.uploadAvatar(userId,file);
+        userMediaService.uploadAvatar(userId, file);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/uploadBanner")
-    @ResponseStatus(HttpStatus.OK)
-    public void uploadBanner(@PathVariable String userId, @RequestParam("file") MultipartFile file) throws IOException {
-        userMediaService.uploadBanner(userId,file);
+    public ResponseEntity<Void> uploadBanner(
+            @PathVariable @NotBlank String userId,
+            @RequestParam("file") @NotNull @Size(max = 10 * 1024 * 1024) MultipartFile file) throws IOException {
+
+        if (!file.getContentType().startsWith("image")) {
+            throw new IllegalArgumentException("File must be an image");
+        }
+
+        userMediaService.uploadBanner(userId, file);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/getAvatar")
+    public ResponseEntity<ByteArrayResource> getAvatar(@PathVariable @NotBlank String userId) {
+        byte[] imageData = userMediaService.getAvatar(userId);
+        ByteArrayResource resource = new ByteArrayResource(imageData);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(resource);
+    }
+
+    @GetMapping("/getBanner")
+    public ResponseEntity<ByteArrayResource> getBanner(@PathVariable @NotBlank String userId) {
+        byte[] imageData = userMediaService.getBanner(userId);
+        ByteArrayResource resource = new ByteArrayResource(imageData);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(resource);
     }
 }
+
+

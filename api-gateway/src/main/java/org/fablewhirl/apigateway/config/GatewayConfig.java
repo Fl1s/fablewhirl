@@ -11,10 +11,10 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-/*                .route("auth_service", r -> r.path("/auth/**")
+                .route("auth_service", r -> r.path("/auth/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("authServiceCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
-                        .uri("http://localhost:8081"))*/
+                        .uri("http://localhost:8081"))
 
                 .route("user_service", r -> r.path("/users/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("userServiceCircuitBreaker")

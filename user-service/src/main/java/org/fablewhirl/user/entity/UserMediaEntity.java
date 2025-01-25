@@ -1,8 +1,10 @@
 package org.fablewhirl.user.entity;
 
 import jakarta.persistence.Lob;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 
 @Data
 @AllArgsConstructor
@@ -10,12 +12,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "user_media")
 public class UserMediaEntity {
     private String id;
-    private String userId;
 
+    @NotNull
+    private String userId;
     @Lob
     private byte[] avatar;
     @Lob
     private byte[] banner;
 }
+
 
 
