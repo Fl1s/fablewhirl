@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.dto.UserCreateEditDto;
 import org.fablewhirl.user.dto.UserReadDto;
-import org.fablewhirl.user.mapper.UserCreateEditMapper;
 import org.fablewhirl.user.mapper.UserReadMapper;
 import org.fablewhirl.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -15,12 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-    private final UserCreateEditMapper userCreateEditMapper;
     private final UserReadMapper userReadMapper;
 
     @PostMapping("/register")
@@ -50,7 +48,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<UserCreateEditDto> updateUser(
             @PathVariable @NotBlank String id,
             @Valid @RequestBody UserCreateEditDto userRegistrationDto) {

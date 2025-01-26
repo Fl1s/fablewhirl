@@ -11,30 +11,35 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("auth_service", r -> r.path("/auth/**")
+                .route("auth_service", r -> r.path("/api/v1/auth/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("authServiceCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
                         .uri("http://localhost:8081"))
 
-                .route("user_service", r -> r.path("/users/**")
+                .route("user_service", r -> r.path("/api/v1/users/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("userServiceCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
                         .uri("http://localhost:8082"))
 
-                .route("character_service", r -> r.path("/characters/**")
+                .route("character_service", r -> r.path("/api/v1/characters/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("characterServiceCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
                         .uri("http://localhost:8083"))
 
-                .route("thread_service", r -> r.path("/threads/**")
+                .route("thread_service", r -> r.path("/api/v1/threads/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("threadServiceCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
                         .uri("http://localhost:8084"))
 
-                .route("notification_service", r -> r.path("/notifications/**")
-                        .filters(f -> f.circuitBreaker(c -> c.setName("notificationServiceCircuitBreaker")
+                .route("comment_service", r -> r.path("/api/v1/comments/**")
+                        .filters(f -> f.circuitBreaker(c -> c.setName("commentServiceCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
                         .uri("http://localhost:8085"))
+
+                .route("notification_service", r -> r.path("/api/v1/notifications/**")
+                        .filters(f -> f.circuitBreaker(c -> c.setName("notificationServiceCircuitBreaker")
+                                .setFallbackUri("forward:/fallbackRoute")))
+                        .uri("http://localhost:8086"))
 
                 .route("fallbackRoute", r -> r.path("/fallbackRoute")
                         .filters(f -> f.rewritePath("/fallbackRoute", "/"))

@@ -1,24 +1,19 @@
 server:
   port: '8082'
 
-eureka:
-  instance:
-    hostname: localhost
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
-
 spring:
   application:
     name: user-service
   kafka:
-    consumer:
+    producer:
       bootstrap-servers: localhost:9092
-      group-id: user
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: user-service-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
     properties:
       spring.json.trusted.packages: '*'
 
@@ -34,3 +29,12 @@ spring:
   data:
     mongodb:
       uri: mongodb://admin:secret@localhost:27017/user_media
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8095/eureka/

@@ -1,16 +1,13 @@
 server:
-  port: 8083
+  port: '8084'
+
 spring:
   application:
-    name: character-service
+    name: thread-service
+
   data:
     mongodb:
-      uri: mongodb://admin:secret@localhost:27018/character_data
-
-  kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-
+      uri: mongodb://admin:secret@localhost:27019/thread_data
 
 eureka:
   instance:

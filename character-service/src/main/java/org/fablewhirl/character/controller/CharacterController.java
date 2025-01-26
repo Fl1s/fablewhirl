@@ -3,6 +3,7 @@ package org.fablewhirl.character.controller;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.character.dto.CharacterDto;
 import org.fablewhirl.character.service.CharacterService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
-@RequestMapping("/characters")
+@RequestMapping("/api/v1/characters")
 @RequiredArgsConstructor
 public class CharacterController {
 
@@ -34,7 +35,7 @@ public class CharacterController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{characterId}")
+    @PatchMapping("/{characterId}")
     public ResponseEntity<CharacterDto> updateCharacter(@PathVariable String characterId, @RequestBody CharacterDto updatedDto) {
         return ResponseEntity.ok(characterService.updateCharacter(characterId, updatedDto));
     }
