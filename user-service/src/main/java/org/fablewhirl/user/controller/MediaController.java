@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/users/{userId}")
+@RequestMapping("/api/v1/users/{userId}")
 @RequiredArgsConstructor
 public class MediaController {
 

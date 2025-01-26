@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/threads")
+@RequestMapping("/api/v1/threads")
 @AllArgsConstructor
 public class ThreadController {
     private final ThreadService threadService;
@@ -41,7 +41,7 @@ public class ThreadController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{threadId}")
+    @PatchMapping("/{threadId}")
     public ResponseEntity<ThreadDto> updateThread(@PathVariable String threadId, @RequestBody ThreadDto threadDto) {
         return ResponseEntity.ok(threadService.updateThread(threadId, threadDto));
     }

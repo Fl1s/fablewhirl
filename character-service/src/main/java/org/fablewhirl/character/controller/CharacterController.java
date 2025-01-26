@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
-@RequestMapping("/characters")
+@RequestMapping("/api/v1/characters")
 @RequiredArgsConstructor
 public class CharacterController {
 
@@ -35,7 +35,7 @@ public class CharacterController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{characterId}")
+    @PatchMapping("/{characterId}")
     public ResponseEntity<CharacterDto> updateCharacter(@PathVariable String characterId, @RequestBody CharacterDto updatedDto) {
         return ResponseEntity.ok(characterService.updateCharacter(characterId, updatedDto));
     }
