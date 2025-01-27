@@ -21,31 +21,30 @@ public class UserController {
     private final UserService userService;
     private final UserReadMapper userReadMapper;
 
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<UserCreateEditDto> register(
             @Valid @RequestBody UserCreateEditDto userData) {
 
         return ResponseEntity.ok(userService.register(userData));
     }
 
+    @GetMapping
+    public ResponseEntity<List<UserReadDto>> getAllUsers() {
+        List<UserReadDto> users = userService.getAll().stream()
+                .map(userReadMapper::toDto)
+                .toList();
+        return ResponseEntity.ok(users);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserReadDto> getUserById(
             @PathVariable @NotBlank String id) {
-
         UserReadDto user = userService.getUserById(id);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         return ResponseEntity.ok(user);
-    }
-
-    @GetMapping("/getAll")
-    public ResponseEntity<List<UserReadDto>> getAllUsers() {
-        List<UserReadDto> users = userService.getAll().stream()
-                .map(userReadMapper::toDto)
-                .toList();
-        return ResponseEntity.ok(users);
     }
 
     @PatchMapping("/{id}")
