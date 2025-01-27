@@ -30,6 +30,13 @@ public class CharacterService {
         character.setUserId(userId);
         return characterMapper.toDto(characterRepository.save(character));
     }
+
+    public List<CharacterDto> getAllCharacters() {
+        List<CharacterEntity> entities = characterRepository.findAll();
+        return entities.stream()
+                .map(characterMapper::toDto)
+                .toList();
+    }
     public List<CharacterDto> getAllCharactersByUserId(String userId) {
         List<CharacterEntity> entities = characterRepository.findByUserId(userId);
         return entities.stream()

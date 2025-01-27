@@ -16,22 +16,17 @@ public class ThreadController {
     private final ThreadService threadService;
     private final ThreadMapper threadMapper;
 
-    @PostMapping("/users/{userId}/post")
+    @PostMapping("/users/{userId}")
     public ResponseEntity<ThreadDto> createThread(@PathVariable String userId, @RequestBody ThreadDto threadDto) {
         return ResponseEntity.ok(threadService.createThread(userId, threadDto));
     }
 
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<List<ThreadDto>> getAllThreads() {
-        List<ThreadDto> users = threadService.getAllThreads().stream()
+        List<ThreadDto> threads = threadService.getAllThreads().stream()
                 .map(threadMapper::toDto)
                 .toList();
-        return ResponseEntity.ok(users);
-    }
-
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(threadService.getAllThreadsByUserId(userId));
+        return ResponseEntity.ok(threads);
     }
 
     @GetMapping("/{threadId}")
@@ -40,6 +35,12 @@ public class ThreadController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(threadService.getAllThreadsByUserId(userId));
+    }
+
 
     @PatchMapping("/{threadId}")
     public ResponseEntity<ThreadDto> updateThread(@PathVariable String threadId, @RequestBody ThreadDto threadDto) {

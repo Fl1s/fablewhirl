@@ -13,13 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v1/users/{userId}")
+@RequestMapping("/api/v1/users/{userId}/media")
 @RequiredArgsConstructor
 public class MediaController {
 
     private final UserMediaService userMediaService;
 
-    @PutMapping("/uploadAvatar")
+    @PatchMapping("/uploadAvatar")
     public ResponseEntity<Void> uploadAvatar(
             @PathVariable @NotBlank String userId,
             @RequestParam("file") @NotNull MultipartFile file) throws IOException {
@@ -32,7 +32,7 @@ public class MediaController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/uploadBanner")
+    @PatchMapping("/uploadBanner")
     public ResponseEntity<Void> uploadBanner(
             @PathVariable @NotBlank String userId,
             @RequestParam("file") @NotNull MultipartFile file) throws IOException {
