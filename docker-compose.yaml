@@ -1,5 +1,3 @@
-version: '4'
-
 services:
   zookeeper:
     image: wurstmeister/zookeeper:latest
@@ -44,23 +42,36 @@ services:
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9093
       - KAFKA_CLUSTERS_0_ZOOKEEPER=localhost:2181
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  minio:
+    image: minio/minio
+    container_name: minio
     ports:
-      - "9090:9090"
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
+      - "9000:9000"
+      - "9001:9001"
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: "admin"
-    ports:
-      - "3001:3001"
-    depends_on:
-      - prometheus
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: secret123
+    volumes:
+      - ~/minio/data:/data
+    command: server --console-address :9001 /data
+
+#  prometheus:
+#    image: prom/prometheus:latest
+#    container_name: prometheus
+#    volumes:
+#      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+#    ports:
+#      - "9090:9090"
+#
+#  grafana:
+#    image: grafana/grafana:latest
+#    container_name: grafana
+#    environment:
+#      GF_SECURITY_ADMIN_PASSWORD: "admin"
+#    ports:
+#      - "3001:3001"
+#    depends_on:
+#      - prometheus
 
 volumes:
   zookeeper_data:

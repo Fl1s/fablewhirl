@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.service.UserMediaService;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,24 +44,14 @@ public class MediaController {
     }
 
     @GetMapping("/getAvatar")
-    public ResponseEntity<ByteArrayResource> getAvatar(@PathVariable @NotBlank String userId) {
-        byte[] imageData = userMediaService.getAvatar(userId);
-        ByteArrayResource resource = new ByteArrayResource(imageData);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .body(resource);
+    public ResponseEntity<String> getAvatar(@PathVariable @NotBlank String userId) {
+        String avatarUrl = userMediaService.getAvatarUrl(userId);
+        return ResponseEntity.ok(avatarUrl);
     }
 
     @GetMapping("/getBanner")
-    public ResponseEntity<ByteArrayResource> getBanner(@PathVariable @NotBlank String userId) {
-        byte[] imageData = userMediaService.getBanner(userId);
-        ByteArrayResource resource = new ByteArrayResource(imageData);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .body(resource);
+    public ResponseEntity<String> getBanner(@PathVariable @NotBlank String userId) {
+        String bannerUrl = userMediaService.getBannerUrl(userId);
+        return ResponseEntity.ok(bannerUrl);
     }
 }
-
-

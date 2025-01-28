@@ -30,6 +30,13 @@ spring:
     mongodb:
       uri: mongodb://admin:secret@localhost:27017/user_media
 
+minio:
+  bucket:
+    name: users
+  url: http://localhost:9000
+  root-user: admin
+  root-password: secret123
+
 eureka:
   instance:
     hostname: localhost
