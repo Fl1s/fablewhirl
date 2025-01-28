@@ -5,17 +5,7 @@ spring:
   application:
     name: user-service
   kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    consumer:
-      group-id: user-service-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-
-    properties:
-      spring.json.trusted.packages: '*'
+    bootstrap-servers: localhost:9092
 
   datasource:
     url: jdbc:postgresql://localhost:5432/users

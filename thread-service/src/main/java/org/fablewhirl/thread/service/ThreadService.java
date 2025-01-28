@@ -46,7 +46,6 @@ public class ThreadService {
     @Transactional
     public ThreadDto updateThread(String threadId, ThreadDto threadDto) {
         ThreadEntity entity = threadRepository.findById(threadId).orElse(null);
-
         if (entity == null) {
             throw new EntityNotFoundException(threadId);
         }

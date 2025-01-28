@@ -21,13 +21,6 @@ public class UserController {
     private final UserService userService;
     private final UserReadMapper userReadMapper;
 
-    @PostMapping
-    public ResponseEntity<UserCreateEditDto> register(
-            @Valid @RequestBody UserCreateEditDto userData) {
-
-        return ResponseEntity.ok(userService.register(userData));
-    }
-
     @GetMapping
     public ResponseEntity<List<UserReadDto>> getAllUsers() {
         List<UserReadDto> users = userService.getAll().stream()

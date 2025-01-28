@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.dto.UserCreateEditDto;
 import org.fablewhirl.user.dto.UserReadDto;
 import org.fablewhirl.user.entity.UserEntity;
+import org.fablewhirl.user.event.UserRegisteredEvent;
 import org.fablewhirl.user.mapper.UserCreateEditMapper;
 import org.fablewhirl.user.mapper.UserReadMapper;
+import org.fablewhirl.user.mapper.UserRegisteredEventMapper;
 import org.fablewhirl.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,17 +24,15 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserCreateEditMapper userCreateEditMapper;
+    private final UserRegisteredEventMapper userRegisteredEventMapper;
     private final UserReadMapper userReadMapper;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public UserCreateEditDto register(UserCreateEditDto userDto) {
-        if (userRepository.existsByEmail(userDto.getEmail()))
-            throw new IllegalArgumentException("Email is already in use.");
+    public void register(UserRegisteredEvent userDto) {
+        UserEntity user = userRegisteredEventMapper.toEntity(userDto);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        UserEntity user = userCreateEditMapper.toEntity(userDto);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userCreateEditMapper.toDto(userRepository.save(user));
+        userRepository.save(user);
     }
 
     public UserReadDto getUserById(String id) {
