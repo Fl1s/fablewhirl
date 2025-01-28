@@ -5,17 +5,7 @@ spring:
   application:
     name: user-service
   kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    consumer:
-      group-id: user-service-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-
-    properties:
-      spring.json.trusted.packages: '*'
+    bootstrap-servers: localhost:9092
 
   datasource:
     url: jdbc:postgresql://localhost:5432/users
@@ -29,6 +19,13 @@ spring:
   data:
     mongodb:
       uri: mongodb://admin:secret@localhost:27017/user_media
+
+minio:
+  bucket:
+    name: users
+  url: http://localhost:9000
+  root-user: admin
+  root-password: secret123
 
 eureka:
   instance:
