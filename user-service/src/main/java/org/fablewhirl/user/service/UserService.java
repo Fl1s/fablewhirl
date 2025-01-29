@@ -28,11 +28,16 @@ public class UserService {
     private final UserReadMapper userReadMapper;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public void register(UserRegisteredEvent userDto) {
         UserEntity user = userRegisteredEventMapper.toEntity(userDto);
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         userRepository.save(user);
+    }
+
+    public boolean existsByUsernameOrEmail(String username, String email) {
+        return userRepository.existsByUsernameOrEmail(username, email);
     }
 
     public UserReadDto getUserById(String id) {
