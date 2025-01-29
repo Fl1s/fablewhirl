@@ -8,6 +8,14 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
 
+keycloak:
+  realm: fablewhirl-realm
+  auth-server-url: http://localhost:9090/realms/fablewhirl-realm/protocol/openid-connect/auth
+  resource: auth-service
+  credentials:
+    secret: KtBLS3ANnpNAdcwJmYXC5jvRrxjviexX
+  use-resource-role-mappings: true
+
 eureka:
   instance:
     hostname: localhost

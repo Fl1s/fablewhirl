@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.concurrent.*;
 
+import static java.lang.String.format;
+
 @Service
 @RequiredArgsConstructor
 public class UserEventListener {
@@ -40,23 +42,23 @@ public class UserEventListener {
 
         try {
             boolean userExists = userExistsFuture.get(5, TimeUnit.SECONDS);
-
             if (userExists) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format(
-                        "[User with username '%s' or email '%s' already exists. Registration failed.]",
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(format(
+                        "[User with same username or email already exists. Registration failed.]",
                         event.getUsername(), event.getEmail()));
             }
 
         } catch (TimeoutException e) {
-            return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body("[Request timed out while verifying user existence.]");
+            return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT)
+                    .body("[Request timed out while verifying user existence.]");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("[An unexpected error occurred during user verification.]");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("[An unexpected error occurred during user verification.]");
         }
-
         userRegisteredTemplate.send("user-registration", event);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(String.format(
-                "[User '%s' has been successfully registered with email '%s'.]",
+        return ResponseEntity.status(HttpStatus.CREATED).body(format(
+                "[User has been successfully registered with email '%s'.]",
                 event.getUsername(), event.getEmail()));
     }
 }
