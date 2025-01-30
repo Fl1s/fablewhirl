@@ -1,6 +1,13 @@
 server:
   port: 8083
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: character-service
   data:
@@ -10,7 +17,6 @@ spring:
   kafka:
     producer:
       bootstrap-servers: localhost:9092
-
 
 eureka:
   instance:
