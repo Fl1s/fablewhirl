@@ -4,13 +4,48 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Configuration
 public class GatewayConfig {
 
     @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
+                // Swagger UI Aggregate Paths
+                .route("auth_service_docs", r -> r.path("/aggregate/auth-service/v3/api-docs")
+                        .filters(f -> f.rewritePath("/aggregate/auth-service/v3/api-docs", "/v3/api-docs"))
+                        .uri("http://localhost:8081"))
+
+                .route("user_service_docs", r -> r.path("/aggregate/user-service/v3/api-docs")
+                        .filters(f -> f.rewritePath("/aggregate/user-service/v3/api-docs", "/v3/api-docs"))
+                        .uri("http://localhost:8082"))
+
+                .route("character_service_docs", r -> r.path("/aggregate/character-service/v3/api-docs")
+                        .filters(f -> f.rewritePath("/aggregate/character-service/v3/api-docs", "/v3/api-docs"))
+                        .uri("http://localhost:8083"))
+
+                .route("thread_service_docs", r -> r.path("/aggregate/thread-service/v3/api-docs")
+                        .filters(f -> f.rewritePath("/aggregate/thread-service/v3/api-docs", "/v3/api-docs"))
+                        .uri("http://localhost:8084"))
+
+                .route("comment_service_docs", r -> r.path("/aggregate/comment-service/v3/api-docs")
+                        .filters(f -> f.rewritePath("/aggregate/comment-service/v3/api-docs", "/v3/api-docs"))
+                        .uri("http://localhost:8085"))
+
+                .route("notification_service_docs", r -> r.path("/aggregate/notification-service/v3/api-docs")
+                        .filters(f -> f.rewritePath("/aggregate/notification-service/v3/api-docs", "/v3/api-docs"))
+                        .uri("http://localhost:8086"))
+
+                // Main Service Routes
                 .route("auth_service", r -> r.path("/api/v1/auth/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("authServiceCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
@@ -49,9 +84,9 @@ public class GatewayConfig {
     }
 
     @Bean
-    public org.springframework.web.reactive.function.server.RouterFunction<org.springframework.web.reactive.function.server.ServerResponse> fallbackHandler() {
-        return org.springframework.web.reactive.function.server.RouterFunctions.route()
-                .GET("/fallback", request -> org.springframework.web.reactive.function.server.ServerResponse
+    public RouterFunction<ServerResponse> fallbackHandler() {
+        return RouterFunctions.route()
+                .GET("/fallback", request -> ServerResponse
                         .status(org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE)
                         .bodyValue("[ 'Service Unavailable. Please try again later.' ]"))
                 .build();
