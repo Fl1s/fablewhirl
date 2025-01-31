@@ -6,6 +6,9 @@ springdoc:
     path: /swagger-ui.html
 
 spring:
+  docker:
+    compose:
+      file: ./auth-service/docker-compose.yaml
   application:
     name: auth-service
 
