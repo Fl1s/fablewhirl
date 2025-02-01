@@ -58,7 +58,6 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
 	implementation 'org.springframework.boot:spring-boot-starter-security:3.4.2'
 	implementation 'org.springframework.security:spring-security-oauth2-client'
-	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 }
 

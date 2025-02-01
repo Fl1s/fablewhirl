@@ -9,9 +9,9 @@ import org.mapstruct.MappingTarget;
         componentModel = "spring"
 )
 public interface CommentMapper {
-    CommentEntity toEntity(CommentDto userCreateEditDto);
-    CommentDto toDto(CommentEntity userEntity);
+    CommentEntity toEntity(CommentDto dto);
+    CommentDto toDto(CommentEntity entity);
 
-    void updateEntityFromDto(CommentDto userCreateEditDto, @MappingTarget CommentEntity userEntity);
+    void updateEntityFromDto(CommentDto dto, @MappingTarget CommentEntity entity);
 
 }
