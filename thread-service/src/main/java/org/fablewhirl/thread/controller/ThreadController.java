@@ -5,6 +5,8 @@ import org.fablewhirl.thread.dto.ThreadDto;
 import org.fablewhirl.thread.mapper.ThreadMapper;
 import org.fablewhirl.thread.service.ThreadService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,9 +18,11 @@ public class ThreadController {
     private final ThreadService threadService;
     private final ThreadMapper threadMapper;
 
-    @PostMapping("/users/{userId}")
-    public ResponseEntity<ThreadDto> createThread(@PathVariable String userId, @RequestBody ThreadDto threadDto) {
-        return ResponseEntity.ok(threadService.createThread(userId, threadDto));
+    @PostMapping
+    public ResponseEntity<ThreadDto> createThread(@RequestBody ThreadDto threadDto,
+                                                  @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.status(201)
+                .body(threadService.createThread(userDetails.getUsername(), threadDto));
     }
 
     @GetMapping
@@ -26,7 +30,19 @@ public class ThreadController {
         List<ThreadDto> threads = threadService.getAllThreads().stream()
                 .map(threadMapper::toDto)
                 .toList();
-        return ResponseEntity.ok(threads);
+        return threads.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(threads);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@AuthenticationPrincipal UserDetails userDetails){
+        List<ThreadDto> threads = threadService.getAllThreadsByUserId(userDetails.getUsername())
+                .stream().map(threadMapper::toDto)
+                .toList();
+        return threads.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(threads);
     }
 
     @GetMapping("/{threadId}")
@@ -35,12 +51,6 @@ public class ThreadController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(threadService.getAllThreadsByUserId(userId));
-    }
-
 
     @PatchMapping("/{threadId}")
     public ResponseEntity<ThreadDto> updateThread(@PathVariable String threadId, @RequestBody ThreadDto threadDto) {
@@ -55,3 +65,4 @@ public class ThreadController {
         return ResponseEntity.notFound().build();
     }
 }
+

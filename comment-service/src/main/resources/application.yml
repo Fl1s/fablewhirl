@@ -1,0 +1,39 @@
+server:
+  port: 8085
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/fablewhirl-realm
+
+  docker:
+    compose:
+      file: ./comment-service/docker-compose.yaml
+  application:
+    name: thread-service
+
+  data:
+    mongodb:
+      uri: mongodb://admin:secret@localhost:27020/comment_data
+
+minio:
+  bucket:
+    name: users
+  url: http://localhost:9000
+  root-user: admin
+  root-password: secret123
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8095/eureka/

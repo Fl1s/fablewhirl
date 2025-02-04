@@ -1,13 +1,11 @@
 package org.fablewhirl.user.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.dto.UserCreateEditDto;
 import org.fablewhirl.user.dto.UserReadDto;
 import org.fablewhirl.user.mapper.UserReadMapper;
 import org.fablewhirl.user.service.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,33 +24,33 @@ public class UserController {
         List<UserReadDto> users = userService.getAll().stream()
                 .map(userReadMapper::toDto)
                 .toList();
-        return ResponseEntity.ok(users);
+        return users.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserReadDto> getUserById(
-            @PathVariable @NotBlank String id) {
-        UserReadDto user = userService.getUserById(id);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserReadDto> getUserById(@PathVariable String id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserCreateEditDto> updateUser(
-            @PathVariable @NotBlank String id,
-            @Valid @RequestBody UserCreateEditDto userRegistrationDto) {
-
-        return ResponseEntity.ok(userService.updateUser(id, userRegistrationDto));
+    public ResponseEntity<UserReadDto> updateUser(@PathVariable String id,
+                                                  @Valid @RequestBody UserCreateEditDto userEditDto) {
+        UserReadDto updatedUser = userService.updateUser(id, userEditDto);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable @NotBlank String id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+        if (userService.existsById(id)) {
+            userService.deleteUser(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
+
+
 
 

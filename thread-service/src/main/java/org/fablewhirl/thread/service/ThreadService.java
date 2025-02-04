@@ -9,7 +9,6 @@ import org.fablewhirl.thread.repository.ThreadRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,11 +30,8 @@ public class ThreadService {
         return threadRepository.findAll();
     }
 
-    public List<ThreadDto> getAllThreadsByUserId(String userId) {
-        List<ThreadEntity> threads = threadRepository.findByUserId(userId);
-        return threads.stream()
-                .map(threadMapper::toDto)
-                .toList();
+    public List<ThreadEntity> getAllThreadsByUserId(String userId) {
+        return threadRepository.findByUserId(userId);
     }
 
     public Optional<ThreadDto> getThreadById(String threadId) {
