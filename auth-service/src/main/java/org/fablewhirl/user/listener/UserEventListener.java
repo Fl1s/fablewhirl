@@ -17,7 +17,7 @@ public class UserEventListener {
 
     private final KafkaTemplate<String, UserRegisteredEvent> userRegisteredTemplate;
     // private final KafkaTemplate<String, CheckUserExistenceEvent> userExistenceTemplate;
-    private final KafkaTemplate<String, UserLoginEvent> userLoginTemplate;
+    //  private final KafkaTemplate<String, UserLoginEvent> userLoginTemplate;
     private final AuthService authService;
 
     @KafkaListener(topics = "user-registration", groupId = "auth-service")

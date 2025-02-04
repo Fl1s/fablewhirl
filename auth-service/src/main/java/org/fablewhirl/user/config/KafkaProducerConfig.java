@@ -9,17 +9,18 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Value;
+import org.fablewhirl.user.event.UserRegisteredEvent;
+import org.fablewhirl.user.event.CheckUserExistenceEvent;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.fablewhirl.user.event.UserRegisteredEvent;
-import org.fablewhirl.user.event.CheckUserExistenceEvent;
 
 @Configuration
 public class KafkaProducerConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
+
     private Map<String, Object> producerConfig() {
         HashMap<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);

@@ -26,10 +26,10 @@ public class AuthService {
     @Value("${keycloak.realm}")
     private String keycloakRealm;
 
-    @Value("${keycloak.client-id}")
+    @Value("${keycloak.credentials.client-id}")
     private String keycloakClientId;
 
-    @Value("${keycloak.client-secret}")
+    @Value("${keycloak.credentials.secret}")
     private String keycloakClientSecret;
 
     private Keycloak getAdminKeycloakInstance() {
