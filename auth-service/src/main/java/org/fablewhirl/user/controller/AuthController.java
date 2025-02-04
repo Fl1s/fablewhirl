@@ -3,7 +3,7 @@ package org.fablewhirl.user.controller;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.event.UserLoginEvent;
 import org.fablewhirl.user.event.UserRegisteredEvent;
-import org.fablewhirl.user.listener.UserEventListener;
+import org.fablewhirl.user.listener.AuthEventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserEventListener userEventListener;
+    private final AuthEventListener userEventListener;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserRegisteredEvent event) {
