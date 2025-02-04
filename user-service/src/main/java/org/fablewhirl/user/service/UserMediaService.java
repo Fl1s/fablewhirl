@@ -24,36 +24,24 @@ public class UserMediaService {
     @Value("${minio.bucket.name}")
     private String bucketName;
 
-    public void uploadAvatar(String userId, MultipartFile avatarFile) throws IOException {
-        String fileName = "avatars/" + userId + "/" + avatarFile.getOriginalFilename();
+    public String uploadAvatar(String userId, MultipartFile avatarFile) {
+        String filePath = buildFilePath("avatars", userId, avatarFile);
+        uploadFileToMinio(filePath, avatarFile);
 
-        uploadToMinio(fileName, avatarFile);
-
-        UserMediaEntity mediaEntity = userMediaRepository.findByUserId(userId);
-        if (mediaEntity == null) {
-            mediaEntity = new UserMediaEntity();
-            mediaEntity.setUserId(userId);
-        }
-        mediaEntity.setAvatarUrl("/" + bucketName + "/" + fileName);
-        userMediaRepository.save(mediaEntity);
+        return updateUserMedia(userId, mediaEntity -> mediaEntity.setAvatarUrl("/" + bucketName + "/" + filePath))
+                .getAvatarUrl();
     }
 
-    public void uploadBanner(String userId, MultipartFile bannerFile) throws IOException {
-        String fileName = "banners/" + userId + "/" + bannerFile.getOriginalFilename();
+    public String uploadBanner(String userId, MultipartFile bannerFile) {
+        String filePath = buildFilePath("banners", userId, bannerFile);
+        uploadFileToMinio(filePath, bannerFile);
 
-        uploadToMinio(fileName, bannerFile);
-
-        UserMediaEntity mediaEntity = userMediaRepository.findByUserId(userId);
-        if (mediaEntity == null) {
-            mediaEntity = new UserMediaEntity();
-            mediaEntity.setUserId(userId);
-        }
-        mediaEntity.setBannerUrl("/" + bucketName + "/" + fileName);
-        userMediaRepository.save(mediaEntity);
+        return updateUserMedia(userId, mediaEntity -> mediaEntity.setBannerUrl("/" + bucketName + "/" + filePath))
+                .getBannerUrl();
     }
 
     public String getAvatarUrl(String userId) {
-        UserMediaEntity mediaEntity = userMediaRepository.findByUserId(userId);
+        UserMediaEntity mediaEntity = getUserMedia(userId);
         if (mediaEntity == null || mediaEntity.getAvatarUrl() == null) {
             throw new IllegalArgumentException("Avatar not found for user: " + userId);
         }
@@ -61,27 +49,51 @@ public class UserMediaService {
     }
 
     public String getBannerUrl(String userId) {
-        UserMediaEntity mediaEntity = userMediaRepository.findByUserId(userId);
+        UserMediaEntity mediaEntity = getUserMedia(userId);
         if (mediaEntity == null || mediaEntity.getBannerUrl() == null) {
             throw new IllegalArgumentException("Banner not found for user: " + userId);
         }
         return mediaEntity.getBannerUrl();
     }
 
-    private void uploadToMinio(String fileName, MultipartFile file) throws IOException {
+    private void uploadFileToMinio(String filePath, MultipartFile file) {
         try {
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(bucketName)
-                            .object(fileName)
+                            .object(filePath)
                             .stream(file.getInputStream(), file.getSize(), -1)
                             .contentType(file.getContentType())
                             .build()
             );
         } catch (MinioException e) {
             throw new RuntimeException("Failed to upload file to MinIO: " + e.getMessage(), e);
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new RuntimeException(e);
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException e) {
+            throw new RuntimeException("File upload error: " + e.getMessage(), e);
         }
+    }
+
+    private String buildFilePath(String type, String userId, MultipartFile file) {
+        if (file.getOriginalFilename() == null) {
+            throw new IllegalArgumentException("File must have a name");
+        }
+        return String.format("%s/%s/%s", type, userId, file.getOriginalFilename());
+    }
+
+    private UserMediaEntity updateUserMedia(String userId, java.util.function.Consumer<UserMediaEntity> updater) {
+        UserMediaEntity mediaEntity = userMediaRepository.findByUserId(userId);
+
+        if (mediaEntity == null) {
+            mediaEntity = new UserMediaEntity();
+        }
+
+        updater.accept(mediaEntity);
+        mediaEntity.setUserId(userId);
+
+        return userMediaRepository.save(mediaEntity);
+    }
+
+    private UserMediaEntity getUserMedia(String userId) {
+        return userMediaRepository.findByUserId(userId);
     }
 }

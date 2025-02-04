@@ -1,68 +1,61 @@
 package org.fablewhirl.user.controller;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.service.UserMediaService;
-import org.fablewhirl.user.service.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @RestController
-@RequestMapping("/api/v1/users/{userId}/media")
+@RequestMapping("/api/v1/users/me/media")
 @RequiredArgsConstructor
 public class MediaController {
 
     private final UserMediaService userMediaService;
-    private final UserService userService;
 
-    @PatchMapping("/uploadAvatar")
-    public ResponseEntity<Void> uploadAvatar(
-            @PathVariable @NotBlank String userId,
-            @RequestParam("file") @NotNull MultipartFile file) {
-
-        if (!file.getContentType().startsWith("image") || !userService.existsById(userId)) {
-            return ResponseEntity.badRequest().build();
-        }
+    @PatchMapping("/avatar")
+    public ResponseEntity<String> uploadAvatar(@AuthenticationPrincipal UserDetails userDetails,
+                                               @RequestParam("file") MultipartFile file) {
+        String userId = userDetails.getUsername();
 
         try {
-            userMediaService.uploadAvatar(userId, file);
-            return ResponseEntity.ok().build();
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            String avatarUrl = userMediaService.uploadAvatar(userId, file);
+            return ResponseEntity.ok(avatarUrl);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid file format or size.");
         }
     }
 
-    @PatchMapping("/uploadBanner")
-    public ResponseEntity<Void> uploadBanner(
-            @PathVariable @NotBlank String userId,
-            @RequestParam("file") @NotNull MultipartFile file) {
-
-        if (!file.getContentType().startsWith("image") || !userService.existsById(userId)) {
-            return ResponseEntity.badRequest().build();
-        }
+    @PatchMapping("/banner")
+    public ResponseEntity<String> uploadBanner(@AuthenticationPrincipal UserDetails userDetails,
+                                               @RequestParam("file") MultipartFile file) {
+        String userId = userDetails.getUsername();
 
         try {
-            userMediaService.uploadBanner(userId, file);
-            return ResponseEntity.ok().build();
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            String bannerUrl = userMediaService.uploadBanner(userId, file);
+            return ResponseEntity.ok(bannerUrl);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid file format or size.");
         }
     }
 
-    @GetMapping("/getAvatar")
-    public ResponseEntity<String> getAvatar(@PathVariable @NotBlank String userId) {
-        return ResponseEntity.ok(userMediaService.getAvatarUrl(userId));
+    @GetMapping("/avatar")
+    public ResponseEntity<String> getAvatar(@AuthenticationPrincipal UserDetails userDetails) {
+        String userId = userDetails.getUsername();
+        String avatarUrl = userMediaService.getAvatarUrl(userId);
+        return ResponseEntity.ok(avatarUrl);
     }
 
-    @GetMapping("/getBanner")
-    public ResponseEntity<String> getBanner(@PathVariable @NotBlank String userId) {
-        return ResponseEntity.ok(userMediaService.getBannerUrl(userId));
+    @GetMapping("/banner")
+    public ResponseEntity<String> getBanner(@AuthenticationPrincipal UserDetails userDetails) {
+        String userId = userDetails.getUsername();
+        String bannerUrl = userMediaService.getBannerUrl(userId);
+        return ResponseEntity.ok(bannerUrl);
     }
 }
+
+
 
 

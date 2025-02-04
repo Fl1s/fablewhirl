@@ -21,6 +21,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url "https://repository.jboss.org/nexus/content/groups/public/" }
 }
 
 ext {
@@ -34,7 +35,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.kafka:spring-kafka'
-	implementation 'org.keycloak:keycloak-spring-boot-starter:25.0.3'
+	implementation 'org.keycloak:keycloak-admin-client:24.0.5'
+	implementation 'org.keycloak:keycloak-spring-boot-starter:24.0.5'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-security:3.4.2'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'

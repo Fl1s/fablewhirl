@@ -1,5 +1,6 @@
 package org.fablewhirl.user.config;
 
+import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -32,5 +33,9 @@ public class SecurityConfig {
                         .jwt(Customizer.withDefaults())
                 );
         return http.build();
+    }
+    @Bean
+    public KeycloakAuthenticationProvider keycloakAuthenticationProvider() {
+        return new KeycloakAuthenticationProvider();
     }
 }

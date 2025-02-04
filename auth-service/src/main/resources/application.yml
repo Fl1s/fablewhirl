@@ -20,6 +20,7 @@ keycloak:
   auth-server-url: http://localhost:9090/realms/fablewhirl-realm/protocol/openid-connect/auth
   resource: auth-service
   credentials:
+    id: asdas
     secret: KtBLS3ANnpNAdcwJmYXC5jvRrxjviexX
   use-resource-role-mappings: true
 
