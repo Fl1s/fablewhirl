@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -32,11 +33,13 @@ public class AuthService {
     @Value("${keycloak.credentials.secret}")
     private String keycloakClientSecret;
 
+    private static final Logger logger = Logger.getLogger(AuthService.class.getName());
+
     private Keycloak getAdminKeycloakInstance() {
         return KeycloakBuilder.builder()
                 .serverUrl(keycloakAuthServerUrl)
-                .realm("fablewhirl-realm")
                 .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+                .realm(keycloakRealm)
                 .clientId(keycloakClientId)
                 .clientSecret(keycloakClientSecret)
                 .build();
@@ -67,6 +70,8 @@ public class AuthService {
         RoleRepresentation userRole = realmResource.roles().get("user").toRepresentation();
         keycloak.realm(keycloakRealm).users().get(userId)
                 .roles().realmLevel().add(Collections.singletonList(userRole));
+
+        logger.info("User successfully registered in Keycloak: " + username);
     }
 
     public AccessTokenResponse authenticateUser(String username, String password) {
@@ -80,6 +85,19 @@ public class AuthService {
                 .password(password)
                 .build();
 
-        return keycloak.tokenManager().getAccessToken();
+        AccessTokenResponse accessTokenResponse = keycloak.tokenManager().getAccessToken();
+        String accessToken = accessTokenResponse.getToken();
+        String refreshToken = keycloak.tokenManager().refreshToken().getToken(); // Получаем refresh token
+
+        logger.info("Generated tokens: Access Token (valid for 1 week), Refresh Token (valid for 15 minutes)");
+
+        AccessTokenResponse response = new AccessTokenResponse();
+        response.setToken(accessToken);
+        response.setExpiresIn(604800);
+
+        response.setRefreshToken(refreshToken);
+        response.setRefreshExpiresIn(900);
+        return response;
     }
+
 }

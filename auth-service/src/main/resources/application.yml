@@ -17,11 +17,11 @@ spring:
 
 keycloak:
   realm: fablewhirl-realm
-  auth-server-url: http://localhost:9090
+  auth-server-url: http://localhost:9090/
   resource: auth-service
   credentials:
     client-id: auth-service
-    secret: kI9Rq7A89BHlQs1R4dxmZxmeeweNg2IR
+    secret: bdVNxGsj6y46bzfacfv7YiXqQIThkIYJ
   use-resource-role-mappings: true
 
 eureka:

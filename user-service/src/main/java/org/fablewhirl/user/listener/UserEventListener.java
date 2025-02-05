@@ -26,7 +26,7 @@ public class UserEventListener {
                 new UserExistenceCheckedEvent(event.getCorrelationId(), userExists)
         );
     }
-    @KafkaListener(topics = "user-registration", groupId = "user-group",
+    @KafkaListener(topics = "user-registered", groupId = "user-group",
     containerFactory = "kafkaListenerContainerFactoryUserRegistered")
     public void listenerUserRegistered(UserRegisteredEvent event) {
         userService.register(event);
