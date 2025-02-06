@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.dto.UserCreateEditDto;
 import org.fablewhirl.user.dto.UserReadDto;
 import org.fablewhirl.user.entity.UserEntity;
-import org.fablewhirl.user.event.UserRegisteredEvent;
+import org.fablewhirl.user.event.UserRegistrationEvent;
 import org.fablewhirl.user.mapper.UserReadMapper;
 import org.fablewhirl.user.mapper.UserRegisteredEventMapper;
 import org.fablewhirl.user.repository.UserRepository;
@@ -26,7 +26,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void register(UserRegisteredEvent userDto) {
+    public void register(UserRegistrationEvent userDto) {
         if (existsByUsernameOrEmail(userDto.getUsername(), userDto.getEmail())) {
             throw new IllegalArgumentException("User with the same username or email already exists");
         }

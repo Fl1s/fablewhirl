@@ -19,8 +19,8 @@ public class ThreadController {
     private final ThreadMapper threadMapper;
 
     @PostMapping
-    public ResponseEntity<ThreadDto> createThread(@RequestBody ThreadDto threadDto,
-                                                  @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ThreadDto> createThread(@AuthenticationPrincipal UserDetails userDetails,
+                                                  @RequestBody ThreadDto threadDto) {
         return ResponseEntity.status(201)
                 .body(threadService.createThread(userDetails.getUsername(), threadDto));
     }

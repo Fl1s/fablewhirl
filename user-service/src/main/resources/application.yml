@@ -41,6 +41,9 @@ minio:
   root-user: admin
   root-password: secret123
 
+keycloak:
+  jwks-certs: http://localhost:9090/realms/fablewhirl-realm/protocol/openid-connect/certs
+
 eureka:
   instance:
     hostname: localhost

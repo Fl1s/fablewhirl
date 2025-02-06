@@ -11,4 +11,9 @@ public class KafkaTopicConfig {
         return TopicBuilder.name("user-existence-checked")
                 .build();
     }
+    @Bean
+    public NewTopic userRegisteredTopic() {
+        return TopicBuilder.name("user-registered")
+                .build();
+    }
 }
