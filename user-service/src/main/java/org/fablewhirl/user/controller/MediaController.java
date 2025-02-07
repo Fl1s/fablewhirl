@@ -3,23 +3,19 @@ package org.fablewhirl.user.controller;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.service.UserMediaService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/users/me/media")
+@RequestMapping("/api/v1/users/{userId}/media")
 @RequiredArgsConstructor
 public class MediaController {
 
     private final UserMediaService userMediaService;
 
     @PatchMapping("/avatar")
-    public ResponseEntity<String> uploadAvatar(@AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<String> uploadAvatar(@PathVariable String userId,
                                                @RequestParam("file") MultipartFile file) {
-        String userId = userDetails.getUsername();
-
         try {
             String avatarUrl = userMediaService.uploadAvatar(userId, file);
             return ResponseEntity.ok(avatarUrl);
@@ -29,10 +25,8 @@ public class MediaController {
     }
 
     @PatchMapping("/banner")
-    public ResponseEntity<String> uploadBanner(@AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<String> uploadBanner(@PathVariable String userId,
                                                @RequestParam("file") MultipartFile file) {
-        String userId = userDetails.getUsername();
-
         try {
             String bannerUrl = userMediaService.uploadBanner(userId, file);
             return ResponseEntity.ok(bannerUrl);
@@ -42,15 +36,13 @@ public class MediaController {
     }
 
     @GetMapping("/avatar")
-    public ResponseEntity<String> getAvatar(@AuthenticationPrincipal UserDetails userDetails) {
-        String userId = userDetails.getUsername();
+    public ResponseEntity<String> getAvatar(@PathVariable String userId) {
         String avatarUrl = userMediaService.getAvatarUrl(userId);
         return ResponseEntity.ok(avatarUrl);
     }
 
     @GetMapping("/banner")
-    public ResponseEntity<String> getBanner(@AuthenticationPrincipal UserDetails userDetails) {
-        String userId = userDetails.getUsername();
+    public ResponseEntity<String> getBanner(@PathVariable String userId ) {
         String bannerUrl = userMediaService.getBannerUrl(userId);
         return ResponseEntity.ok(bannerUrl);
     }

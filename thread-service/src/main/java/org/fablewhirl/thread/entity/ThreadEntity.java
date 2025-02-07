@@ -36,6 +36,7 @@ public class ThreadEntity {
         if (id == null || id.isEmpty()) {
             id = UUID.randomUUID().toString();
         }
+        createdAt = LocalDateTime.now();
     }
 
     @PreUpdate

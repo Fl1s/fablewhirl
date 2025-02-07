@@ -18,11 +18,11 @@ public class ThreadController {
     private final ThreadService threadService;
     private final ThreadMapper threadMapper;
 
-    @PostMapping
-    public ResponseEntity<ThreadDto> createThread(@AuthenticationPrincipal UserDetails userDetails,
+    @PostMapping("/users/{userId}")
+    public ResponseEntity<ThreadDto> createThread(@PathVariable String userId,
                                                   @RequestBody ThreadDto threadDto) {
         return ResponseEntity.status(201)
-                .body(threadService.createThread(userDetails.getUsername(), threadDto));
+                .body(threadService.createThread(userId, threadDto));
     }
 
     @GetMapping
@@ -35,9 +35,9 @@ public class ThreadController {
                 : ResponseEntity.ok(threads);
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@AuthenticationPrincipal UserDetails userDetails){
-        List<ThreadDto> threads = threadService.getAllThreadsByUserId(userDetails.getUsername())
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@PathVariable String userId){
+        List<ThreadDto> threads = threadService.getAllThreadsByUserId(userId)
                 .stream().map(threadMapper::toDto)
                 .toList();
         return threads.isEmpty()
