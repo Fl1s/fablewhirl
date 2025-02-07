@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.fablewhirl.user.event.CheckUserExistenceEvent;
-import org.fablewhirl.user.event.UserRegisteredEvent;
+import org.fablewhirl.user.event.UserRegistrationEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,12 +29,12 @@ public class KafkaConsumerConfig {
     private String bootstrapServers;
 
     @Bean
-    public ConsumerFactory<String, UserRegisteredEvent> userRegisteredEventConsumerFactory() {
-        JsonDeserializer<UserRegisteredEvent> deserializer = new JsonDeserializer<>(UserRegisteredEvent.class);
+    public ConsumerFactory<String, UserRegistrationEvent> userRegistrationEventConsumerFactory() {
+        JsonDeserializer<UserRegistrationEvent> deserializer = new JsonDeserializer<>(UserRegistrationEvent.class);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(false);
 
-        ErrorHandlingDeserializer<UserRegisteredEvent> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(deserializer);
+        ErrorHandlingDeserializer<UserRegistrationEvent> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(deserializer);
 
         Map<String, Object> consumerConfig = new HashMap<>();
         consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -61,9 +61,9 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, UserRegisteredEvent>> kafkaListenerContainerFactoryUserRegistered() {
-        ConcurrentKafkaListenerContainerFactory<String, UserRegisteredEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(userRegisteredEventConsumerFactory());
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, UserRegistrationEvent>> kafkaListenerContainerFactoryUserRegistration() {
+        ConcurrentKafkaListenerContainerFactory<String, UserRegistrationEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(userRegistrationEventConsumerFactory());
         return factory;
     }
 

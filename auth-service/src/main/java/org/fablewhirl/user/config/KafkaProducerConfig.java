@@ -9,7 +9,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Value;
-import org.fablewhirl.user.event.UserRegisteredEvent;
+import org.fablewhirl.user.event.UserRegistrationEvent;
 import org.fablewhirl.user.event.CheckUserExistenceEvent;
 
 import java.util.HashMap;
@@ -30,13 +30,13 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, UserRegisteredEvent> userRegisteredEventProducerFactory() {
+    public ProducerFactory<String, UserRegistrationEvent> userRegisterationEventProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, UserRegisteredEvent> userRegisteredEventKafkaTemplate(
-            ProducerFactory<String, UserRegisteredEvent> producerFactory) {
+    public KafkaTemplate<String, UserRegistrationEvent> userRegistrationEventKafkaTemplate(
+            ProducerFactory<String, UserRegistrationEvent> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 

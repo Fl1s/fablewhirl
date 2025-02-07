@@ -1,5 +1,6 @@
 package org.fablewhirl.user.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,13 +16,17 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Value("${keycloak.jwks-certs}")
+    String keycloakJwtCerts;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withJwkSetUri("http://localhost:9090/realms/fablewhirl-realm/protocol/openid-connect/certs")
+        return NimbusJwtDecoder.withJwkSetUri(keycloakJwtCerts)
                 .build();
     }
 

@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegisteredEvent {
+public class UserRegistrationEvent {
+    private String correlationId;
     private String username;
     private String email;
     private String password;

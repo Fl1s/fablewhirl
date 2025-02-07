@@ -16,6 +16,7 @@ spring:
     bootstrap-servers: localhost:9092
 
 keycloak:
+  jwks-certs: http://localhost:9090/realms/fablewhirl-realm/protocol/openid-connect/certs
   realm: fablewhirl-realm
   auth-server-url: http://localhost:9090/
   resource: auth-service
