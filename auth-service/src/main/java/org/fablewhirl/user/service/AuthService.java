@@ -61,6 +61,7 @@ public class AuthService {
         }
 
         user.getAttributes().put("userId", Collections.singletonList(userId));
+        user.getAttributes().put("username", Collections.singletonList(username));
 
         Response response = usersResource.create(user);
         if (response.getStatus() != 201) {
