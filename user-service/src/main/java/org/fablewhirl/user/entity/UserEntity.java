@@ -18,7 +18,7 @@ import java.util.UUID;
 @Table(name = "user_info")
 public class UserEntity {
     @Id
-    private String id;
+    private String userId;
 
     @NotNull
     @Size(min = 3, max = 50)
@@ -35,7 +35,7 @@ public class UserEntity {
     private String bio;
 
     @NotNull
-    private String roles = "USER";
+    private String roles = "user";
 
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
@@ -43,8 +43,8 @@ public class UserEntity {
     @PrePersist
     public void prePersist() {
         createdDate = LocalDateTime.now();
-        if (id == null || id.isEmpty()) {
-            id = UUID.randomUUID().toString();
+        if (userId == null || userId.isEmpty()) {
+            userId = UUID.randomUUID().toString();
         }
     }
 

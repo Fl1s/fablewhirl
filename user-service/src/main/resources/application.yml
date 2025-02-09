@@ -12,9 +12,6 @@ spring:
         jwt:
           issuer-uri: http://localhost:9090/realms/fablewhirl-realm
 
-  docker:
-    compose:
-      file: ./user-service/docker-compose.yaml
   application:
     name: user-service
 

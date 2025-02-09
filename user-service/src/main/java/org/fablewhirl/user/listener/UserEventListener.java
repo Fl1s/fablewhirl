@@ -1,8 +1,10 @@
 package org.fablewhirl.user.listener;
 
 import lombok.RequiredArgsConstructor;
+import org.fablewhirl.user.entity.UserEntity;
 import org.fablewhirl.user.event.CheckUserExistenceEvent;
 import org.fablewhirl.user.event.UserExistenceCheckedEvent;
+import org.fablewhirl.user.event.UserRegisteredEvent;
 import org.fablewhirl.user.event.UserRegistrationEvent;
 import org.fablewhirl.user.service.UserService;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserEventListener {
     private final UserService userService;
     private final KafkaTemplate<String, UserExistenceCheckedEvent> userCheckedTemplate;
+    private final KafkaTemplate<String, UserRegisteredEvent> userRegisteredTemplate;
 
     @KafkaListener(topics = "check-user-existence", groupId = "user-service",
             containerFactory = "kafkaListenerContainerFactoryCheckUserExistence"
@@ -29,5 +32,17 @@ public class UserEventListener {
     containerFactory = "kafkaListenerContainerFactoryUserRegistration")
     public void listenerUserRegistration(UserRegistrationEvent event) {
         userService.register(event);
+
+        UserRegisteredEvent user =userService.getUserByUsername(event.getUsername());
+        userRegisteredTemplate.send(
+                "user-registered",
+                new UserRegisteredEvent(
+                        event.getCorrelationId(),
+                        user.getUserId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        event.getPassword()
+                )
+        );
     }
 }

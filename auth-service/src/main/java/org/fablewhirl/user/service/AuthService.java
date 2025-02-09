@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 @Service
@@ -45,7 +46,7 @@ public class AuthService {
                 .build();
     }
 
-    public void registerUser(String username, String email, String password) {
+    public void registerUser(String userId, String username, String email, String password) {
         Keycloak keycloak = getAdminKeycloakInstance();
         RealmResource realmResource = keycloak.realm(keycloakRealm);
         UsersResource usersResource = realmResource.users();
@@ -55,11 +56,23 @@ public class AuthService {
         user.setEmail(email);
         user.setEnabled(true);
 
+        if (user.getAttributes() == null) {
+            user.setAttributes(new HashMap<>());
+        }
+
+        user.getAttributes().put("userId", Collections.singletonList(userId));
+
         Response response = usersResource.create(user);
         if (response.getStatus() != 201) {
+            if (response.getStatus() == 409) {
+                throw new RuntimeException("User with this username or email already exists in Keycloak.");
+            }
             throw new RuntimeException("Failed to create user in Keycloak: " + response.getStatusInfo());
         }
-        String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
+
+        if (response.getStatus() == 201) {
+            userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
+        }
 
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setTemporary(false);
@@ -71,7 +84,7 @@ public class AuthService {
         keycloak.realm(keycloakRealm).users().get(userId)
                 .roles().realmLevel().add(Collections.singletonList(userRole));
 
-        logger.info("User successfully registered in Keycloak: " + username);
+        logger.info("User successfully registered in Keycloak: " + username + " with userId: " + userId);
     }
 
     public AccessTokenResponse authenticateUser(String username, String password) {
@@ -87,7 +100,7 @@ public class AuthService {
 
         AccessTokenResponse accessTokenResponse = keycloak.tokenManager().getAccessToken();
         String accessToken = accessTokenResponse.getToken();
-        String refreshToken = keycloak.tokenManager().refreshToken().getToken(); // Получаем refresh token
+        String refreshToken = keycloak.tokenManager().refreshToken().getToken();
 
         logger.info("Generated tokens: Access Token (valid for 1 week), Refresh Token (valid for 15 minutes)");
 
