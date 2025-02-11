@@ -22,7 +22,7 @@ keycloak:
   resource: auth-service
   credentials:
     client-id: auth-service
-    secret: bdVNxGsj6y46bzfacfv7YiXqQIThkIYJ
+    secret: A6YFJ8fhZVbEMg26stWF8S6dpYYHByCz
   use-resource-role-mappings: true
 
 eureka:

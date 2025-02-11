@@ -1,7 +1,7 @@
 package org.fablewhirl.user.mapper;
 
 import org.fablewhirl.user.entity.UserEntity;
-import org.fablewhirl.user.event.UserRegistrationEvent;
+import org.fablewhirl.user.event.UserRegisteredEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
@@ -9,9 +9,9 @@ import org.mapstruct.MappingTarget;
         componentModel = "spring"
 )
 public interface UserRegisteredEventMapper {
-    UserEntity toEntity(UserRegistrationEvent userRegisteredEvent);
-    UserRegistrationEvent toDto(UserEntity userEntity);
+    UserEntity toEntity(UserRegisteredEvent userRegisteredEvent);
+    UserRegisteredEvent toDto(UserEntity userEntity);
 
-    void updateEntityFromDto(UserRegistrationEvent userRegisteredEvent, @MappingTarget UserEntity userEntity);
+    void updateEntityFromDto(UserRegisteredEvent userRegisteredEvent, @MappingTarget UserEntity userEntity);
 
 }

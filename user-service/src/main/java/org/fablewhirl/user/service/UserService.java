@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.dto.UserCreateEditDto;
 import org.fablewhirl.user.dto.UserReadDto;
 import org.fablewhirl.user.entity.UserEntity;
+import org.fablewhirl.user.event.UserRegisteredEvent;
 import org.fablewhirl.user.event.UserRegistrationEvent;
 import org.fablewhirl.user.mapper.UserReadMapper;
 import org.fablewhirl.user.mapper.UserRegisteredEventMapper;
+import org.fablewhirl.user.mapper.UserRegistrationEventMapper;
 import org.fablewhirl.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserRegistrationEventMapper userRegistrationEventMapper;
     private final UserRegisteredEventMapper userRegisteredEventMapper;
     private final UserReadMapper userReadMapper;
     private final PasswordEncoder passwordEncoder;
@@ -31,7 +34,7 @@ public class UserService {
             throw new IllegalArgumentException("User with the same username or email already exists");
         }
 
-        UserEntity user = userRegisteredEventMapper.toEntity(userDto);
+        UserEntity user = userRegistrationEventMapper.toEntity(userDto);
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userRepository.save(user);
     }
@@ -48,6 +51,10 @@ public class UserService {
         return userRepository.findById(id)
                 .map(userReadMapper::toDto)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+    public UserRegisteredEvent getUserByUsername(String username){
+        return userRepository.findByUsername(username)
+                .map(userRegisteredEventMapper::toDto).orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
     public List<UserEntity> getAll() {

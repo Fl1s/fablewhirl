@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserExistenceCheckedEvent {
+public class UserRegisteredEvent {
     private String correlationId;
+    private String userId;
     private boolean userExists;
 }
-

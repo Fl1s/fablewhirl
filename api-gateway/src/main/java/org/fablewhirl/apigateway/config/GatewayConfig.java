@@ -20,7 +20,6 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                // Swagger UI Aggregate Paths
                 .route("auth_service_docs", r -> r.path("/aggregate/auth-service/v3/api-docs")
                         .filters(f -> f.rewritePath("/aggregate/auth-service/v3/api-docs", "/v3/api-docs"))
                         .uri("http://localhost:8081"))

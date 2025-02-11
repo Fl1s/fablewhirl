@@ -18,15 +18,15 @@ import java.util.UUID;
 @Table(name = "user_info")
 public class UserEntity {
     @Id
-    private String id;
-
-    @NotNull
-    @Size(min = 3, max = 50)
-    private String username;
+    private String userId;
 
     @NotNull
     @Email
     private String email;
+
+    @NotNull
+    @Size(min = 3, max = 50)
+    private String username;
 
     @NotNull
     @Size(min = 8)
@@ -35,16 +35,16 @@ public class UserEntity {
     private String bio;
 
     @NotNull
-    private String roles = "USER";
+    private String roles = "user";
 
-    private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
+    private LocalDateTime createdDate;
 
     @PrePersist
     public void prePersist() {
         createdDate = LocalDateTime.now();
-        if (id == null || id.isEmpty()) {
-            id = UUID.randomUUID().toString();
+        if (userId == null || userId.isEmpty()) {
+            userId = UUID.randomUUID().toString();
         }
     }
 
