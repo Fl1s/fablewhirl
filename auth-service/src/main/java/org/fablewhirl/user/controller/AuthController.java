@@ -9,6 +9,8 @@ import org.fablewhirl.user.listener.AuthEventListener;
 import org.fablewhirl.user.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,7 @@ import java.util.UUID;
 public class AuthController {
     private final AuthEventListener userEventListener;
     private final AuthService authService;
+    private final JwtDecoder jwtDecoder;
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
@@ -35,9 +38,15 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody UserLogoutEvent event) {
-        event.setCorrelationId(UUID.randomUUID().toString());
-        return authService.logoutUser(event.getUserId());
+    public ResponseEntity<?> logout() {
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            authService.logoutUser(jwt.getSubject());
+            return ResponseEntity.ok("[User successfully logged out from all sessions.]");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(400).body("[Invalid token format.]");
+        }
     }
 
     @PostMapping("/remove-user")
@@ -47,3 +56,5 @@ public class AuthController {
         return ResponseEntity.ok("[User with ID: " + event.getUserId() + "successfully removed!]");
     }
 }
+
+
