@@ -12,10 +12,11 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
@@ -84,7 +85,6 @@ public class AuthService {
         return userId;
     }
 
-
     public AccessTokenResponse authenticateUser(String username, String password) {
         Keycloak keycloak = KeycloakBuilder.builder()
                 .serverUrl(keycloakAuthServerUrl)
@@ -112,25 +112,6 @@ public class AuthService {
         response.setRefreshToken(refreshToken);
         response.setRefreshExpiresIn(900);
         return response;
-    }
-
-    public void logoutUser(String refreshToken) {
-        String logoutUrl = keycloakAuthServerUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/logout";
-
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("client_id", keycloakClientId);
-        formData.add("client_secret", keycloakClientSecret);
-        formData.add("refresh_token", refreshToken);
-
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.postForEntity(logoutUrl, formData, String.class);
-
-        if (response.getStatusCode().is2xxSuccessful()) {
-            logger.info("[User successfully logged out.]");
-        } else {
-            logger.warning("Logout failed: " + response.getStatusCode() + " " + response.getBody() + "]");
-            throw new RuntimeException("Logout failed: " + response.getStatusCode() + "]");
-        }
     }
 
     public void removeUser(String userId) {

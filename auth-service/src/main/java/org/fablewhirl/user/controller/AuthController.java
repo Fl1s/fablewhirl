@@ -18,10 +18,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final JwtDecoder jwtDecoder;
-
     private final AuthEventListener userEventListener;
-    private final AuthService authService;
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
@@ -35,14 +32,6 @@ public class AuthController {
         event.setCorrelationId(UUID.randomUUID().toString());
         return userEventListener.handleUserLogin(event);
     }
-
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody UserLogoutEvent event) {
-        event.setCorrelationId(UUID.randomUUID().toString());
-        authService.logoutUser(event.getRefreshToken());
-        return ResponseEntity.ok("[User is successfully logged out!]");
-    }
-
 
     @PostMapping("/remove-user")
     public ResponseEntity<?> removeUser(@RequestBody UserRemoveEvent event) {
