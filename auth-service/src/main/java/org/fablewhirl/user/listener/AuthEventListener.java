@@ -9,6 +9,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class AuthEventListener {
     private final KafkaTemplate<String, UserRegistrationEvent> userRegistrationTemplate;
     private final KafkaTemplate<String, UserRemoveEvent> userRemoveTemplate;
     private final AuthService authService;
+    private static final Logger logger = Logger.getLogger(AuthEventListener.class.getName());
 
     public boolean handleUserRegistration(UserRegistrationEvent event) {
         try {
@@ -33,10 +35,10 @@ public class AuthEventListener {
 
             userRegistrationTemplate.send("user-registration", registrationEvent);
 
-            System.out.println("[User successfully registered! Keycloak ID: " + keycloakUserId + "]");
+            logger.info("[User successfully registered! Keycloak ID: " + keycloakUserId + "]");
             return true;
         } catch (Exception e) {
-            System.err.println("[User registration failed...]");
+            logger.severe("[User registration failed. Error: " + e.getMessage() + "]");
             e.printStackTrace();
             return false;
         }
@@ -45,21 +47,18 @@ public class AuthEventListener {
     @KafkaListener(topics = "user-registered", groupId = "auth-service",
             containerFactory = "kafkaListenerContainerFactoryUserRegistered")
     public void finalizeRegistration(UserRegisteredEvent event) {
-        try {
-            if (event.isUserExists()) {
-                System.out.println("[User successfully registered with ID: " + event.getUserId() + "]");
-            }
-        } catch (Exception e) {
-            System.err.println("[Failed to register user in Keycloak]");
-            e.printStackTrace();
+        if (event.isUserExists()) {
+            logger.info("[User successfully registered with ID: " + event.getUserId() + "]");
         }
     }
 
     public ResponseEntity<?> handleUserLogin(UserLoginEvent event) {
         try {
             AccessTokenResponse tokenResponse = authService.authenticateUser(event.getUsername(), event.getPassword());
+            logger.info("[User login successful! Access token generated.]");
             return ResponseEntity.ok(tokenResponse);
         } catch (Exception e) {
+            logger.severe("[User login failed. Error: " + e.getMessage() + "]");
             return ResponseEntity.status(401).build();
         }
     }
@@ -67,9 +66,9 @@ public class AuthEventListener {
     public void handleUserRemove(UserRemoveEvent event) {
         try {
             userRemoveTemplate.send("user-remove", event);
-            ResponseEntity.ok("[User logged out successfully!]");
+            logger.info("[User logged out successfully!]");
         } catch (Exception e) {
-            ResponseEntity.status(500).body("[Logout failed: " + e.getMessage() + "]");
+            logger.severe("[Logout failed. Error: " + e.getMessage() + "]");
         }
     }
 
@@ -79,9 +78,11 @@ public class AuthEventListener {
         try {
             if (!event.isUserExists()) {
                 authService.removeUser(event.getUserId());
+                logger.info("[User with ID: " + event.getUserId() + " successfully removed.]");
             }
             return ResponseEntity.ok("[User logged out successfully!]");
         } catch (Exception e) {
+            logger.severe("[Logout failed. Error: " + e.getMessage() + "]");
             return ResponseEntity.status(500).body("[Logout failed: " + e.getMessage() + "]");
         }
     }

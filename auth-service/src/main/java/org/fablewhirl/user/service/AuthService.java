@@ -38,6 +38,7 @@ public class AuthService {
     private static final Logger logger = Logger.getLogger(AuthService.class.getName());
 
     private Keycloak getAdminKeycloakInstance() {
+        logger.info("[Creating Keycloak admin instance.]");
         return KeycloakBuilder.builder()
                 .serverUrl(keycloakAuthServerUrl)
                 .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
@@ -48,6 +49,7 @@ public class AuthService {
     }
 
     public String registerUser(String username, String email, String password) {
+        logger.info("[Attempting to register user: " + username + "]");
         Keycloak keycloak = getAdminKeycloakInstance();
         RealmResource realmResource = keycloak.realm(keycloakRealm);
         UsersResource usersResource = realmResource.users();
@@ -60,9 +62,11 @@ public class AuthService {
         Response response = usersResource.create(user);
         if (response.getStatus() != 201) {
             if (response.getStatus() == 409) {
-                throw new RuntimeException("User with this username or email already exists in Keycloak.");
+                logger.warning("[User with this username or email already exists: " + username + "]");
+                throw new RuntimeException("[User with this username or email already exists in Keycloak.]");
             }
-            throw new RuntimeException("Failed to create user in Keycloak: " + response.getStatusInfo());
+            logger.severe("[Failed to create user in Keycloak: " + response.getStatusInfo() + "]");
+            throw new RuntimeException("[Failed to create user in Keycloak: " + response.getStatusInfo() + "]");
         }
 
         String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
@@ -77,11 +81,12 @@ public class AuthService {
         keycloak.realm(keycloakRealm).users().get(userId)
                 .roles().realmLevel().add(Collections.singletonList(userRole));
 
-        logger.info("User successfully registered in Keycloak with ID: " + userId);
+        logger.info("[User successfully registered in Keycloak with ID: " + userId + "]");
         return userId;
     }
 
     public AccessTokenResponse authenticateUser(String username, String password) {
+        logger.info("[Authenticating user: " + username + "]");
         Keycloak keycloak = KeycloakBuilder.builder()
                 .serverUrl(keycloakAuthServerUrl)
                 .realm(keycloakRealm)
@@ -111,18 +116,20 @@ public class AuthService {
     }
 
     public ResponseEntity<?> logoutUser(String userId) {
+        logger.info("[Logging out user with ID: " + userId + "]");
         Keycloak keycloak = getAdminKeycloakInstance();
         try {
             UserResource userResource = keycloak.realm(keycloakRealm).users().get(userId);
             userResource.logout();
-            logger.info("User with ID " + userId + " has been logged out from all sessions.");
+            logger.info("[User with ID " + userId + " has been logged out from all sessions.]");
         } catch (Exception e) {
-            logger.warning("Error while logging out user: " + e.getMessage());
+            logger.warning("[Error while logging out user with ID " + userId + ": " + e.getMessage() + "]");
         }
         return ResponseEntity.ok().build();
     }
 
     public void removeUser(String userId) {
+        logger.info("[Attempting to remove user with ID: " + userId + "]");
         Keycloak keycloak = getAdminKeycloakInstance();
         RealmResource realmResource = keycloak.realm(keycloakRealm);
         UsersResource usersResource = realmResource.users();
@@ -137,7 +144,7 @@ public class AuthService {
             }
         } catch (Exception e) {
             logger.severe("[Failed to remove user with userId: " + userId + ". Error: " + e.getMessage() + "]");
-            throw new RuntimeException("Failed to remove user from Keycloak: " + e.getMessage() + "]", e);
+            throw new RuntimeException("[Failed to remove user from Keycloak: " + e.getMessage() + "]", e);
         }
     }
 }
