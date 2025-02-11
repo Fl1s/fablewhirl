@@ -21,12 +21,12 @@ public class UserEntity {
     private String userId;
 
     @NotNull
-    @Size(min = 3, max = 50)
-    private String username;
-
-    @NotNull
     @Email
     private String email;
+
+    @NotNull
+    @Size(min = 3, max = 50)
+    private String username;
 
     @NotNull
     @Size(min = 8)
@@ -37,8 +37,8 @@ public class UserEntity {
     @NotNull
     private String roles = "user";
 
-    private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
+    private LocalDateTime createdDate;
 
     @PrePersist
     public void prePersist() {

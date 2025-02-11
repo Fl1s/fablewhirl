@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -24,16 +26,19 @@ public class AuthController {
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> signUp(@RequestBody UserRegistrationEvent event) {
+        event.setCorrelationId(UUID.randomUUID().toString());
         return ResponseEntity.ok(userEventListener.handleUserRegistration(event));
     }
 
     @PostMapping("/sign-in")
     public ResponseEntity<?> signIn(@RequestBody UserLoginEvent event) {
+        event.setCorrelationId(UUID.randomUUID().toString());
         return userEventListener.handleUserLogin(event);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody UserLogoutEvent event) {
+        event.setCorrelationId(UUID.randomUUID().toString());
         authService.logoutUser(event.getRefreshToken());
         return ResponseEntity.ok("[User is successfully logged out!]");
     }
@@ -41,6 +46,7 @@ public class AuthController {
 
     @PostMapping("/remove-user")
     public ResponseEntity<?> removeUser(@RequestBody UserRemoveEvent event) {
+        event.setCorrelationId(UUID.randomUUID().toString());
         userEventListener.handleUserRemove(event);
         return ResponseEntity.ok("[User with ID: " + event.getUserId() + "successfully removed!]");
     }

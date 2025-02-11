@@ -2,7 +2,6 @@ package org.fablewhirl.user.config;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.fablewhirl.user.event.UserExistenceCheckedEvent;
 import org.fablewhirl.user.event.UserRegisteredEvent;
 import org.fablewhirl.user.event.UserRemovedEvent;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,17 +28,6 @@ public class KafkaProducerConfig {
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
         return config;
-    }
-
-    @Bean
-    public ProducerFactory<String, UserExistenceCheckedEvent> userExistenceCheckedEventProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
-    }
-
-    @Bean
-    public KafkaTemplate<String, UserExistenceCheckedEvent> userExistenceCheckedEventKafkaTemplate(
-            ProducerFactory<String, UserExistenceCheckedEvent> producerFactory) {
-        return new KafkaTemplate<>(producerFactory);
     }
 
     @Bean

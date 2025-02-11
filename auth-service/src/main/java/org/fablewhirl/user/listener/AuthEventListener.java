@@ -25,8 +25,8 @@ public class AuthEventListener {
             UserRegistrationEvent registrationEvent = new UserRegistrationEvent(
                     event.getCorrelationId(),
                     keycloakUserId,
-                    event.getUsername(),
                     event.getEmail(),
+                    event.getUsername(),
                     event.getPassword(),
                     event.getBio()
             );

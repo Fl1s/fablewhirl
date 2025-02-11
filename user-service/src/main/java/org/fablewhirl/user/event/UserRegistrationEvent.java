@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class UserRegistrationEvent {
     private String correlationId;
     private String userId;
-    private String username;
     private String email;
+    private String username;
     private String password;
     private String bio;
 }

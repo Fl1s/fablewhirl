@@ -3,7 +3,6 @@ package org.fablewhirl.user.config;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.fablewhirl.user.event.UserExistenceCheckedEvent;
 import org.fablewhirl.user.event.UserRegisteredEvent;
 import org.fablewhirl.user.event.UserRemovedEvent;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,36 +19,13 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
 import java.util.Map;
+
 @Configuration
 @EnableKafka
 @RequiredArgsConstructor
 public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
-
-    @Bean
-    public ConsumerFactory<String, UserExistenceCheckedEvent> consumerUserExistenceCheckedFactory() {
-        JsonDeserializer<UserExistenceCheckedEvent> deserializer = new JsonDeserializer<>(UserExistenceCheckedEvent.class);
-        deserializer.addTrustedPackages("*");
-        deserializer.setUseTypeMapperForKey(false);
-
-        ErrorHandlingDeserializer<UserExistenceCheckedEvent> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(deserializer);
-
-        Map<String, Object> consumerConfig = new HashMap<>();
-        consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        consumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, errorHandlingDeserializer);
-
-        return new DefaultKafkaConsumerFactory<>(consumerConfig, new StringDeserializer(), errorHandlingDeserializer);
-    }
-
-    @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, UserExistenceCheckedEvent>> kafkaListenerContainerFactoryUserExistence(
-            ConsumerFactory<String, UserExistenceCheckedEvent> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, UserExistenceCheckedEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory);
-        return factory;
-    }
 
     @Bean
     public ConsumerFactory<String, UserRegisteredEvent> consumerUserRegisteredFactory() {
@@ -83,10 +59,6 @@ public class KafkaConsumerConfig {
 
         ErrorHandlingDeserializer<UserRemovedEvent> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(deserializer);
 
-        return consumerFactoryEnding(errorHandlingDeserializer);
-    }
-
-    private DefaultKafkaConsumerFactory<String, UserRemovedEvent> consumerFactoryEnding(ErrorHandlingDeserializer<UserRemovedEvent> errorHandlingDeserializer) {
         Map<String, Object> consumerConfig = new HashMap<>();
         consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         consumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);

@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.fablewhirl.user.event.UserRegistrationEvent;
-import org.fablewhirl.user.event.CheckUserExistenceEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,17 +48,6 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, UserRemoveEvent> userRemoveEventKafkaTemplate(
             ProducerFactory<String, UserRemoveEvent> producerFactory){
-        return new KafkaTemplate<>(producerFactory);
-    }
-
-    @Bean
-    public ProducerFactory<String, CheckUserExistenceEvent> checkUserExistenceEventProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
-    }
-
-    @Bean
-    public KafkaTemplate<String, CheckUserExistenceEvent> checkUserExistenceEventKafkaTemplate(
-            ProducerFactory<String, CheckUserExistenceEvent> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 }
