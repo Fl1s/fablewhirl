@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserLogoutEvent {
     private String correlationId;
-    private String refreshToken;
+    private String userId;
 }

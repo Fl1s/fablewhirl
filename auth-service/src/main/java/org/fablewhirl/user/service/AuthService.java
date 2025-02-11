@@ -6,6 +6,7 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -14,13 +15,8 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 @Service
@@ -112,6 +108,18 @@ public class AuthService {
         response.setRefreshToken(refreshToken);
         response.setRefreshExpiresIn(900);
         return response;
+    }
+
+    public ResponseEntity<?> logoutUser(String userId) {
+        Keycloak keycloak = getAdminKeycloakInstance();
+        try {
+            UserResource userResource = keycloak.realm(keycloakRealm).users().get(userId);
+            userResource.logout();
+            logger.info("User with ID " + userId + " has been logged out from all sessions.");
+        } catch (Exception e) {
+            logger.warning("Error while logging out user: " + e.getMessage());
+        }
+        return ResponseEntity.ok().build();
     }
 
     public void removeUser(String userId) {
