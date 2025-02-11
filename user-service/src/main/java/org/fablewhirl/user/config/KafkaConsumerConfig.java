@@ -5,6 +5,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.fablewhirl.user.event.CheckUserExistenceEvent;
 import org.fablewhirl.user.event.UserRegistrationEvent;
+import org.fablewhirl.user.event.UserRemoveEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,6 +62,22 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
+    public ConsumerFactory<String, UserRemoveEvent> UserRemoveEventConsumerFactory() {
+        JsonDeserializer<UserRemoveEvent> deserializer = new JsonDeserializer<>(UserRemoveEvent.class);
+        deserializer.addTrustedPackages("*");
+        deserializer.setUseTypeMapperForKey(false);
+
+        ErrorHandlingDeserializer<UserRemoveEvent> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(deserializer);
+
+        Map<String, Object> consumerConfig = new HashMap<>();
+        consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        consumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, errorHandlingDeserializer);
+
+        return new DefaultKafkaConsumerFactory<>(consumerConfig, new StringDeserializer(), errorHandlingDeserializer);
+    }
+
+    @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, UserRegistrationEvent>> kafkaListenerContainerFactoryUserRegistration() {
         ConcurrentKafkaListenerContainerFactory<String, UserRegistrationEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(userRegistrationEventConsumerFactory());
@@ -71,6 +88,13 @@ public class KafkaConsumerConfig {
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, CheckUserExistenceEvent>> kafkaListenerContainerFactoryCheckUserExistence() {
         ConcurrentKafkaListenerContainerFactory<String, CheckUserExistenceEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(checkUserExistenceEventConsumerFactory());
+        return factory;
+    }
+
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, UserRemoveEvent>> kafkaListenerContainerFactoryUserRemove() {
+        ConcurrentKafkaListenerContainerFactory<String, UserRemoveEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(UserRemoveEventConsumerFactory());
         return factory;
     }
 }

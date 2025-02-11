@@ -4,6 +4,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.fablewhirl.user.event.UserExistenceCheckedEvent;
 import org.fablewhirl.user.event.UserRegisteredEvent;
+import org.fablewhirl.user.event.UserRemovedEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,10 +35,6 @@ public class KafkaProducerConfig {
     public ProducerFactory<String, UserExistenceCheckedEvent> userExistenceCheckedEventProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
-    @Bean
-    public ProducerFactory<String, UserRegisteredEvent> userRegisteredEventProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
-    }
 
     @Bean
     public KafkaTemplate<String, UserExistenceCheckedEvent> userExistenceCheckedEventKafkaTemplate(
@@ -46,8 +43,25 @@ public class KafkaProducerConfig {
     }
 
     @Bean
+    public ProducerFactory<String, UserRegisteredEvent> userRegisteredEventProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+
+    @Bean
     public KafkaTemplate<String, UserRegisteredEvent> userRegisteredEventKafkaTemplate(
-            ProducerFactory<String, UserRegisteredEvent> producerFactory){
+            ProducerFactory<String, UserRegisteredEvent> producerFactory) {
+        return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean
+    public ProducerFactory<String, UserRemovedEvent> userRemovedEventProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, UserRemovedEvent> userRemovedEventKafkaTemplate(
+            ProducerFactory<String, UserRemovedEvent> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 }

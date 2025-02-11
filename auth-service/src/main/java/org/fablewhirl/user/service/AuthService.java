@@ -13,6 +13,10 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,7 +50,7 @@ public class AuthService {
                 .build();
     }
 
-    public void registerUser(String userId, String username, String email, String password) {
+    public String registerUser(String username, String email, String password) {
         Keycloak keycloak = getAdminKeycloakInstance();
         RealmResource realmResource = keycloak.realm(keycloakRealm);
         UsersResource usersResource = realmResource.users();
@@ -56,13 +60,6 @@ public class AuthService {
         user.setEmail(email);
         user.setEnabled(true);
 
-        if (user.getAttributes() == null) {
-            user.setAttributes(new HashMap<>());
-        }
-
-        user.getAttributes().put("userId", Collections.singletonList(userId));
-        user.getAttributes().put("username", Collections.singletonList(username));
-
         Response response = usersResource.create(user);
         if (response.getStatus() != 201) {
             if (response.getStatus() == 409) {
@@ -71,9 +68,7 @@ public class AuthService {
             throw new RuntimeException("Failed to create user in Keycloak: " + response.getStatusInfo());
         }
 
-        if (response.getStatus() == 201) {
-            userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
-        }
+        String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
 
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setTemporary(false);
@@ -85,8 +80,10 @@ public class AuthService {
         keycloak.realm(keycloakRealm).users().get(userId)
                 .roles().realmLevel().add(Collections.singletonList(userRole));
 
-        logger.info("User successfully registered in Keycloak: " + username + " with userId: " + userId);
+        logger.info("User successfully registered in Keycloak with ID: " + userId);
+        return userId;
     }
+
 
     public AccessTokenResponse authenticateUser(String username, String password) {
         Keycloak keycloak = KeycloakBuilder.builder()
@@ -103,15 +100,55 @@ public class AuthService {
         String accessToken = accessTokenResponse.getToken();
         String refreshToken = keycloak.tokenManager().refreshToken().getToken();
 
-        logger.info("Generated tokens: Access Token (valid for 1 week), Refresh Token (valid for 15 minutes)");
+        logger.info("[Generated tokens: Access Token (valid for 1 week), Refresh Token (valid for 15 minutes)]");
 
         AccessTokenResponse response = new AccessTokenResponse();
         response.setToken(accessToken);
         response.setExpiresIn(604800);
+        response.setNotBeforePolicy(0);
+        response.setTokenType("Bearer");
+        response.setScope("email userId username");
 
         response.setRefreshToken(refreshToken);
         response.setRefreshExpiresIn(900);
         return response;
     }
 
+    public void logoutUser(String refreshToken) {
+        String logoutUrl = keycloakAuthServerUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/logout";
+
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("client_id", keycloakClientId);
+        formData.add("client_secret", keycloakClientSecret);
+        formData.add("refresh_token", refreshToken);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.postForEntity(logoutUrl, formData, String.class);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            logger.info("[User successfully logged out.]");
+        } else {
+            logger.warning("Logout failed: " + response.getStatusCode() + " " + response.getBody() + "]");
+            throw new RuntimeException("Logout failed: " + response.getStatusCode() + "]");
+        }
+    }
+
+    public void removeUser(String userId) {
+        Keycloak keycloak = getAdminKeycloakInstance();
+        RealmResource realmResource = keycloak.realm(keycloakRealm);
+        UsersResource usersResource = realmResource.users();
+
+        try {
+            if (usersResource.get(userId).toRepresentation() != null) {
+                usersResource.delete(userId);
+                logger.info("[User with userId: " + userId + " successfully removed from Keycloak.]");
+            } else {
+                logger.warning("[User with userId: " + userId + " not found in Keycloak.]");
+                throw new RuntimeException("[User not found in Keycloak.]");
+            }
+        } catch (Exception e) {
+            logger.severe("[Failed to remove user with userId: " + userId + ". Error: " + e.getMessage() + "]");
+            throw new RuntimeException("Failed to remove user from Keycloak: " + e.getMessage() + "]", e);
+        }
+    }
 }

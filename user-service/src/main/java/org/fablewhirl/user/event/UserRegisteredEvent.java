@@ -10,7 +10,5 @@ import lombok.NoArgsConstructor;
 public class UserRegisteredEvent {
     private String correlationId;
     private String userId;
-    private String username;
-    private String email;
-    private String password;
+    private boolean userExists;
 }

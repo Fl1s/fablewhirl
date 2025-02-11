@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegisteredEvent {
+public class UserRemovedEvent {
     private String correlationId;
     private String userId;
     private boolean userExists;
