@@ -3,21 +3,23 @@ package org.fablewhirl.user.controller;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.service.UserMediaService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/users/{userId}/media")
+@RequestMapping("/api/v1/users/media")
 @RequiredArgsConstructor
 public class MediaController {
 
     private final UserMediaService userMediaService;
 
     @PatchMapping("/avatar")
-    public ResponseEntity<String> uploadAvatar(@PathVariable String userId,
+    public ResponseEntity<String> uploadAvatar(@AuthenticationPrincipal Jwt jwt,
                                                @RequestParam("file") MultipartFile file) {
         try {
-            String avatarUrl = userMediaService.uploadAvatar(userId, file);
+            String avatarUrl = userMediaService.uploadAvatar(jwt.getSubject(), file);
             return ResponseEntity.ok(avatarUrl);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Invalid file format or size.");
@@ -25,10 +27,10 @@ public class MediaController {
     }
 
     @PatchMapping("/banner")
-    public ResponseEntity<String> uploadBanner(@PathVariable String userId,
+    public ResponseEntity<String> uploadBanner(@AuthenticationPrincipal Jwt jwt,
                                                @RequestParam("file") MultipartFile file) {
         try {
-            String bannerUrl = userMediaService.uploadBanner(userId, file);
+            String bannerUrl = userMediaService.uploadBanner(jwt.getSubject(), file);
             return ResponseEntity.ok(bannerUrl);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Invalid file format or size.");
@@ -36,14 +38,14 @@ public class MediaController {
     }
 
     @GetMapping("/avatar")
-    public ResponseEntity<String> getAvatar(@PathVariable String userId) {
-        String avatarUrl = userMediaService.getAvatarUrl(userId);
+    public ResponseEntity<String> getAvatar(@AuthenticationPrincipal Jwt jwt) {
+        String avatarUrl = userMediaService.getAvatarUrl(jwt.getSubject());
         return ResponseEntity.ok(avatarUrl);
     }
 
     @GetMapping("/banner")
-    public ResponseEntity<String> getBanner(@PathVariable String userId ) {
-        String bannerUrl = userMediaService.getBannerUrl(userId);
+    public ResponseEntity<String> getBanner(@AuthenticationPrincipal Jwt jwt) {
+        String bannerUrl = userMediaService.getBannerUrl(jwt.getSubject());
         return ResponseEntity.ok(bannerUrl);
     }
 }

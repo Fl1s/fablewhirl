@@ -26,12 +26,16 @@ public class ThreadService {
         return threadMapper.toDto(threadRepository.save(entity));
     }
 
-    public List<ThreadEntity> getAllThreads() {
-        return threadRepository.findAll();
+    public List<ThreadDto> getAllThreads() {
+        return threadRepository.findAll().stream()
+                .map(threadMapper::toDto)
+                .toList();
     }
 
-    public List<ThreadEntity> getAllThreadsByUserId(String userId) {
-        return threadRepository.findByUserId(userId);
+    public List<ThreadDto> getAllThreadsByUserId(String userId) {
+        return threadRepository.findByUserId(userId).stream()
+                .map(threadMapper::toDto)
+                .toList();
     }
 
     public Optional<ThreadDto> getThreadById(String threadId) {
@@ -45,7 +49,6 @@ public class ThreadService {
         if (entity == null) {
             throw new EntityNotFoundException(threadId);
         }
-
         Optional.ofNullable(threadDto.getUserId())
                 .ifPresent(entity::setUserId);
         Optional.ofNullable(threadDto.getTitle())

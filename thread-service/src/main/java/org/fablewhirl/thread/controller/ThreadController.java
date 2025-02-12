@@ -2,11 +2,10 @@ package org.fablewhirl.thread.controller;
 
 import lombok.AllArgsConstructor;
 import org.fablewhirl.thread.dto.ThreadDto;
-import org.fablewhirl.thread.mapper.ThreadMapper;
 import org.fablewhirl.thread.service.ThreadService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,37 +15,32 @@ import java.util.List;
 @AllArgsConstructor
 public class ThreadController {
     private final ThreadService threadService;
-    private final ThreadMapper threadMapper;
 
-    @PostMapping("/users/{userId}")
-    public ResponseEntity<ThreadDto> createThread(@PathVariable String userId,
+    @PostMapping
+    public ResponseEntity<ThreadDto> createThread(@AuthenticationPrincipal Jwt jwt,
                                                   @RequestBody ThreadDto threadDto) {
         return ResponseEntity.status(201)
-                .body(threadService.createThread(userId, threadDto));
+                .body(threadService.createThread(jwt.getSubject(), threadDto));
     }
 
     @GetMapping
     public ResponseEntity<List<ThreadDto>> getAllThreads() {
-        List<ThreadDto> threads = threadService.getAllThreads().stream()
-                .map(threadMapper::toDto)
-                .toList();
+        List<ThreadDto> threads = threadService.getAllThreads();
         return threads.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(threads);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@PathVariable String userId){
-        List<ThreadDto> threads = threadService.getAllThreadsByUserId(userId)
-                .stream().map(threadMapper::toDto)
-                .toList();
+    @GetMapping("/byUser")
+    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@AuthenticationPrincipal Jwt jwt) {
+        List<ThreadDto> threads = threadService.getAllThreadsByUserId(jwt.getSubject());
         return threads.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(threads);
     }
 
     @GetMapping("/{threadId}")
-    public ResponseEntity<ThreadDto> getThread(@PathVariable String threadId) {
+    public ResponseEntity<ThreadDto> getThreadById(@PathVariable String threadId) {
         return threadService.getThreadById(threadId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

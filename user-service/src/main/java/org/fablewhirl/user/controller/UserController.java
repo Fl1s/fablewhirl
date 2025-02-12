@@ -4,9 +4,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.dto.UserCreateEditDto;
 import org.fablewhirl.user.dto.UserReadDto;
-import org.fablewhirl.user.mapper.UserReadMapper;
 import org.fablewhirl.user.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,36 +16,35 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
-    private final UserReadMapper userReadMapper;
 
     @GetMapping
     public ResponseEntity<List<UserReadDto>> getAllUsers() {
-        List<UserReadDto> users = userService.getAll().stream()
-                .map(userReadMapper::toDto)
-                .toList();
+        List<UserReadDto> users = userService.getAll();
         return users.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserReadDto> getUserById(@PathVariable String id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+    @GetMapping("/me")
+    public ResponseEntity<UserReadDto> getUserById(@AuthenticationPrincipal Jwt jwt) {
+        return userService.getUserById(jwt.getSubject())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserReadDto> updateUser(@PathVariable String id,
+    @PatchMapping()
+    public ResponseEntity<UserReadDto> updateUser(@AuthenticationPrincipal Jwt jwt,
                                                   @Valid @RequestBody UserCreateEditDto userEditDto) {
-        UserReadDto updatedUser = userService.updateUser(id, userEditDto);
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(userService.updateUser(jwt.getSubject(), userEditDto));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-        if (userService.existsById(id)) {
-            userService.deleteUser(id);
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal Jwt jwt) {
+        String userId = jwt.getSubject();
+
+        if (userService.existsById(userId)) {
+            userService.deleteUser(userId);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();

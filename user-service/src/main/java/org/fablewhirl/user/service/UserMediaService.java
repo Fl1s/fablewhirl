@@ -8,6 +8,7 @@ import org.fablewhirl.user.entity.UserMediaEntity;
 import org.fablewhirl.user.repository.UserMediaRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class UserMediaService {
     @Value("${minio.bucket.name}")
     private String bucketName;
 
+    @Transactional
     public String uploadAvatar(String userId, MultipartFile avatarFile) {
         String filePath = buildFilePath("avatars", userId, avatarFile);
         uploadFileToMinio(filePath, avatarFile);
@@ -31,7 +33,7 @@ public class UserMediaService {
         return updateUserMedia(userId, mediaEntity -> mediaEntity.setAvatarUrl("/" + bucketName + "/" + filePath))
                 .getAvatarUrl();
     }
-
+    @Transactional
     public String uploadBanner(String userId, MultipartFile bannerFile) {
         String filePath = buildFilePath("banners", userId, bannerFile);
         uploadFileToMinio(filePath, bannerFile);
@@ -55,7 +57,6 @@ public class UserMediaService {
         }
         return mediaEntity.getBannerUrl();
     }
-
     private void uploadFileToMinio(String filePath, MultipartFile file) {
         try {
             minioClient.putObject(

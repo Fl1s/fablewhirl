@@ -32,14 +32,13 @@ public class CharacterService {
     }
 
     public List<CharacterDto> getAllCharacters() {
-        List<CharacterEntity> entities = characterRepository.findAll();
-        return entities.stream()
+        return characterRepository.findAll().stream()
                 .map(characterMapper::toDto)
                 .toList();
     }
+
     public List<CharacterDto> getAllCharactersByUserId(String userId) {
-        List<CharacterEntity> entities = characterRepository.findByUserId(userId);
-        return entities.stream()
+        return characterRepository.findByUserId(userId).stream()
                 .map(characterMapper::toDto)
                 .toList();
     }
@@ -49,11 +48,12 @@ public class CharacterService {
                 .map(characterMapper::toDto);
     }
 
+    @Transactional
     public CharacterDto updateCharacter(String characterId, CharacterDto characterDto) {
         CharacterEntity character = characterRepository.findById(characterId).orElse(null);
 
         if (character == null) {
-            throw new IllegalArgumentException("Character not found");
+            throw new IllegalArgumentException("[Character not found!]");
         }
         character.setEdition(characterDto.getEdition());
         character.setTags(characterDto.getTags());
@@ -64,6 +64,7 @@ public class CharacterService {
         return characterMapper.toDto(characterRepository.save(character));
     }
 
+    @Transactional
     public boolean deleteCharacter(String characterId) {
         if (characterRepository.existsById(characterId)) {
             characterRepository.deleteById(characterId);

@@ -20,7 +20,7 @@ public class AuthEventListener {
     private final AuthService authService;
     private static final Logger logger = Logger.getLogger(AuthEventListener.class.getName());
 
-    public boolean handleUserRegistration(UserRegistrationEvent event) {
+    public void handleUserRegistration(UserRegistrationEvent event) {
         try {
             String keycloakUserId = authService.registerUser(event.getUsername(), event.getEmail(), event.getPassword());
 
@@ -36,11 +36,8 @@ public class AuthEventListener {
             userRegistrationTemplate.send("user-registration", registrationEvent);
 
             logger.info("[User successfully registered! Keycloak ID: " + keycloakUserId + "]");
-            return true;
         } catch (Exception e) {
             logger.severe("[User registration failed. Error: " + e.getMessage() + "]");
-            e.printStackTrace();
-            return false;
         }
     }
 
@@ -59,8 +56,9 @@ public class AuthEventListener {
             return ResponseEntity.ok(tokenResponse);
         } catch (Exception e) {
             logger.severe("[User login failed. Error: " + e.getMessage() + "]");
-            return ResponseEntity.status(401).build();
+            ResponseEntity.status(401).build();
         }
+        return ResponseEntity.status(401).build();
     }
 
     public void handleUserRemove(UserRemoveEvent event) {
