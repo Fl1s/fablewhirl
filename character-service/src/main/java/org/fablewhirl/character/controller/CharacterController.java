@@ -2,9 +2,13 @@ package org.fablewhirl.character.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.character.dto.CharacterDto;
+import org.fablewhirl.character.mapper.CharacterMapper;
 import org.fablewhirl.character.service.CharacterService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.ResponseEntity;
@@ -17,16 +21,28 @@ import java.util.List;
 public class CharacterController {
 
     private final CharacterService characterService;
+    private final CharacterMapper characterMapper;
 
+    @Transactional
     @PostMapping
-    public ResponseEntity<CharacterDto> createCharacter(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<CharacterDto> createCharacter(@AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.status(201)
-                .body(characterService.createCharacter(userDetails.getUsername()));
+                .body(characterService.createCharacter(jwt.getSubject()));
     }
 
     @GetMapping
-    public ResponseEntity<List<CharacterDto>> getCharacters(@AuthenticationPrincipal UserDetails userDetails) {
-        List<CharacterDto> characters = characterService.getAllCharactersByUserId(userDetails.getUsername());
+    public ResponseEntity<List<CharacterDto>> getAllCharacters() {
+        List<CharacterDto> characters = characterService.getAllCharacters().stream()
+                .map(characterMapper::toDto)
+                .toList();
+        return characters.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(characters);
+    }
+
+    @GetMapping("/byUser")
+    public ResponseEntity<List<CharacterDto>> getAllCharactersByUserId(@AuthenticationPrincipal Jwt jwt) {
+        List<CharacterDto> characters = characterService.getAllCharactersByUserId(jwt.getSubject());
         return characters.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(characters);
@@ -39,11 +55,13 @@ public class CharacterController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Transactional
     @PatchMapping("/{characterId}")
     public ResponseEntity<CharacterDto> updateCharacter(@PathVariable String characterId, @RequestBody CharacterDto updatedDto) {
         return ResponseEntity.ok(characterService.updateCharacter(characterId, updatedDto));
     }
 
+    @Transactional
     @DeleteMapping("/{characterId}")
     public ResponseEntity<Void> deleteCharacter(@PathVariable String characterId) {
         if (characterService.deleteCharacter(characterId)) {

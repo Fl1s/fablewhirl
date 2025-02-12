@@ -8,6 +8,7 @@ import org.fablewhirl.user.listener.AuthEventListener;
 import org.fablewhirl.user.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,6 @@ import java.util.UUID;
 public class AuthController {
     private final AuthEventListener userEventListener;
     private final AuthService authService;
-    private final Jwt userToken = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
@@ -33,13 +33,12 @@ public class AuthController {
     @PostMapping("/sign-in")
     public ResponseEntity<?> signIn(@RequestBody UserLoginEvent event) {
         event.setCorrelationId(UUID.randomUUID().toString());
-        userEventListener.handleUserLogin(event);
-        return ResponseEntity.ok("[User successfully signed in!]");
+        return ResponseEntity.ok(userEventListener.handleUserLogin(event));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        authService.logoutUser(userToken.getSubject());
+    public ResponseEntity<?> logout(@AuthenticationPrincipal Jwt jwt) {
+        authService.logoutUser(jwt.getSubject());
         return ResponseEntity.ok("[User successfully logged out from all sessions.]");
     }
 

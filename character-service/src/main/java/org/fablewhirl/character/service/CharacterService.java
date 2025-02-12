@@ -31,11 +31,8 @@ public class CharacterService {
         return characterMapper.toDto(characterRepository.save(character));
     }
 
-    public List<CharacterDto> getAllCharacters() {
-        List<CharacterEntity> entities = characterRepository.findAll();
-        return entities.stream()
-                .map(characterMapper::toDto)
-                .toList();
+    public List<CharacterEntity> getAllCharacters() {
+        return characterRepository.findAll();
     }
     public List<CharacterDto> getAllCharactersByUserId(String userId) {
         List<CharacterEntity> entities = characterRepository.findByUserId(userId);
@@ -53,7 +50,7 @@ public class CharacterService {
         CharacterEntity character = characterRepository.findById(characterId).orElse(null);
 
         if (character == null) {
-            throw new IllegalArgumentException("Character not found");
+            throw new IllegalArgumentException("[Character not found!]");
         }
         character.setEdition(characterDto.getEdition());
         character.setTags(characterDto.getTags());
