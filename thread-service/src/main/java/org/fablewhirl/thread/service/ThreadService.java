@@ -43,27 +43,13 @@ public class ThreadService {
                 .map(threadMapper::toDto);
     }
 
-    @Transactional
-    public ThreadDto updateThread(String threadId, ThreadDto threadDto) {
-        ThreadEntity entity = threadRepository.findById(threadId).orElse(null);
-        if (entity == null) {
-            throw new EntityNotFoundException(threadId);
-        }
-        Optional.ofNullable(threadDto.getUserId())
-                .ifPresent(entity::setUserId);
-        Optional.ofNullable(threadDto.getTitle())
-                .ifPresent(entity::setTitle);
-        Optional.ofNullable(threadDto.getContent())
-                .ifPresent(entity::setContent);
-        Optional.ofNullable(threadDto.getMedia())
-                .ifPresent(entity::setMedia);
-        Optional.ofNullable(threadDto.getComments())
-                .ifPresent(entity::setComments);
-        Optional.of(threadDto.getCommentCount())
-                .ifPresent(entity::setCommentCount);
-
-        return threadMapper.toDto(threadRepository.save(entity));
-    }
+    /*TODO 13.02.2025
+    Реализовать связь thread-service и comment-service через асинхронное взаимодействие.
+    Необходимо создать:
+    1. Добавление комментариев в массив comments.
+    2. Обновление счетчика комментариев .
+    [Рассмотри возможность реализации через кеширование или событийную архитектуру]
+     */
 
     @Transactional
     public boolean deleteThread(String threadId) {

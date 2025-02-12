@@ -26,7 +26,6 @@ public class ThreadEntity {
     private List<String> media = new ArrayList<>();
     private List<String> comments = new ArrayList<>();
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     private int commentCount = 0;
 
@@ -37,10 +36,5 @@ public class ThreadEntity {
             id = UUID.randomUUID().toString();
         }
         createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        updatedAt = LocalDateTime.now();
     }
 }
