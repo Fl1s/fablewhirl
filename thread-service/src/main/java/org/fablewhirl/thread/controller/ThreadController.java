@@ -31,14 +31,6 @@ public class ThreadController {
                 : ResponseEntity.ok(threads);
     }
 
-    @GetMapping("/byUser")
-    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@AuthenticationPrincipal Jwt jwt) {
-        List<ThreadDto> threads = threadService.getAllThreadsByUserId(jwt.getSubject());
-        return threads.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(threads);
-    }
-
     @GetMapping("/{threadId}")
     public ResponseEntity<ThreadDto> getThreadById(@PathVariable String threadId) {
         return threadService.getThreadById(threadId)
@@ -46,9 +38,12 @@ public class ThreadController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PatchMapping("/{threadId}")
-    public ResponseEntity<ThreadDto> updateThread(@PathVariable String threadId, @RequestBody ThreadDto threadDto) {
-        return ResponseEntity.ok(threadService.updateThread(threadId, threadDto));
+    @GetMapping("/byUser")
+    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@AuthenticationPrincipal Jwt jwt) {
+        List<ThreadDto> threads = threadService.getAllThreadsByUserId(jwt.getSubject());
+        return threads.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(threads);
     }
 
     @DeleteMapping("/{threadId}")

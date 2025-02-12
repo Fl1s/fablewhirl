@@ -16,7 +16,6 @@ public class ThreadDto {
     private List<String> media;
     private List<String> comments;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     private int commentCount;
 }
