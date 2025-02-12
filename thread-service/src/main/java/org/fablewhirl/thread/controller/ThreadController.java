@@ -2,7 +2,6 @@ package org.fablewhirl.thread.controller;
 
 import lombok.AllArgsConstructor;
 import org.fablewhirl.thread.dto.ThreadDto;
-import org.fablewhirl.thread.mapper.ThreadMapper;
 import org.fablewhirl.thread.service.ThreadService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ThreadController {
     private final ThreadService threadService;
-    private final ThreadMapper threadMapper;
 
     @PostMapping
     public ResponseEntity<ThreadDto> createThread(@AuthenticationPrincipal Jwt jwt,
@@ -27,26 +25,22 @@ public class ThreadController {
 
     @GetMapping
     public ResponseEntity<List<ThreadDto>> getAllThreads() {
-        List<ThreadDto> threads = threadService.getAllThreads().stream()
-                .map(threadMapper::toDto)
-                .toList();
+        List<ThreadDto> threads = threadService.getAllThreads();
         return threads.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(threads);
     }
 
     @GetMapping("/byUser")
-    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@AuthenticationPrincipal Jwt jwt){
-        List<ThreadDto> threads = threadService.getAllThreadsByUserId(jwt.getSubject())
-                .stream().map(threadMapper::toDto)
-                .toList();
+    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@AuthenticationPrincipal Jwt jwt) {
+        List<ThreadDto> threads = threadService.getAllThreadsByUserId(jwt.getSubject());
         return threads.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(threads);
     }
 
     @GetMapping("/{threadId}")
-    public ResponseEntity<ThreadDto> getThread(@PathVariable String threadId) {
+    public ResponseEntity<ThreadDto> getThreadById(@PathVariable String threadId) {
         return threadService.getThreadById(threadId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

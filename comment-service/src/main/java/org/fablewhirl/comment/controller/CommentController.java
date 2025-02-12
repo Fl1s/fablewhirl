@@ -28,9 +28,7 @@ public class CommentController {
 
     @GetMapping("/byUser")
     public ResponseEntity<List<CommentDto>> getCommentsByUserId(@AuthenticationPrincipal Jwt jwt) {
-        List<CommentDto> comments = commentService.getAllCommentsByUserId(jwt.getSubject())
-                .stream().map(commentMapper::toDto)
-                .toList();
+        List<CommentDto> comments = commentService.getAllCommentsByUserId(jwt.getSubject());
         return comments.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(comments);

@@ -52,8 +52,10 @@ public class CommentService {
         if (comment == null) {
             throw new IllegalArgumentException("[Comment not found!]");
         }
-        comment.setContent(commentDto.getContent());
-        comment.setMedia(commentDto.getMedia());
+        Optional.ofNullable(commentDto.getContent())
+                .ifPresent(comment::setContent);
+        Optional.ofNullable(commentDto.getMedia())
+                .ifPresent(comment::setMedia);
 
         return commentMapper.toDto(commentRepository.save(comment));
     }

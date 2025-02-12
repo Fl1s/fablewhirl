@@ -7,7 +7,6 @@ import org.fablewhirl.comment.service.CommentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ThreadController {
     private final CommentService commentService;
-    private final CommentMapper commentMapper;
-
     @PostMapping("/{threadId}/comments")
     public ResponseEntity<CommentDto> createComment(@AuthenticationPrincipal Jwt jwt,
                                                     @PathVariable("threadId") String threadId,
@@ -29,9 +26,7 @@ public class ThreadController {
 
     @GetMapping("/{threadId}/comments")
     public ResponseEntity<List<CommentDto>> getAllCommentsByThreadId(@PathVariable("threadId") String threadId) {
-        List<CommentDto> comments = commentService.getAllCommentsByThreadId(threadId)
-                .stream().map(commentMapper::toDto)
-                .toList();
+        List<CommentDto> comments = commentService.getAllCommentsByThreadId(threadId);
         return comments.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(comments);
