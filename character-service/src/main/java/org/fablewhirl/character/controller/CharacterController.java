@@ -19,9 +19,7 @@ import java.util.List;
 @RequestMapping("/api/v1/characters")
 @RequiredArgsConstructor
 public class CharacterController {
-
     private final CharacterService characterService;
-    private final CharacterMapper characterMapper;
 
     @Transactional
     @PostMapping
@@ -32,9 +30,7 @@ public class CharacterController {
 
     @GetMapping
     public ResponseEntity<List<CharacterDto>> getAllCharacters() {
-        List<CharacterDto> characters = characterService.getAllCharacters().stream()
-                .map(characterMapper::toDto)
-                .toList();
+        List<CharacterDto> characters = characterService.getAllCharacters();
         return characters.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(characters);

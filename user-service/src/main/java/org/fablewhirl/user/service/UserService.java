@@ -52,10 +52,6 @@ public class UserService {
                 .map(userReadMapper::toDto)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
-    public UserRegisteredEvent getUserByUsername(String username){
-        return userRepository.findByUsername(username)
-                .map(userRegisteredEventMapper::toDto).orElseThrow(() -> new IllegalArgumentException("User not found"));
-    }
 
     public List<UserEntity> getAll() {
         return userRepository.findAll();

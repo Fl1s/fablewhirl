@@ -19,7 +19,6 @@ public class ThreadController {
     private final CommentService commentService;
     private final CommentMapper commentMapper;
 
-    @Transactional
     @PostMapping("/{threadId}/comments")
     public ResponseEntity<CommentDto> createComment(@AuthenticationPrincipal Jwt jwt,
                                                     @PathVariable("threadId") String threadId,

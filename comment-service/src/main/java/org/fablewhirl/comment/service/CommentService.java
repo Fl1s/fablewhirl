@@ -29,12 +29,16 @@ public class CommentService {
         return commentMapper.toDto(commentRepository.save(entity));
     }
 
-    public List<CommentEntity> getAllCommentsByThreadId(String threadId) {
-        return commentRepository.findByThreadId(threadId);
+    public List<CommentDto> getAllCommentsByThreadId(String threadId) {
+        return commentRepository.findByThreadId(threadId).stream()
+                .map(commentMapper::toDto)
+                .toList();
     }
 
-    public List<CommentEntity> getAllCommentsByUserId(String userId) {
-        return commentRepository.findByUserId(userId);
+    public List<CommentDto> getAllCommentsByUserId(String userId) {
+        return commentRepository.findByUserId(userId).stream()
+                .map(commentMapper::toDto)
+                .toList();
     }
 
     public Optional<CommentDto> getCommentById(String commentId) {
@@ -42,6 +46,7 @@ public class CommentService {
                 .map(commentMapper::toDto);
     }
 
+    @Transactional
     public CommentDto updateComment(String commentId, CommentDto commentDto) {
         CommentEntity comment = commentRepository.findById(commentId).orElse(null);
         if (comment == null) {
@@ -53,6 +58,7 @@ public class CommentService {
         return commentMapper.toDto(commentRepository.save(comment));
     }
 
+    @Transactional
     public boolean deleteComment(String commentId) {
         if (commentRepository.existsById(commentId)) {
             commentRepository.deleteById(commentId);

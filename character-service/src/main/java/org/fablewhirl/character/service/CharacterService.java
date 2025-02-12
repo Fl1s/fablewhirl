@@ -31,12 +31,14 @@ public class CharacterService {
         return characterMapper.toDto(characterRepository.save(character));
     }
 
-    public List<CharacterEntity> getAllCharacters() {
-        return characterRepository.findAll();
+    public List<CharacterDto> getAllCharacters() {
+        return characterRepository.findAll().stream()
+                .map(characterMapper::toDto)
+                .toList();
     }
+
     public List<CharacterDto> getAllCharactersByUserId(String userId) {
-        List<CharacterEntity> entities = characterRepository.findByUserId(userId);
-        return entities.stream()
+        return characterRepository.findByUserId(userId).stream()
                 .map(characterMapper::toDto)
                 .toList();
     }
@@ -46,6 +48,7 @@ public class CharacterService {
                 .map(characterMapper::toDto);
     }
 
+    @Transactional
     public CharacterDto updateCharacter(String characterId, CharacterDto characterDto) {
         CharacterEntity character = characterRepository.findById(characterId).orElse(null);
 
@@ -61,6 +64,7 @@ public class CharacterService {
         return characterMapper.toDto(characterRepository.save(character));
     }
 
+    @Transactional
     public boolean deleteCharacter(String characterId) {
         if (characterRepository.existsById(characterId)) {
             characterRepository.deleteById(characterId);
