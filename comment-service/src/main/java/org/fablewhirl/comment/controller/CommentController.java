@@ -17,16 +17,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-    private final CommentMapper commentMapper;
 
-    @GetMapping("/{commentId}")
+    @GetMapping("/get/{commentId}")
     public ResponseEntity<CommentDto> getCommentById(@PathVariable("commentId") String commentId) {
         return commentService.getCommentById(commentId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/byUser")
+    @GetMapping("/get/byUser")
     public ResponseEntity<List<CommentDto>> getCommentsByUserId(@AuthenticationPrincipal Jwt jwt) {
         List<CommentDto> comments = commentService.getAllCommentsByUserId(jwt.getSubject());
         return comments.isEmpty()
@@ -35,13 +34,13 @@ public class CommentController {
     }
 
     @Transactional
-    @PatchMapping("/{commentId}")
+    @PatchMapping("/update/{commentId}")
     public ResponseEntity<CommentDto> updateComment(@PathVariable String commentId, @RequestBody CommentDto commentDto) {
         return ResponseEntity.ok(commentService.updateComment(commentId, commentDto));
     }
 
     @Transactional
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/remove/{commentId}")
     public ResponseEntity<CommentDto> deleteComment(@PathVariable String commentId) {
         if (commentService.deleteComment(commentId)) {
             return ResponseEntity.noContent().build();

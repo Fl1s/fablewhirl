@@ -1,37 +1,28 @@
 package org.fablewhirl.comment.entity;
 
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Document(collection = "comment_data")
+@Document(collection = "comments")
 public class CommentEntity {
     @Id
     private String id;
+
     private String threadId;
+    private String parentId;
     private String userId;
-    private String content;
-    private String media;
+    private String content = "";
     private boolean edited = false;
 
-    @PrePersist
-    public void prePersist() {
-        if (id == null || id.isEmpty()) {
-            id = UUID.randomUUID().toString();
-        }
-    }
-    @PreUpdate
-    public void preUpdate() {
-        edited = true;
-    }
+    @CreatedDate
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }

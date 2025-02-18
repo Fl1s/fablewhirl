@@ -29,21 +29,26 @@ public class CommentService {
         return commentMapper.toDto(commentRepository.save(entity));
     }
 
+    @Transactional
+    public CommentDto replyComment(String threadId, String parentId, String userId, CommentDto commentDto) {
+        CommentEntity entity = commentMapper.toEntity(commentDto);
+        entity.setThreadId(threadId);
+        entity.setParentId(parentId);
+        entity.setUserId(userId);
+
+        return commentMapper.toDto(commentRepository.save(entity));
+    }
+
     public List<CommentDto> getAllCommentsByThreadId(String threadId) {
-        return commentRepository.findByThreadId(threadId).stream()
-                .map(commentMapper::toDto)
-                .toList();
+        return commentRepository.findByThreadId(threadId).stream().map(commentMapper::toDto).toList();
     }
 
     public List<CommentDto> getAllCommentsByUserId(String userId) {
-        return commentRepository.findByUserId(userId).stream()
-                .map(commentMapper::toDto)
-                .toList();
+        return commentRepository.findByUserId(userId).stream().map(commentMapper::toDto).toList();
     }
 
     public Optional<CommentDto> getCommentById(String commentId) {
-        return commentRepository.findById(commentId)
-                .map(commentMapper::toDto);
+        return commentRepository.findById(commentId).map(commentMapper::toDto);
     }
 
     @Transactional
@@ -52,10 +57,7 @@ public class CommentService {
         if (comment == null) {
             throw new IllegalArgumentException("[Comment not found!]");
         }
-        Optional.ofNullable(commentDto.getContent())
-                .ifPresent(comment::setContent);
-        Optional.ofNullable(commentDto.getMedia())
-                .ifPresent(comment::setMedia);
+        Optional.ofNullable(commentDto.getContent()).ifPresent(comment::setContent);
 
         return commentMapper.toDto(commentRepository.save(comment));
     }
