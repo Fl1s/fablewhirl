@@ -8,6 +8,7 @@ import org.fablewhirl.comment.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ public class CommentService {
         CommentEntity entity = commentMapper.toEntity(commentDto);
         entity.setThreadId(threadId);
         entity.setUserId(userId);
+        entity.setCreatedAt(LocalDateTime.now());
 
         CommentEntity savedComment = commentRepository.save(entity);
         return commentMapper.toDto(savedComment);
@@ -33,6 +35,7 @@ public class CommentService {
         entity.setThreadId(threadId);
         entity.setParentId(parentId);
         entity.setUserId(userId);
+        entity.setCreatedAt(LocalDateTime.now());
 
         CommentEntity savedComment = commentRepository.save(entity);
         return commentMapper.toDto(savedComment);
