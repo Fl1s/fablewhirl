@@ -13,8 +13,8 @@ public class CommentEntity {
     private String commentId;
 
     private String threadId;
-    private String parentId;
     private String userId;
+    private String parentId;
     private String content = "";
     private boolean edited = false;
     private LocalDateTime createdAt;
