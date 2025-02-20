@@ -13,13 +13,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CommentDto {
     private String id;
+
     private String threadId;
-    private String parentId;
     private String userId;
     private String content;
-
+    private String parentId;
     private boolean edited = false;
-
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

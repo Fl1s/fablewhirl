@@ -1,8 +1,6 @@
 package org.fablewhirl.comment.service;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.simple.internal.SimpleProvider;
-import org.apache.logging.log4j.util.Lazy;
 import org.fablewhirl.comment.dto.CommentDto;
 import org.fablewhirl.comment.entity.CommentEntity;
 import org.fablewhirl.comment.mapper.CommentMapper;
@@ -10,7 +8,7 @@ import org.fablewhirl.comment.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +23,7 @@ public class CommentService {
         CommentEntity entity = commentMapper.toEntity(commentDto);
         entity.setThreadId(threadId);
         entity.setUserId(userId);
+        entity.setCreatedAt(LocalDateTime.now());
 
         return commentMapper.toDto(commentRepository.save(entity));
     }
@@ -57,7 +56,9 @@ public class CommentService {
         if (comment == null) {
             throw new IllegalArgumentException("[Comment not found!]");
         }
-        Optional.ofNullable(commentDto.getContent()).ifPresent(comment::setContent);
+        Optional.ofNullable(commentDto.getContent())
+                .ifPresent(comment::setContent);
+        comment.setEdited(true);
 
         return commentMapper.toDto(commentRepository.save(comment));
     }
