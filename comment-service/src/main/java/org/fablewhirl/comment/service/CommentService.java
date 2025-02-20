@@ -1,8 +1,6 @@
 package org.fablewhirl.comment.service;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.simple.internal.SimpleProvider;
-import org.apache.logging.log4j.util.Lazy;
 import org.fablewhirl.comment.dto.CommentDto;
 import org.fablewhirl.comment.entity.CommentEntity;
 import org.fablewhirl.comment.mapper.CommentMapper;
@@ -10,7 +8,6 @@ import org.fablewhirl.comment.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +23,8 @@ public class CommentService {
         entity.setThreadId(threadId);
         entity.setUserId(userId);
 
-        return commentMapper.toDto(commentRepository.save(entity));
+        CommentEntity savedComment = commentRepository.save(entity);
+        return commentMapper.toDto(savedComment);
     }
 
     @Transactional
@@ -36,15 +34,18 @@ public class CommentService {
         entity.setParentId(parentId);
         entity.setUserId(userId);
 
-        return commentMapper.toDto(commentRepository.save(entity));
+        CommentEntity savedComment = commentRepository.save(entity);
+        return commentMapper.toDto(savedComment);
     }
 
     public List<CommentDto> getAllCommentsByThreadId(String threadId) {
-        return commentRepository.findByThreadId(threadId).stream().map(commentMapper::toDto).toList();
+        List<CommentEntity> comments = commentRepository.findByThreadId(threadId);
+        return comments.isEmpty() ? List.of() : comments.stream().map(commentMapper::toDto).toList();
     }
 
     public List<CommentDto> getAllCommentsByUserId(String userId) {
-        return commentRepository.findByUserId(userId).stream().map(commentMapper::toDto).toList();
+        List<CommentEntity> comments = commentRepository.findByUserId(userId);
+        return comments.isEmpty() ? List.of() : comments.stream().map(commentMapper::toDto).toList();
     }
 
     public Optional<CommentDto> getCommentById(String commentId) {
@@ -53,13 +54,14 @@ public class CommentService {
 
     @Transactional
     public CommentDto updateComment(String commentId, CommentDto commentDto) {
-        CommentEntity comment = commentRepository.findById(commentId).orElse(null);
-        if (comment == null) {
-            throw new IllegalArgumentException("[Comment not found!]");
-        }
-        Optional.ofNullable(commentDto.getContent()).ifPresent(comment::setContent);
+        CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() ->
+                new IllegalArgumentException("[Comment not found!]"));
 
-        return commentMapper.toDto(commentRepository.save(comment));
+        Optional.ofNullable(commentDto.getContent()).ifPresent(comment::setContent);
+        comment.setEdited(true);
+
+        CommentEntity updatedComment = commentRepository.save(comment);
+        return commentMapper.toDto(updatedComment);
     }
 
     @Transactional
