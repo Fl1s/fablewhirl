@@ -17,8 +17,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-    private final CommentMapper commentMapper;
 
+    // Создание комментария в потоке
+    @PostMapping("/{threadId}")
+    public ResponseEntity<CommentDto> createComment(@AuthenticationPrincipal Jwt jwt,
+                                                    @PathVariable("threadId") String threadId,
+                                                    @RequestBody CommentDto commentDto) {
+        return ResponseEntity.status(201)
+                .body(commentService.createComment(threadId, jwt.getSubject(), commentDto));
+    }
+
+    // Ответ на комментарий (вложенный комментарий)
+    @PostMapping("/{threadId}/{parentId}/reply")
+    public ResponseEntity<CommentDto> replyToComment(@AuthenticationPrincipal Jwt jwt,
+                                                     @PathVariable("threadId") String threadId,
+                                                     @PathVariable("parentId") String parentId,
+                                                     @RequestBody CommentDto commentDto) {
+        return ResponseEntity.status(201)
+                .body(commentService.replyComment(threadId, parentId, jwt.getSubject(), commentDto));
+    }
+
+    // Получить все комментарии по ID потока
+    @GetMapping("/thread/{threadId}")
+    public ResponseEntity<List<CommentDto>> getCommentsByThreadId(@PathVariable("threadId") String threadId) {
+        List<CommentDto> comments = commentService.getAllCommentsByThreadId(threadId);
+        return comments.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(comments);
+    }
+
+    // Получить комментарий по ID
     @GetMapping("/{commentId}")
     public ResponseEntity<CommentDto> getCommentById(@PathVariable("commentId") String commentId) {
         return commentService.getCommentById(commentId)
@@ -26,7 +54,8 @@ public class CommentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/byUser")
+    // Получить все комментарии текущего пользователя
+    @GetMapping("/user")
     public ResponseEntity<List<CommentDto>> getCommentsByUserId(@AuthenticationPrincipal Jwt jwt) {
         List<CommentDto> comments = commentService.getAllCommentsByUserId(jwt.getSubject());
         return comments.isEmpty()
@@ -34,18 +63,21 @@ public class CommentController {
                 : ResponseEntity.ok(comments);
     }
 
+    // Обновить комментарий
     @Transactional
     @PatchMapping("/{commentId}")
     public ResponseEntity<CommentDto> updateComment(@PathVariable String commentId, @RequestBody CommentDto commentDto) {
         return ResponseEntity.ok(commentService.updateComment(commentId, commentDto));
     }
 
+    // Удалить комментарий
     @Transactional
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<CommentDto> deleteComment(@PathVariable String commentId) {
+    public ResponseEntity<Void> deleteComment(@PathVariable String commentId) {
         if (commentService.deleteComment(commentId)) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
     }
 }
+
