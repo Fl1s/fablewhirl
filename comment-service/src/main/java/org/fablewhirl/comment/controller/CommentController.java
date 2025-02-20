@@ -18,7 +18,6 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
 
-    // Создание комментария в потоке
     @PostMapping("/{threadId}")
     public ResponseEntity<CommentDto> createComment(@AuthenticationPrincipal Jwt jwt,
                                                     @PathVariable("threadId") String threadId,
@@ -27,7 +26,6 @@ public class CommentController {
                 .body(commentService.createComment(threadId, jwt.getSubject(), commentDto));
     }
 
-    // Ответ на комментарий (вложенный комментарий)
     @PostMapping("/{threadId}/{parentId}/reply")
     public ResponseEntity<CommentDto> replyToComment(@AuthenticationPrincipal Jwt jwt,
                                                      @PathVariable("threadId") String threadId,
@@ -37,7 +35,6 @@ public class CommentController {
                 .body(commentService.replyComment(threadId, parentId, jwt.getSubject(), commentDto));
     }
 
-    // Получить все комментарии по ID потока
     @GetMapping("/thread/{threadId}")
     public ResponseEntity<List<CommentDto>> getCommentsByThreadId(@PathVariable("threadId") String threadId) {
         List<CommentDto> comments = commentService.getAllCommentsByThreadId(threadId);
@@ -46,7 +43,6 @@ public class CommentController {
                 : ResponseEntity.ok(comments);
     }
 
-    // Получить комментарий по ID
     @GetMapping("/{commentId}")
     public ResponseEntity<CommentDto> getCommentById(@PathVariable("commentId") String commentId) {
         return commentService.getCommentById(commentId)
@@ -54,8 +50,7 @@ public class CommentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Получить все комментарии текущего пользователя
-    @GetMapping("/user")
+    @GetMapping("/me")
     public ResponseEntity<List<CommentDto>> getCommentsByUserId(@AuthenticationPrincipal Jwt jwt) {
         List<CommentDto> comments = commentService.getAllCommentsByUserId(jwt.getSubject());
         return comments.isEmpty()
@@ -63,14 +58,12 @@ public class CommentController {
                 : ResponseEntity.ok(comments);
     }
 
-    // Обновить комментарий
     @Transactional
     @PatchMapping("/{commentId}")
     public ResponseEntity<CommentDto> updateComment(@PathVariable String commentId, @RequestBody CommentDto commentDto) {
         return ResponseEntity.ok(commentService.updateComment(commentId, commentDto));
     }
 
-    // Удалить комментарий
     @Transactional
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable String commentId) {
