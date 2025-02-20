@@ -16,25 +16,10 @@ import java.util.UUID;
 @Document(collection = "threads")
 public class ThreadEntity {
     @Id
-    private String id;
+    private String threadId;
 
-    @JsonProperty
     private String userId;
-
     private String title = "";
     private String content = "";
-    private List<String> media = new ArrayList<>();
-    private List<String> comments = new ArrayList<>();
     private LocalDateTime createdAt;
-
-    private int commentCount = 0;
-
-    @PrePersist
-    public void prePersist() {
-        createdAt = LocalDateTime.now();
-        if (id == null || id.isEmpty()) {
-            id = UUID.randomUUID().toString();
-        }
-        createdAt = LocalDateTime.now();
-    }
 }

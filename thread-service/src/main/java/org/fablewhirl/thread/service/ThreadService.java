@@ -9,6 +9,7 @@ import org.fablewhirl.thread.repository.ThreadRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ public class ThreadService {
     public ThreadDto createThread(String userId, ThreadDto threadDto) {
         ThreadEntity entity = threadMapper.toEntity(threadDto);
         entity.setUserId(userId);
+        entity.setCreatedAt(LocalDateTime.now());
 
         return threadMapper.toDto(threadRepository.save(entity));
     }

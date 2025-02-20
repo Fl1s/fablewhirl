@@ -38,8 +38,8 @@ public class ThreadController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/byUser")
-    public ResponseEntity<List<ThreadDto>> getAllThreadsByUserId(@AuthenticationPrincipal Jwt jwt) {
+    @GetMapping("/me")
+    public ResponseEntity<List<ThreadDto>> getAllThreadsByUser(@AuthenticationPrincipal Jwt jwt) {
         List<ThreadDto> threads = threadService.getAllThreadsByUserId(jwt.getSubject());
         return threads.isEmpty()
                 ? ResponseEntity.noContent().build()
