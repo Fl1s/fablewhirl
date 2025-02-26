@@ -1,4 +1,5 @@
 # Spring Boot Microservices Project
+
 (Eureka Server, Config Server, API Gateway, Kafka, File Storage, JWT, Authentication, Authorization, Redis, Docker)
 
 # About the project
@@ -307,7 +308,6 @@
     Bearer Token : Authorized User or Admin
 ```
 
-
 ## Valid Request Params
 
 ##### <a id="getUserById"> Get User By Id
@@ -446,7 +446,6 @@
     Bearer Token : User Token
 ```
 
-
 ### 🔨 Run the App
 
 <b>Local</b>
@@ -463,11 +462,11 @@
 
 <b>6 )</b> Run <b>Config Server</b>
 
-<b>7 )</b> Run other services (<b>auth-service</b>, <b>user-service</b>, <b>job-service</b>, <b>notification-service</b>  and lastly <b>
+<b>7 )</b> Run other services (<b>auth-service</b>, <b>user-service</b>, <b>job-service</b>, <b>notification-service</b>
+and lastly <b>
 file-storage</b>)
 
 <b>8 )</b> For swagger ui localhost:8080/v1/{service-name}/swagger-ui/index.html</b>
-
 
 ### Screenshots
 

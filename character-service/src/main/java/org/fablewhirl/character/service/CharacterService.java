@@ -1,7 +1,5 @@
 package org.fablewhirl.character.service;
 
-import io.micrometer.observation.ObservationFilter;
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.character.dto.CharacterDto;
 import org.fablewhirl.character.entity.CharacterEntity;
@@ -11,7 +9,6 @@ import org.fablewhirl.character.mapper.SpellsMapper;
 import org.fablewhirl.character.repository.CharacterRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Optional;

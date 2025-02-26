@@ -1,6 +1,7 @@
 package org.fablewhirl.thread.dto;
 
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Data

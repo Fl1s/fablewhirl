@@ -15,10 +15,10 @@ import java.util.logging.Logger;
 @RequiredArgsConstructor
 public class AuthEventListener {
 
+    private static final Logger logger = Logger.getLogger(AuthEventListener.class.getName());
     private final KafkaTemplate<String, UserRegistrationEvent> userRegistrationTemplate;
     private final KafkaTemplate<String, UserRemoveEvent> userRemoveTemplate;
     private final AuthService authService;
-    private static final Logger logger = Logger.getLogger(AuthEventListener.class.getName());
 
     public void handleUserRegistration(UserRegistrationEvent event) {
         try {

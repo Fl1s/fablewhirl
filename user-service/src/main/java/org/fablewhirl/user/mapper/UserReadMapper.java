@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget;
 )
 public interface UserReadMapper {
     UserEntity toEntity(UserReadDto userReadDto);
+
     UserReadDto toDto(UserEntity userEntity);
 
     void updateEntityFromDto(UserReadDto userReadDto, @MappingTarget UserEntity userEntity);
