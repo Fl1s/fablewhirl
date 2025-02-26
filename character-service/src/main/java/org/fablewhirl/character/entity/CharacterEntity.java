@@ -1,12 +1,10 @@
 package org.fablewhirl.character.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.PrePersist;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +33,16 @@ public class CharacterEntity {
 
     private String version = "2";
 
+    @PrePersist
+    public void prePersist() {
+        if (id == null || id.isEmpty()) {
+            id = UUID.randomUUID().toString();
+        }
+        if (disabledBlocks != null && disabledBlocks.getId().isEmpty()) {
+            disabledBlocks.setId(id);
+        }
+    }
+
     @Data
     public static class DisabledBlocks {
         @JsonProperty("info-left")
@@ -60,16 +68,6 @@ public class CharacterEntity {
         private List<String> prepared = new ArrayList<>();
 
         private List<String> book = new ArrayList<>();
-    }
-
-    @PrePersist
-    public void prePersist() {
-        if (id == null || id.isEmpty()) {
-            id = UUID.randomUUID().toString();
-        }
-        if (disabledBlocks != null && disabledBlocks.getId().isEmpty()) {
-            disabledBlocks.setId(id);
-        }
     }
 }
 

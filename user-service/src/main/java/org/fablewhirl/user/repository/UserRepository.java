@@ -1,9 +1,7 @@
 package org.fablewhirl.user.repository;
 
 
-import org.fablewhirl.user.dto.UserReadDto;
 import org.fablewhirl.user.entity.UserEntity;
-import org.fablewhirl.user.event.UserRegisteredEvent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

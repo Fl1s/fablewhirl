@@ -33,6 +33,7 @@ public class UserMediaService {
         return updateUserMedia(userId, mediaEntity -> mediaEntity.setAvatarUrl("/" + bucketName + "/" + filePath))
                 .getAvatarUrl();
     }
+
     @Transactional
     public String uploadBanner(String userId, MultipartFile bannerFile) {
         String filePath = buildFilePath("banners", userId, bannerFile);
@@ -57,6 +58,7 @@ public class UserMediaService {
         }
         return mediaEntity.getBannerUrl();
     }
+
     private void uploadFileToMinio(String filePath, MultipartFile file) {
         try {
             minioClient.putObject(

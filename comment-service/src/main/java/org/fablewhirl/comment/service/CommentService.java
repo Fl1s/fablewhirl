@@ -36,7 +36,6 @@ public class CommentService {
         entity.setParentId(parentId);
         entity.setUserId(userId);
         entity.setCreatedAt(LocalDateTime.now());
-
         CommentEntity savedComment = commentRepository.save(entity);
         return commentMapper.toDto(savedComment);
     }

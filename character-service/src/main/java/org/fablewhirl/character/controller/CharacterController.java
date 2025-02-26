@@ -2,16 +2,12 @@ package org.fablewhirl.character.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.character.dto.CharacterDto;
-import org.fablewhirl.character.mapper.CharacterMapper;
 import org.fablewhirl.character.service.CharacterService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
