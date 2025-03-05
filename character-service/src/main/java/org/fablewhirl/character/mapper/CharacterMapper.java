@@ -15,6 +15,7 @@ public interface CharacterMapper {
     CharacterEntity toEntity(CharacterDto dto);
 
     void updateEntityFromDto(CharacterDto userCreateEditDto, @MappingTarget CharacterEntity userEntity);
+
     @AfterMapping
     default void mapDisabledBlocksId(CharacterEntity entity, @MappingTarget CharacterDto dto) {
         if (entity.getDisabledBlocks() != null && dto.getDisabledBlocks() != null) {

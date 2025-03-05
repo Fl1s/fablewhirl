@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget;
 )
 public interface CommentMapper {
     CommentEntity toEntity(CommentDto dto);
+
     CommentDto toDto(CommentEntity entity);
 
     void updateEntityFromDto(CommentDto dto, @MappingTarget CommentEntity entity);

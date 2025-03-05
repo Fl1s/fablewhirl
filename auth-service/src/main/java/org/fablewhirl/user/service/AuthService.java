@@ -13,7 +13,7 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -23,19 +23,15 @@ import java.util.logging.Logger;
 @RequiredArgsConstructor
 public class AuthService {
 
+    private static final Logger logger = Logger.getLogger(AuthService.class.getName());
     @Value("${keycloak.auth-server-url}")
     private String keycloakAuthServerUrl;
-
     @Value("${keycloak.realm}")
     private String keycloakRealm;
-
     @Value("${keycloak.credentials.client-id}")
     private String keycloakClientId;
-
     @Value("${keycloak.credentials.secret}")
     private String keycloakClientSecret;
-
-    private static final Logger logger = Logger.getLogger(AuthService.class.getName());
 
     private Keycloak getAdminKeycloakInstance() {
         logger.info("[Creating Keycloak admin instance.]");

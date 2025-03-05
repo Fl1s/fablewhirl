@@ -2,15 +2,15 @@ package org.fablewhirl.user.config;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.fablewhirl.user.event.UserRegistrationEvent;
 import org.fablewhirl.user.event.UserRemoveEvent;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.beans.factory.annotation.Value;
-import org.fablewhirl.user.event.UserRegistrationEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class KafkaProducerConfig {
 
     @Bean
     public KafkaTemplate<String, UserRemoveEvent> userRemoveEventKafkaTemplate(
-            ProducerFactory<String, UserRemoveEvent> producerFactory){
+            ProducerFactory<String, UserRemoveEvent> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 }
