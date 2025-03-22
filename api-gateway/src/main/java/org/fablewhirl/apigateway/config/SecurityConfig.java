@@ -13,7 +13,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SecurityConfig {
     private final String[] freeResoucesUrl = {"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
-            "/swagger-resources/**", "/api-docs/**", "/aggregate/**"};
+            "/swagger-resources/**", "/api-docs/**", "/aggregate/**", "/actuator/**"};
 
     @Bean
     public JwtDecoder jwtDecoder() {
