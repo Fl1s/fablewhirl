@@ -23,6 +23,7 @@ bin/
 *.iml
 *.ipr
 out/
+!/grafana/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
@@ -35,4 +36,3 @@ out/
 
 ### VS Code ###
 .vscode/
-!/grafana/
