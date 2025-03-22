@@ -33,3 +33,9 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8095/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus

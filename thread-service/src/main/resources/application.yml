@@ -33,3 +33,9 @@ eureka:
 
 keycloak:
   jwks-certs: http://localhost:9090/realms/fablewhirl-realm/protocol/openid-connect/certs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
