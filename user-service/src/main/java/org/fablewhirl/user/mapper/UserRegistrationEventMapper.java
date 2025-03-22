@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget;
 )
 public interface UserRegistrationEventMapper {
     UserEntity toEntity(UserRegistrationEvent userRegisteredEvent);
+
     UserRegistrationEvent toDto(UserEntity userEntity);
 
     void updateEntityFromDto(UserRegistrationEvent userRegisteredEvent, @MappingTarget UserEntity userEntity);

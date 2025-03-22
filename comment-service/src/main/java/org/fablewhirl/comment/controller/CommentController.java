@@ -2,7 +2,6 @@ package org.fablewhirl.comment.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.fablewhirl.comment.dto.CommentDto;
-import org.fablewhirl.comment.mapper.CommentMapper;
 import org.fablewhirl.comment.service.CommentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

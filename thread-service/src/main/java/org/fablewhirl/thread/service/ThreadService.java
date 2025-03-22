@@ -1,6 +1,5 @@
 package org.fablewhirl.thread.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.fablewhirl.thread.dto.ThreadDto;
 import org.fablewhirl.thread.entity.ThreadEntity;
