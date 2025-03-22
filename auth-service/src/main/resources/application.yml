@@ -16,13 +16,13 @@ spring:
     bootstrap-servers: localhost:9092
 
 keycloak:
-  jwks-certs: http://localhost:9090/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
   realm: fablewhirl-realm
-  auth-server-url: http://localhost:9090/
+  auth-server-url: http://localhost:8180/
   resource: auth-service
   credentials:
     client-id: auth-service
-    secret: A6YFJ8fhZVbEMg26stWF8S6dpYYHByCz
+    secret: sf3a2PDVId7fqA5TYr9UEhvb4krPR0K0
   use-resource-role-mappings: true
 
 eureka:
@@ -33,3 +33,9 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8095/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus

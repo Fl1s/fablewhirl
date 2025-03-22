@@ -10,7 +10,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:9090/realms/fablewhirl-realm
+          issuer-uri: http://localhost:8180/realms/fablewhirl-realm
 
   application:
     name: user-service
@@ -39,7 +39,7 @@ minio:
   root-password: secret123
 
 keycloak:
-  jwks-certs: http://localhost:9090/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
 
 eureka:
   instance:
@@ -49,3 +49,9 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8095/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus

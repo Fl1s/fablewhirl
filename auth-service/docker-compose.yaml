@@ -1,5 +1,4 @@
 services:
-
   keycloak_web:
     container_name: keycloak_web
     image: quay.io/keycloak/keycloak:26.1.0
@@ -7,5 +6,5 @@ services:
       - KC_BOOTSTRAP_ADMIN_USERNAME=admin
       - KC_BOOTSTRAP_ADMIN_PASSWORD=secret
     ports:
-      - "9090:8080"
+      - "8180:8080"
     command: start-dev

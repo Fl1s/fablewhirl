@@ -13,11 +13,11 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SecurityConfig {
     private final String[] freeResoucesUrl = {"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
-            "/swagger-resources/**", "/api-docs/**", "/aggregate/**"};
+            "/swagger-resources/**", "/api-docs/**", "/aggregate/**", "/actuator/**"};
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withJwkSetUri("http://localhost:9090/realms/fablewhirl-realm/protocol/openid-connect/certs")
+        return NimbusJwtDecoder.withJwkSetUri("http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs")
                 .build();
     }
 

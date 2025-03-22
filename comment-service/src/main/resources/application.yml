@@ -10,11 +10,9 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:9090/realms/fablewhirl-realm
+          issuer-uri: http://localhost:8180/realms/fablewhirl-realm
 
-  docker:
-    compose:
-      file: ./comment-service/docker-compose.yaml
+
   application:
     name: thread-service
 
@@ -38,5 +36,12 @@ eureka:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8095/eureka/
 
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+
 keycloak:
-  jwks-certs: http://localhost:9090/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs

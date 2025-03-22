@@ -9,9 +9,6 @@ spring:
   data:
     mongodb:
       uri: mongodb://admin:secret@localhost:27018/character_data
-  docker:
-    compose:
-      file: ./character-service/docker-compose.yaml
   application:
     name: character-service
 
@@ -23,7 +20,10 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:9090/realms/fablewhirl-realm
+          issuer-uri: http://localhost:8180/realms/fablewhirl-realm
+
+keycloak:
+  jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
 
 eureka:
   instance:
@@ -34,5 +34,9 @@ eureka:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8095/eureka/
 
-keycloak:
-  jwks-certs: http://localhost:9090/realms/fablewhirl-realm/protocol/openid-connect/certs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
