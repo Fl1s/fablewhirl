@@ -1,0 +1,142 @@
+name: Build & Push Images
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-
+
+  build_api_gateway:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build api-gateway
+        run: |
+          cd fablewhirl/api-gateway
+          ./gradlew clean build
+
+  build_auth_service:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build auth-service
+        run: |
+          cd fablewhirl/auth-service
+          ./gradlew clean build
+
+  build_character_service:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build character-service
+        run: |
+          cd fablewhirl/character-service
+          ./gradlew clean build
+
+  build_comment_service:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build comment-service
+        run: |
+          cd fablewhirl/comment-service
+          ./gradlew clean build
+
+  build_eureka_server:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build eureka-server
+        run: |
+          cd fablewhirl/eureka-server
+          ./gradlew clean build
+
+  build_thread_service:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build thread-service
+        run: |
+          cd fablewhirl/thread-service
+          ./gradlew clean build
+
+  build_user_service:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build user-service
+        run: |
+          cd fablewhirl/user-service
+          ./gradlew clean build
+
+  test_and_push:
+    needs:
+      - build_api_gateway
+      - build_auth_service
+      - build_character_service
+      - build_comment_service
+      - build_eureka_server
+      - build_thread_service
+      - build_user_service
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Build and Push Docker images
+        run: |
+          cd fablewhirl/api-gateway && docker build -t Fl1s/api-gateway:latest . && docker push Fl1s/api-gateway:latest
+          cd fablewhirl/auth-service && docker build -t Fl1s/auth-service:latest . && docker push Fl1s/auth-service:latest
+          cd fablewhirl/character-service && docker build -t Fl1s/character-service:latest . && docker push Fl1s/character-service:latest
+          cd fablewhirl/comment-service && docker build -t Fl1s/comment-service:latest . && docker push Fl1s/comment-service:latest
+          cd fablewhirl/eureka-server && docker build -t Fl1s/eureka-server:latest . && docker push Fl1s/eureka-server:latest
+          cd fablewhirl/thread-service && docker build -t Fl1s/thread-service:latest . && docker push Fl1s/thread-service:latest
+          cd fablewhirl/user-service && docker build -t Fl1s/user-service:latest . && docker push Fl1s/user-service:latest
