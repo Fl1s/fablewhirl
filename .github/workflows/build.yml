@@ -114,7 +114,7 @@ jobs:
           cd user-service
           ./gradlew clean build
 
-  test_and_push:
+  push:
     needs:
       - build_api_gateway
       - build_auth_service
@@ -126,11 +126,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Run tests
-        run: ./gradlew test
-
       - name: Build and Push Docker images
         run: |
           docker build -t Fl1s/api-gateway:latest ./api-gateway && docker push Fl1s/api-gateway:latest
