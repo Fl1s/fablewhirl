@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build api-gateway
         run: |
-          cd api-gateway
+          ./api-gateway
           ./gradlew clean build
 
   build_auth_service:
@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build auth-service
         run: |
-          cd auth-service
+          ./auth-service
           ./gradlew clean build
 
   build_character_service:
@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build character-service
         run: |
-          cd character-service
+          ./character-service
           ./gradlew clean build
 
   build_comment_service:
@@ -75,7 +75,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build comment-service
         run: |
-          cd comment-service
+          ./comment-service
           ./gradlew clean build
 
   build_eureka_server:
@@ -87,7 +87,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build eureka-server
         run: |
-          cd eureka-server
+          ./eureka-server
           ./gradlew clean build
 
   build_thread_service:
@@ -99,7 +99,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build thread-service
         run: |
-          cd thread-service
+          ./thread-service
           ./gradlew clean build
 
   build_user_service:
@@ -111,7 +111,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build user-service
         run: |
-          cd user-service
+          ./user-service
           ./gradlew clean build
 
   push:
