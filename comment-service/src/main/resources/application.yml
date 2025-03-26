@@ -18,7 +18,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://admin:secret@mongo-comment-data:27020/comment_data
+      uri: mongodb://admin:secret@mongo:27017/comment_data
 
 eureka:
   instance:

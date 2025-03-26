@@ -17,7 +17,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://admin:secret@mongo-thread-data:27019/thread_data
+      uri: mongodb://admin:secret@mongo:27017/thread_data
 
 eureka:
   instance:

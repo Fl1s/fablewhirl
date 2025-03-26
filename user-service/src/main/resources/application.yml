@@ -29,7 +29,7 @@ spring:
     show-sql: true
   data:
     mongodb:
-      uri: mongodb://admin:secret@mongo-user-media:27017/user_media
+      uri: mongodb://admin:secret@mongo:27017/user_media
 
 minio:
   bucket:
