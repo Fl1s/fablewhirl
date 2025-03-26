@@ -10,7 +10,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/fablewhirl-realm
+          issuer-uri: http://auth-service:8180/realms/fablewhirl-realm
 
 
   application:
@@ -18,18 +18,11 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://admin:secret@localhost:27020/comment_data
-
-minio:
-  bucket:
-    name: users
-  url: http://localhost:9000
-  root-user: admin
-  root-password: secret123
+      uri: mongodb://admin:secret@mongo-comment-data:27020/comment_data
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: eureka-server
   client:
     registerWithEureka: true
     fetchRegistry: true
@@ -44,4 +37,4 @@ management:
         include: prometheus
 
 keycloak:
-  jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://auth-service:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
