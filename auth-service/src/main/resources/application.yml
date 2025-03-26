@@ -13,12 +13,12 @@ spring:
     name: auth-service
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
 
 keycloak:
-  jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://auth-service:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
   realm: fablewhirl-realm
-  auth-server-url: http://localhost:8180/
+  auth-server-url: http://auth-service:8180/
   resource: auth-service
   credentials:
     client-id: auth-service
@@ -27,7 +27,7 @@ keycloak:
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: eureka-server
   client:
     registerWithEureka: true
     fetchRegistry: true

@@ -1,7 +1,7 @@
 services:
   mongo:
     image: mongo:latest
-    container_name: character-media
+    container_name: character-data
     command: mongod --port 27018
     volumes:
       - mongo-data:/data/db

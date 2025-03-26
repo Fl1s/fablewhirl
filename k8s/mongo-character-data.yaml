@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo-character-data-secret
+type: Opaque
+data:
+  MONGO_INITDB_ROOT_USERNAME: YWRtaW4=
+  MONGO_INITDB_ROOT_PASSWORD: c2VjcmV0
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-character-data
+spec:
+  serviceName: "mongo-character-data"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-character-data
+  template:
+    metadata:
+      labels:
+        app: mongo-character-data
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:latest
+          ports:
+            - containerPort: 27018
+          command: ["mongod", "--port", "27018"]
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-character-data-secret
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-character-data-secret
+                  key: MONGO_INITDB_ROOT_PASSWORD
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-character-data
+spec:
+  ports:
+    - port: 27018
+      targetPort: 27018
+  selector:
+    app: mongo-character-data

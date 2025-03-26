@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo-thread-data-secret
+type: Opaque
+data:
+  MONGO_INITDB_ROOT_USERNAME: YWRtaW4= # "admin" в base64
+  MONGO_INITDB_ROOT_PASSWORD: c2VjcmV0 # "secret" в base64
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-thread-data
+spec:
+  serviceName: "mongo-thread-data"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-thread-data
+  template:
+    metadata:
+      labels:
+        app: mongo-thread-data
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:latest
+          ports:
+            - containerPort: 27019
+          command: ["mongod", "--port", "27019"]
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-thread-data-secret
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-thread-data-secret
+                  key: MONGO_INITDB_ROOT_PASSWORD
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-thread-data
+spec:
+  ports:
+    - port: 27019
+      targetPort: 27019
+  selector:
+    app: mongo-thread-data
