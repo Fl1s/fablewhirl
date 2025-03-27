@@ -18,19 +18,33 @@ spec:
           image: quay.io/keycloak/keycloak:26.1.0
           ports:
             - containerPort: 8080
+          args: ["start-dev"]
           env:
             - name: KC_BOOTSTRAP_ADMIN_USERNAME
               value: "admin"
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
               value: "secret"
-          command: ["start-dev"]
+            - name: JAVA_OPTS_APPEND
+              value: "-Xms512m -Xmx1024m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError"
           resources:
             requests:
-              memory: "512Mi"
+              memory: "1Gi"
               cpu: "300m"
             limits:
-              memory: "1Gi"
+              memory: "2Gi"
               cpu: "1"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service

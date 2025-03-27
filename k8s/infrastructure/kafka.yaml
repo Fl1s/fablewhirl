@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: kafka
   namespace: fablewhirl
 spec:
+  serviceName: kafka
   replicas: 1
   selector:
     matchLabels:
@@ -13,22 +14,44 @@ spec:
       labels:
         app: kafka
     spec:
+      initContainers:
+        - name: wait-for-zookeeper
+          image: busybox
+          command: ['sh', '-c', 'until nc -z zookeeper-0.zookeeper.fablewhirl.svc.cluster.local 2181; do echo "Waiting for Zookeeper..."; sleep 2; done;']
       containers:
         - name: kafka
           image: confluentinc/cp-kafka:latest
           ports:
             - containerPort: 9092
+              name: kafka
           env:
             - name: KAFKA_BROKER_ID
-              value: "1"
+              value: "0"
             - name: KAFKA_ZOOKEEPER_CONNECT
-              value: "zookeeper:2181"
+              value: "zookeeper-0.zookeeper.fablewhirl.svc.cluster.local:2181"
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://kafka:9092"
+              value: "PLAINTEXT://kafka-0.kafka.fablewhirl.svc.cluster.local:9092"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "PLAINTEXT:PLAINTEXT"
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "PLAINTEXT"
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
               value: "1"
-            - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
-              value: "0"
+            - name: KAFKA_LOG4J_LOGGERS
+              value: "kafka.controller=DEBUG,kafka.producer=DEBUG"
+          livenessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /var/lib/kafka
           resources:
             requests:
               memory: "512Mi"
@@ -36,6 +59,15 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "1"
+  volumeClaimTemplates:
+    - metadata:
+        name: kafka-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: standard
 ---
 apiVersion: v1
 kind: Service
@@ -46,5 +78,7 @@ spec:
   ports:
     - port: 9092
       targetPort: 9092
+      name: kafka
+  clusterIP: None
   selector:
     app: kafka
