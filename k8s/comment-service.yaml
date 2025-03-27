@@ -18,13 +18,6 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8085
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
       imagePullSecrets:
       - name: ghcr-secret
 ---
