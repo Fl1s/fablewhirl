@@ -13,6 +13,8 @@ spec:
       labels:
         app: user-service
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: user-service
           image: ghcr.io/fl1s/user-service:latest

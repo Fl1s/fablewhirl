@@ -13,6 +13,8 @@ spec:
       labels:
         app: character-service
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: character-service
           image: ghcr.io/fl1s/character-service:latest

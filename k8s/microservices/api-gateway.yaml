@@ -13,6 +13,8 @@ spec:
       labels:
         app: api-gateway
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: api-gateway
           image: ghcr.io/fl1s/api-gateway:latest

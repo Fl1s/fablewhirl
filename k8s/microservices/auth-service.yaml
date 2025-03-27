@@ -13,6 +13,8 @@ spec:
       labels:
         app: auth-service
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: auth-service
           image: ghcr.io/fl1s/auth-service:latest
