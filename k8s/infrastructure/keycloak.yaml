@@ -1,16 +1,8 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: keycloak-secret
-type: Opaque
-data:
-  KC_BOOTSTRAP_ADMIN_USERNAME: YWRtaW4=
-  KC_BOOTSTRAP_ADMIN_PASSWORD: c2VjcmV0
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: keycloak
+  namespace: fablewhirl
 spec:
   replicas: 1
   selector:
@@ -28,25 +20,26 @@ spec:
             - containerPort: 8080
           env:
             - name: KC_BOOTSTRAP_ADMIN_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: keycloak-secret
-                  key: KC_BOOTSTRAP_ADMIN_USERNAME
+              value: "admin"
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: keycloak-secret
-                  key: KC_BOOTSTRAP_ADMIN_PASSWORD
+              value: "secret"
           command: ["start-dev"]
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "300m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: keycloak
+  namespace: fablewhirl
 spec:
   ports:
-    - port: 8180
+    - port: 8080
       targetPort: 8080
-      protocol: TCP
   selector:
     app: keycloak

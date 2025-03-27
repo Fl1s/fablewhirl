@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-service
+  namespace: fablewhirl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comment-service
+  template:
+    metadata:
+      labels:
+        app: comment-service
+    spec:
+      containers:
+        - name: comment-service
+          image: ghcr.io/fl1s/comment-service:latest
+          ports:
+            - containerPort: 8085
+          env:
+            - name: SERVER_PORT
+              value: "8085"
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://admin:secret@mongo:27017/comment_data"
+            - name: EUREKA_INSTANCE_HOSTNAME
+              value: "eureka-server"
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: "http://eureka-server:8095/eureka/"
+            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
+              value: "http://auth-service:8180/realms/fablewhirl-realm"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comment-service
+  namespace: fablewhirl
+spec:
+  ports:
+    - port: 8085
+      targetPort: 8085
+  selector:
+    app: comment-service
