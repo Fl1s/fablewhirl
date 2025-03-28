@@ -10,7 +10,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://auth-service:8180/realms/fablewhirl-realm
+          issuer-uri: http://auth-service:8080/realms/fablewhirl-realm
 
   application:
     name: thread-service
@@ -29,7 +29,7 @@ eureka:
       defaultZone: http://${eureka.instance.hostname}:8095/eureka/
 
 keycloak:
-  jwks-certs: http://auth-service:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://auth-service:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
 
 management:
   endpoints:

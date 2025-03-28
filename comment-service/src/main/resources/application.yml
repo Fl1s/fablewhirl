@@ -10,7 +10,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://auth-service:8180/realms/fablewhirl-realm
+          issuer-uri: http://auth-service:8080/realms/fablewhirl-realm
 
 
   application:
@@ -37,4 +37,4 @@ management:
         include: prometheus
 
 keycloak:
-  jwks-certs: http://auth-service:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://auth-service:8080/realms/fablewhirl-realm/protocol/openid-connect/certs

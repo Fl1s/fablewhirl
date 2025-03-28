@@ -28,7 +28,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://auth-service:8180/realms/fablewhirl-realm
+          issuer-uri: http://auth-service:8080/realms/fablewhirl-realm
 
 eureka:
   instance:
