@@ -1,0 +1,40 @@
+server:
+  port: 8083
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://admin:secret@mongo:27018/character_data
+  application:
+    name: character-service
+
+  kafka:
+    producer:
+      bootstrap-servers: kafka:9092
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8180/realms/fablewhirl-realm
+
+keycloak:
+  jwks-certs: http://keycloak:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eureka-server:8095/eureka/
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus

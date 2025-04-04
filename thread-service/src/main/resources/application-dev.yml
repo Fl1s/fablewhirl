@@ -1,5 +1,5 @@
 server:
-  port: 8085
+  port: 8084
 
 springdoc:
   swagger-ui:
@@ -12,13 +12,12 @@ spring:
         jwt:
           issuer-uri: http://localhost:8180/realms/fablewhirl-realm
 
-
   application:
     name: thread-service
 
   data:
     mongodb:
-      uri: mongodb://admin:secret@localhost:27020/comment_data
+      uri: mongodb://admin:secret@localhost:27019/thread_data
 
 eureka:
   instance:
@@ -29,12 +28,11 @@ eureka:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8095/eureka/
 
+keycloak:
+  jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
 
 management:
   endpoints:
     web:
       exposure:
         include: prometheus
-
-keycloak:
-  jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
