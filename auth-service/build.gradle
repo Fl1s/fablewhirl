@@ -24,7 +24,7 @@ repositories {
 }
 
 ext {
-	set('springCloudVersion', "2024.0.0")
+	set('springCloudVersion', '2024.0.0')
 }
 
 dependencies {
@@ -41,20 +41,22 @@ dependencies {
 	implementation 'org.keycloak:keycloak-admin-client:24.0.5'
 	implementation 'org.keycloak:keycloak-admin-client-jakarta:21.1.2'
 	implementation 'org.keycloak:keycloak-spring-boot-starter:24.0.5'
+
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.springframework.security:spring-security-oauth2-client'
-	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
+
+	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-	annotationProcessor 'org.projectlombok:lombok'
-	compileOnly 'org.projectlombok:lombok'
-
-	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 }
 
 dependencyManagement {
