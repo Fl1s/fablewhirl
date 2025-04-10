@@ -1,0 +1,57 @@
+server:
+  port: 8082
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8180/realms/fablewhirl-realm
+
+  application:
+    name: user-service
+
+  kafka:
+    bootstrap-servers: kafka:9092
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/users
+    username: admin
+    password: secret
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  data:
+    mongodb:
+      uri: mongodb://admin:secret@mongo:27017/user_media
+
+minio:
+  bucket:
+    name: users
+  url: http://minio:9000
+  root-user: admin
+  root-password: secret123
+
+keycloak:
+  jwks-certs: http://keycloak:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
+
+eureka:
+  instance:
+    hostname: eureka-server
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
