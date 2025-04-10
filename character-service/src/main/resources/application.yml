@@ -6,6 +6,9 @@ springdoc:
     path: /swagger-ui.html
 
 spring:
+  threads:
+    virtual:
+      enabled: true
   data:
     mongodb:
       uri: mongodb://admin:secret@localhost:27018/character_data
