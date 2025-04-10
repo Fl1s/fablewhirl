@@ -6,9 +6,6 @@ springdoc:
     path: /swagger-ui.html
 
 spring:
-  threads:
-    virtual:
-      enabled: true
   docker:
     compose:
       file: ./auth-service/docker-compose.yaml
@@ -16,12 +13,12 @@ spring:
     name: auth-service
 
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: localhost:9092
 
 keycloak:
-  jwks-certs: http://auth-service:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
   realm: fablewhirl-realm
-  auth-server-url: http://auth-service:8080/
+  auth-server-url: http://localhost:8180/
   resource: auth-service
   credentials:
     client-id: auth-service
@@ -30,7 +27,7 @@ keycloak:
 
 eureka:
   instance:
-    hostname: eureka-server
+    hostname: localhost
   client:
     registerWithEureka: true
     fetchRegistry: true

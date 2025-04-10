@@ -6,12 +6,9 @@ springdoc:
     path: /swagger-ui.html
 
 spring:
-  threads:
-    virtual:
-      enabled: true
   data:
     mongodb:
-      uri: mongodb://admin:secret@mongo:27017/character_data
+      uri: mongodb://admin:secret@mongo:27018/character_data
   application:
     name: character-service
 
@@ -23,19 +20,17 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://auth-sevice:8180/realms/fablewhirl-realm
+          issuer-uri: http://keycloak:8180/realms/fablewhirl-realm
 
 keycloak:
-  jwks-certs: http://auth-service:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://keycloak:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
 
 eureka:
-  instance:
-    hostname: eureka-server
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
+      defaultZone: http://eureka-server:8095/eureka/
 
 
 management:

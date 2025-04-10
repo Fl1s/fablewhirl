@@ -6,14 +6,11 @@ springdoc:
     path: /swagger-ui.html
 
 spring:
-  threads:
-    virtual:
-      enabled: true
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://auth-service:8080/realms/fablewhirl-realm
+          issuer-uri: http://keycloak:8180/realms/fablewhirl-realm
 
   application:
     name: user-service
@@ -42,7 +39,7 @@ minio:
   root-password: secret123
 
 keycloak:
-  jwks-certs: http://auth-service:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://keycloak:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
 
 eureka:
   instance:

@@ -1,7 +1,6 @@
 server:
   port: 3000
 
-
 springdoc:
   api-docs:
     path: /api-docs
@@ -22,9 +21,6 @@ springdoc:
         url: /aggregate/notification-service/v3/api-docs
 
 spring:
-  threads:
-    virtual:
-      enabled: true
   application:
     name: api-gateway
 
@@ -32,16 +28,14 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://auth-service:8080/realms/fablewhirl-realm
+          issuer-uri: http://keycloak:8180/realms/fablewhirl-realm
 
 eureka:
-  instance:
-    hostname: eureka-server
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
+      defaultZone: http://eureka-server:8095/eureka/
 
 management:
   endpoints:

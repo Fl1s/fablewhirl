@@ -2,9 +2,6 @@ server:
     port: 8095
 
 spring:
-    threads:
-        virtual:
-            enabled: true
     application:
         name: eureka-server
 

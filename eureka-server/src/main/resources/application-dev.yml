@@ -2,15 +2,12 @@ server:
     port: 8095
 
 spring:
-    threads:
-        virtual:
-            enabled: true
     application:
         name: eureka-server
 
 eureka:
     instance:
-        hostname: eureka-server
+        hostname: localhost
     client:
         registerWithEureka: false
         fetchRegistry: false
