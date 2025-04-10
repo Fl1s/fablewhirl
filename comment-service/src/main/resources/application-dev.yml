@@ -6,11 +6,14 @@ springdoc:
     path: /swagger-ui.html
 
 spring:
+  threads:
+    virtual:
+      enabled: true
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/fablewhirl-realm
+          issuer-uri: http://localhost:8080/realms/fablewhirl-realm
 
 
   application:
@@ -18,7 +21,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://admin:secret@localhost:27020/comment_data
+      uri: mongodb://admin:secret@localhost:27017/comment_data
 
 eureka:
   instance:
@@ -37,4 +40,4 @@ management:
         include: prometheus
 
 keycloak:
-  jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://localhost:8080/realms/fablewhirl-realm/protocol/openid-connect/certs

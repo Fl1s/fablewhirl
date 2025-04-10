@@ -13,16 +13,16 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://auth-service:8080/realms/fablewhirl-realm
+          issuer-uri: http://localhost:8080/realms/fablewhirl-realm
 
   application:
     name: user-service
 
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: localhost:9092
 
   datasource:
-    url: jdbc:postgresql://postgres:5432/users
+    url: jdbc:postgresql://localhost:5432/users
     username: admin
     password: secret
     driver-class-name: org.postgresql.Driver
@@ -32,21 +32,21 @@ spring:
     show-sql: true
   data:
     mongodb:
-      uri: mongodb://admin:secret@mongo:27017/user_media
+      uri: mongodb://admin:secret@localhost:27017/user_media
 
 minio:
   bucket:
     name: users
-  url: http://minio:9000
+  url: http://localhost:9000
   root-user: admin
   root-password: secret123
 
 keycloak:
-  jwks-certs: http://auth-service:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://localhost:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
 
 eureka:
   instance:
-    hostname: eureka-server
+    hostname: localhost
   client:
     registerWithEureka: true
     fetchRegistry: true

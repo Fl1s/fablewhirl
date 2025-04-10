@@ -32,11 +32,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://auth-service:8080/realms/fablewhirl-realm
+          issuer-uri: http://localhost:8080/realms/fablewhirl-realm
 
 eureka:
   instance:
-    hostname: eureka-server
+    hostname: localhost
   client:
     registerWithEureka: true
     fetchRegistry: true

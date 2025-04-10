@@ -6,6 +6,9 @@ springdoc:
     path: /swagger-ui.html
 
 spring:
+  threads:
+    virtual:
+      enabled: true
   docker:
     compose:
       file: ./auth-service/docker-compose.yaml

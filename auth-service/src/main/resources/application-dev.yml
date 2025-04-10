@@ -6,6 +6,9 @@ springdoc:
     path: /swagger-ui.html
 
 spring:
+  threads:
+    virtual:
+      enabled: true
   docker:
     compose:
       file: ./auth-service/docker-compose.yaml
@@ -18,7 +21,7 @@ spring:
 keycloak:
   jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
   realm: fablewhirl-realm
-  auth-server-url: http://localhost:8180/
+  auth-server-url: http://localhost:8080/
   resource: auth-service
   credentials:
     client-id: auth-service

@@ -11,7 +11,7 @@ spring:
       enabled: true
   data:
     mongodb:
-      uri: mongodb://admin:secret@mongo:27017/character_data
+      uri: mongodb://admin:secret@localhost:27017/character_data
   application:
     name: character-service
 
@@ -23,14 +23,14 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://auth-sevice:8180/realms/fablewhirl-realm
+          issuer-uri: http://localhost:8080/realms/fablewhirl-realm
 
 keycloak:
-  jwks-certs: http://auth-service:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://localhost:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
 
 eureka:
   instance:
-    hostname: eureka-server
+    hostname: localhost
   client:
     registerWithEureka: true
     fetchRegistry: true
