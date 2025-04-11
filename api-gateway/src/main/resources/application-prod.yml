@@ -21,6 +21,9 @@ springdoc:
         url: /aggregate/notification-service/v3/api-docs
 
 spring:
+  threads:
+    virtual:
+      enabled: true
   application:
     name: api-gateway
 

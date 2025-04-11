@@ -17,7 +17,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withJwkSetUri("http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs")
+        return NimbusJwtDecoder.withJwkSetUri("http://auth-service:8180/realms/fablewhirl-realm/protocol/openid-connect/certs")
                 .build();
     }
 

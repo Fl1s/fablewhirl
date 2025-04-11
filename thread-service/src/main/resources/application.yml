@@ -13,14 +13,14 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/fablewhirl-realm
+          issuer-uri: http://localhost:8080/realms/fablewhirl-realm
 
   application:
     name: thread-service
 
   data:
     mongodb:
-      uri: mongodb://admin:secret@localhost:27019/thread_data
+      uri: mongodb://admin:secret@localhost:27017/thread_data
 
 eureka:
   instance:
@@ -32,7 +32,7 @@ eureka:
       defaultZone: http://${eureka.instance.hostname}:8095/eureka/
 
 keycloak:
-  jwks-certs: http://localhost:8180/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: http://localhost:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
 
 management:
   endpoints:
