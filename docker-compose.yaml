@@ -60,7 +60,7 @@ services:
 
   mongo:
     image: mongo:latest
-    container_name: thoughts-container
+    container_name: fablewhirl-data
     volumes:
       - mongo-data:/data/db
     environment:

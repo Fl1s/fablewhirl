@@ -1,41 +1,21 @@
-server:
-  port: 8084
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-
-spring:
-  threads:
-    virtual:
-      enabled: true
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://keycloak:8080/realms/fablewhirl-realm
-
-  application:
-    name: thread-service
-
-  data:
-    mongodb:
-      uri: mongodb://admin:secret@mongo:27017/thread_data
-
 eureka:
   instance:
-    hostname: eureka-server
+    hostname: thread-service.fablewhirl.svc.cluster.local
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8443/realms/fablewhirl-realm
+  data:
+    mongodb:
+      uri: mongodb://admin:secret@mongodb:27017/thread-data?authSource=admin
 
 keycloak:
-  jwks-certs: http://keycloak:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: prometheus
+  jwks-certs: http://keycloak:8443/realms/fablewhirl-realm/protocol/openid-connect/certs

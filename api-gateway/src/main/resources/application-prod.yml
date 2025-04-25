@@ -1,6 +1,6 @@
 eureka:
   instance:
-    hostname: gateway.turron.svc.cluster.local
+    hostname: api-gateway.fablewhirl.svc.cluster.local
   client:
     registerWithEureka: true
     fetchRegistry: true

@@ -1,19 +1,6 @@
 server:
   port: 3000
 
-spring:
-  application:
-    name: api-gateway
-  threads:
-    virtual:
-      enabled: true
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-
 springdoc:
   api-docs:
     path: /api-docs
@@ -33,17 +20,18 @@ springdoc:
       - name: notification-service
         url: /aggregate/notification-service/v3/api-docs
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: prometheus
-  endpoint:
-    health:
-      show-details: always
-      access: unrestricted
-    circuitbreakers:
+spring:
+  application:
+    name: api-gateway
+  threads:
+    virtual:
       enabled: true
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
 
 resilience4j:
   retry:
@@ -66,3 +54,15 @@ resilience4j:
     configs:
       default:
         timeout-duration: 3s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    health:
+      show-details: always
+      access: unrestricted
+    circuitbreakers:
+      enabled: true
