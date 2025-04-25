@@ -1,18 +1,17 @@
-name: build
+name: Build & Push
 
 permissions:
-  packages: write
   contents: read
+  packages: write
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  build_and_push:
+  build-and-push:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -42,22 +41,19 @@ jobs:
           restore-keys: |
             gradle-
 
-      - name: Build ${{ matrix.service }}
+      - name: Build service ${{ matrix.service }}
         run: |
           cd ${{ matrix.service }}
           ./gradlew clean build
-#          -Dspring.profiles.active=prod
 
-      - name: Login to GitHub Container Registry
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push Docker image
-        run: |
-          cd ${{ matrix.service }}
-          service_name=$(basename $PWD)
-          docker build -t ghcr.io/fl1s/$service_name:latest .
-          docker push ghcr.io/fl1s/$service_name:latest
+      - name: Build and Push image
+        uses: ./.github/actions/docker-build-push
+        with:
+          service: ${{ matrix.service }}
