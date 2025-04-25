@@ -1,4 +1,13 @@
 services:
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_LISTENER_PORT: 2181
+    ports:
+      - "2181:2181"
+
   kafka:
     container_name: kafka
     image: bitnami/kafka:latest
@@ -22,17 +31,6 @@ services:
       ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
     depends_on:
       - zookeeper
-
-  kafka-ui:
-    container_name: kafka-ui
-    image: "provectuslabs/kafka-ui:latest"
-    ports:
-      - "9091:9091"
-    restart: always
-    environment:
-      - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-      - KAFKA_CLUSTERS_0_ZOOKEEPER=localhost:2181
 
   minio:
     image: minio/minio
@@ -78,7 +76,7 @@ services:
       - KC_BOOTSTRAP_ADMIN_PASSWORD=secret
     ports:
       - "8443:8443"
-    command: start-dev
+    command: ["start-dev", "--http-port=8443"]
 
 #  prometheus:
 #    image: prom/prometheus:latest
