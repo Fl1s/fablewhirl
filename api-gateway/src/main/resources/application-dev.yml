@@ -1,38 +1,3 @@
-server:
-  port: 3000
-
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    urls:
-      - name: auth-service
-        url: /aggregate/auth-service/v3/api-docs
-      - name: user-service
-        url: /aggregate/user-service/v3/api-docs
-      - name: character-service
-        url: /aggregate/character-service/v3/api-docs
-      - name: thread-service
-        url: /aggregate/thread-service/v3/api-docs
-      - name: comment-service
-        url: /aggregate/comment-service/v3/api-docs
-      - name: notification-service
-        url: /aggregate/notification-service/v3/api-docs
-
-spring:
-  threads:
-    virtual:
-      enabled: true
-  application:
-    name: api-gateway
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/realms/fablewhirl-realm
-
 eureka:
   instance:
     hostname: localhost
@@ -40,44 +5,11 @@ eureka:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: prometheus
-  health:
-    show-details: always
-    group:
-      default:
-        include: [ 'circuitbreakers', 'diskSpace', 'health' ]
-  endpoint:
-    health:
-      show-details: always
-      access: unrestricted
-    circuitbreakers:
-      enabled: true
-
-resilience4j:
-  retry:
-    configs:
-      default:
-        wait-duration: 2s
-        max-attempts: 3
-  circuitbreaker:
-    configs:
-      default:
-        failure-rate-threshold: 50
-        sliding-window-type: COUNT_BASED
-        sliding-window-size: 10
-        wait-duration-in-open-state: 5000ms
-        minimum-number-of-calls: 5
-        permitted-number-of-calls-in-half-open-state: 3
-        register-health-indicator: true
-        automatic-transition-from-open-to-half-open-enabled: true
-
-  timelimiter:
-    configs:
-      default:
-        timeout-duration: 3s
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8443/realms/fablewhirl-realm

@@ -1,13 +1,4 @@
 services:
-  zookeeper:
-    image: wurstmeister/zookeeper:latest
-    container_name: zookeeper
-    environment:
-      ZOOKEEPER_SERVER_ID: 1
-      ZOOKEEPER_LISTENER_PORT: 2181
-    ports:
-      - "2181:2181"
-
   kafka:
     container_name: kafka
     image: bitnami/kafka:latest
@@ -56,28 +47,63 @@ services:
       - ~/minio/data:/data
     command: server --console-address :9001 /data
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "3001:3000"
-    links:
-      - prometheus:prometheus
-    volumes:
-      - ./grafana:/var/lib/grafana
+  postgres:
+    image: postgres:latest
+    container_name: user-info
     environment:
-      GF_SECURITY_ADMIN_USER: "admin"
-      GF_SECURITY_ADMIN_PASSWORD: "secret"
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=users
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:latest
+    container_name: thoughts-container
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+
+  keycloak:
+    container_name: keycloak_web
+    image: quay.io/keycloak/keycloak:26.1.0
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=secret
+    ports:
+      - "8443:8443"
+    command: start-dev
+
+#  prometheus:
+#    image: prom/prometheus:latest
+#    container_name: prometheus
+#    volumes:
+#      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#    ports:
+#      - "9090:9090"
+#
+#  grafana:
+#    image: grafana/grafana:latest
+#    container_name: grafana
+#    ports:
+#      - "3001:3000"
+#    links:
+#      - prometheus:prometheus
+#    volumes:
+#      - ./grafana:/var/lib/grafana
+#    environment:
+#      GF_SECURITY_ADMIN_USER: "admin"
+#      GF_SECURITY_ADMIN_PASSWORD: "secret"
 
 volumes:
+  mongo-data:
+    driver: local
   zookeeper_data:
     driver: local
   kafka_data:

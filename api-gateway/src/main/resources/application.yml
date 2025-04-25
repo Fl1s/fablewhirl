@@ -1,6 +1,18 @@
 server:
   port: 3000
 
+spring:
+  application:
+    name: api-gateway
+  threads:
+    virtual:
+      enabled: true
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
 
 springdoc:
   api-docs:
@@ -21,38 +33,11 @@ springdoc:
       - name: notification-service
         url: /aggregate/notification-service/v3/api-docs
 
-spring:
-  threads:
-    virtual:
-      enabled: true
-  application:
-    name: api-gateway
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/realms/fablewhirl-realm
-
-eureka:
-  instance:
-    hostname: localhost
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
-
 management:
   endpoints:
     web:
       exposure:
         include: prometheus
-  health:
-    show-details: always
-    group:
-      default:
-        include: [ 'circuitbreakers', 'diskSpace', 'health' ]
   endpoint:
     health:
       show-details: always
@@ -77,7 +62,6 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 3
         register-health-indicator: true
         automatic-transition-from-open-to-half-open-enabled: true
-
   timelimiter:
     configs:
       default:
