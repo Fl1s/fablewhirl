@@ -13,47 +13,24 @@ spec:
       labels:
         app: user-service
     spec:
-      imagePullSecrets:
-        - name: ghcr-secret
+      initContainers:
+        - name: wait-for-eureka
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - 'until curl -s http://eureka-server:8761/eureka/apps > /dev/null; do echo "Waiting for Eureka Server..."; sleep 5; done'
       containers:
         - name: user-service
-          image: ghcr.io/fl1s/user-service:latest
+          imagePullPolicy: Always
+          image: ghcr.io/fl1s/fablewhirl/user-service:latest
           ports:
-            - containerPort: 8082
+            - containerPort: 8092
           env:
-            - name: SERVER_PORT
-              value: "8082"
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: "kafka:9092"
-            - name: SPRING_DATASOURCE_URL
-              value: "jdbc:postgresql://postgres:5432/users"
-            - name: SPRING_DATASOURCE_USERNAME
-              value: "admin"
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: "secret"
-            - name: SPRING_DATA_MONGODB_URI
-              value: "mongodb://admin:secret@mongo:27017/user_media"
-            - name: MINIO_URL
-              value: "http://minio:9000"
-            - name: MINIO_ROOT_USER
-              value: "admin"
-            - name: MINIO_ROOT_PASSWORD
-              value: "secret123"
-            - name: MINIO_BUCKET_NAME
-              value: "users"
-            - name: EUREKA_INSTANCE_HOSTNAME
-              value: "eureka-server"
-            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-              value: "http://eureka-server:8095/eureka/"
-            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
-              value: "http://auth-service:8180/realms/fablewhirl-realm"
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "200m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+      imagePullSecrets:
+        - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service
@@ -61,8 +38,8 @@ metadata:
   name: user-service
   namespace: fablewhirl
 spec:
-  ports:
-    - port: 8082
-      targetPort: 8082
   selector:
     app: user-service
+  ports:
+    - port: 8092
+      targetPort: 8092

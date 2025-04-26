@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grafana
-  namespace: fablewhirl
+  namespace: monitoring
 spec:
   replicas: 1
   selector:
@@ -18,22 +18,21 @@ spec:
           image: grafana/grafana:latest
           ports:
             - containerPort: 3000
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "200m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: "admin"
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: "admin"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: grafana
-  namespace: fablewhirl
+  namespace: monitoring
 spec:
-  ports:
-    - port: 3000
-      targetPort: 3000
   selector:
     app: grafana
+  ports:
+    - port: 3001
+      targetPort: 3000
+  type: ClusterIP

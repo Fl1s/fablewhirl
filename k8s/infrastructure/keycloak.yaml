@@ -17,7 +17,7 @@ spec:
         - name: keycloak
           image: quay.io/keycloak/keycloak:26.1.0
           ports:
-            - containerPort: 8080
+            - containerPort: 8443
           command: ["/opt/keycloak/bin/kc.sh"]
           args: ["start-dev"]
           env:
@@ -34,12 +34,12 @@ spec:
               cpu: "1"
           livenessProbe:
             tcpSocket:
-              port: 8080
+              port: 8443
             initialDelaySeconds: 120
             periodSeconds: 10
           readinessProbe:
             tcpSocket:
-              port: 8080
+              port: 8443
             initialDelaySeconds: 120
             periodSeconds: 10
 ---
@@ -50,7 +50,7 @@ metadata:
   namespace: fablewhirl
 spec:
   ports:
-    - port: 8080
-      targetPort: 8080
+    - port: 8443
+      targetPort: 8443
   selector:
     app: keycloak

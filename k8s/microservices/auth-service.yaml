@@ -13,31 +13,24 @@ spec:
       labels:
         app: auth-service
     spec:
-      imagePullSecrets:
-        - name: ghcr-secret
+      initContainers:
+        - name: wait-for-eureka
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - 'until curl -s http://eureka-server:8761/eureka/apps > /dev/null; do echo "Waiting for Eureka Server..."; sleep 5; done'
       containers:
         - name: auth-service
-          image: ghcr.io/fl1s/auth-service:latest
+          imagePullPolicy: Always
+          image: ghcr.io/fl1s/fablewhirl/auth-service:latest
           ports:
-            - containerPort: 8081
+            - containerPort: 8091
           env:
-            - name: SERVER_PORT
-              value: "8081"
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: "kafka:9092"
-            - name: KEYCLOAK_AUTH_SERVER_URL
-              value: "http://keycloak:8080/"
-            - name: EUREKA_INSTANCE_HOSTNAME
-              value: "eureka-server"
-            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-              value: "http://eureka-server:8095/eureka/"
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "200m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+      imagePullSecrets:
+        - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service
@@ -45,8 +38,8 @@ metadata:
   name: auth-service
   namespace: fablewhirl
 spec:
-  ports:
-    - port: 8081
-      targetPort: 8081
   selector:
     app: auth-service
+  ports:
+    - port: 8091
+      targetPort: 8091

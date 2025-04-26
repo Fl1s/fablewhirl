@@ -13,27 +13,24 @@ spec:
       labels:
         app: api-gateway
     spec:
-      imagePullSecrets:
-        - name: ghcr-secret
+      initContainers:
+        - name: wait-for-eureka
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - 'until curl -s http://eureka-server:8761/eureka/apps > /dev/null; do echo "Waiting for Eureka Server..."; sleep 5; done'
       containers:
         - name: api-gateway
-          image: ghcr.io/fl1s/api-gateway:latest
+          imagePullPolicy: Always
+          image: ghcr.io/fl1s/fablewhirl/api-gateway:latest
           ports:
             - containerPort: 3000
           env:
-            - name: EUREKA_INSTANCE_HOSTNAME
-              value: "eureka-server"
-            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-              value: "http://eureka-server:8095/eureka/"
-            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
-              value: "http://keycloak:8080/realms/fablewhirl-realm"
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "200m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+      imagePullSecrets:
+        - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service
@@ -41,8 +38,9 @@ metadata:
   name: api-gateway
   namespace: fablewhirl
 spec:
+  selector:
+    app: api-gateway
   ports:
     - port: 3000
       targetPort: 3000
-  selector:
-    app: api-gateway
+  type: NodePort
