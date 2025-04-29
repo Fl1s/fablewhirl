@@ -1,38 +1,16 @@
 server:
-  port: 8084
+  port: 8094
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
 spring:
+  application:
+    name: thread-service
   threads:
     virtual:
       enabled: true
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/realms/fablewhirl-realm
-
-  application:
-    name: thread-service
-
-  data:
-    mongodb:
-      uri: mongodb://admin:secret@localhost:27017/thread_data
-
-eureka:
-  instance:
-    hostname: localhost
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
-
-keycloak:
-  jwks-certs: http://localhost:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
 
 management:
   endpoints:

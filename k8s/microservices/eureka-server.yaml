@@ -13,29 +13,17 @@ spec:
       labels:
         app: eureka-server
     spec:
-      imagePullSecrets:
-        - name: ghcr-secret
       containers:
         - name: eureka-server
-          image: ghcr.io/fl1s/eureka-server:latest
+          imagePullPolicy: Always
+          image: ghcr.io/fl1s/fablewhirl/eureka-server:latest
           ports:
-            - containerPort: 8095
+            - containerPort: 8761
           env:
-            - name: EUREKA_INSTANCE_HOSTNAME
-              value: "eureka-server"
-            - name: EUREKA_CLIENT_REGISTERWITHEUREKA
-              value: "false"
-            - name: EUREKA_CLIENT_FETCHREGISTRY
-              value: "false"
-            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-              value: "http://eureka-server:8095/eureka/"
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "200m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+      imagePullSecrets:
+        - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service
@@ -43,8 +31,8 @@ metadata:
   name: eureka-server
   namespace: fablewhirl
 spec:
-  ports:
-    - port: 8095
-      targetPort: 8095
   selector:
     app: eureka-server
+  ports:
+    - port: 8761
+      targetPort: 8761

@@ -13,33 +13,24 @@ spec:
       labels:
         app: character-service
     spec:
-      imagePullSecrets:
-        - name: ghcr-secret
+      initContainers:
+        - name: wait-for-eureka
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - 'until curl -s http://eureka-server:8761/eureka/apps > /dev/null; do echo "Waiting for Eureka Server..."; sleep 5; done'
       containers:
         - name: character-service
-          image: ghcr.io/fl1s/character-service:latest
+          imagePullPolicy: Always
+          image: ghcr.io/fl1s/fablewhirl/character-service:latest
           ports:
-            - containerPort: 8083
+            - containerPort: 8093
           env:
-            - name: SERVER_PORT
-              value: "8083"
-            - name: SPRING_DATA_MONGODB_URI
-              value: "mongodb://admin:secret@mongo:27017/character_data"
-            - name: SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS
-              value: "kafka:9092"
-            - name: EUREKA_INSTANCE_HOSTNAME
-              value: "eureka-server"
-            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-              value: "http://eureka-server:8095/eureka/"
-            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
-              value: "http://auth-service:8180/realms/fablewhirl-realm"
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "200m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+      imagePullSecrets:
+        - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service
@@ -47,8 +38,8 @@ metadata:
   name: character-service
   namespace: fablewhirl
 spec:
-  ports:
-    - port: 8083
-      targetPort: 8083
   selector:
     app: character-service
+  ports:
+    - port: 8093
+      targetPort: 8093

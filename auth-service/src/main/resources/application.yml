@@ -1,41 +1,24 @@
 server:
-  port: 8081
+  port: 8091
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
 spring:
+  application:
+    name: auth-service
   threads:
     virtual:
       enabled: true
-  docker:
-    compose:
-      file: ./auth-service/docker-compose.yaml
-  application:
-    name: auth-service
-
-  kafka:
-    bootstrap-servers: localhost:9092
 
 keycloak:
-  jwks-certs: http://localhost:8080/realms/fablewhirl-realm/protocol/openid-connect/certs
   realm: fablewhirl-realm
-  auth-server-url: http://localhost:8080/
   resource: auth-service
   credentials:
     client-id: auth-service
-    secret: sf3a2PDVId7fqA5TYr9UEhvb4krPR0K0
+    secret: MGZFsFHFgfhxk36PTzenG3G5GkJwv0By
   use-resource-role-mappings: true
-
-eureka:
-  instance:
-    hostname: localhost
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
 
 management:
   endpoints:

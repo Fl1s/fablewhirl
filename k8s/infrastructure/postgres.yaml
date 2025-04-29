@@ -25,16 +25,6 @@ spec:
               value: "secret"
             - name: POSTGRES_DB
               value: "users-db"
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "200m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-          volumeMounts:
-            - name: postgres-data
-              mountPath: /var/lib/postgresql/data
       volumes:
         - name: postgres-data
           hostPath:

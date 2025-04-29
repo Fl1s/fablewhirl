@@ -1,10 +1,9 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: kafka
-  namespace: fablewhirl
+  namespace: turron
 spec:
-  serviceName: kafka
   replicas: 1
   selector:
     matchLabels:
@@ -14,71 +13,50 @@ spec:
       labels:
         app: kafka
     spec:
-      initContainers:
-        - name: wait-for-zookeeper
-          image: busybox
-          command: ['sh', '-c', 'until nc -z zookeeper-0.zookeeper.fablewhirl.svc.cluster.local 2181; do echo "Waiting for Zookeeper..."; sleep 2; done;']
       containers:
         - name: kafka
-          image: confluentinc/cp-kafka:latest
+          image: bitnami/kafka:latest
           ports:
             - containerPort: 9092
-              name: kafka
+            - containerPort: 29092
+            - containerPort: 29093
           env:
-            - name: KAFKA_BROKER_ID
-              value: "0"
-            - name: KAFKA_ZOOKEEPER_CONNECT
-              value: "zookeeper-0.zookeeper.fablewhirl.svc.cluster.local:2181"
-            - name: KAFKA_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://kafka-0.kafka.fablewhirl.svc.cluster.local:9092"
-            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-              value: "PLAINTEXT:PLAINTEXT"
-            - name: KAFKA_INTER_BROKER_LISTENER_NAME
-              value: "PLAINTEXT"
-            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+            - name: KAFKA_CFG_NODE_ID
               value: "1"
-            - name: KAFKA_LOG4J_LOGGERS
-              value: "kafka.controller=DEBUG,kafka.producer=DEBUG"
-          livenessProbe:
-            tcpSocket:
-              port: 9092
-            initialDelaySeconds: 60
-            periodSeconds: 10
-          readinessProbe:
-            tcpSocket:
-              port: 9092
-            initialDelaySeconds: 60
-            periodSeconds: 10
-          volumeMounts:
-            - name: kafka-data
-              mountPath: /var/lib/kafka
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "300m"
-            limits:
-              memory: "1Gi"
-              cpu: "1"
-  volumeClaimTemplates:
-    - metadata:
-        name: kafka-data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: standard
+            - name: KAFKA_CFG_PROCESS_ROLES
+              value: "broker,controller"
+            - name: KAFKA_CFG_CONTROLLER_LISTENER_NAMES
+              value: "CONTROLLER"
+            - name: KAFKA_CFG_LISTENERS
+              value: "INTERNAL://:29092,EXTERNAL://:9092,CONTROLLER://:29093"
+            - name: KAFKA_CFG_ADVERTISED_LISTENERS
+              value: "INTERNAL://kafka:29092,EXTERNAL://kafka:9092"
+            - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT"
+            - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
+              value: "1@kafka:29093"
+            - name: KAFKA_CFG_INTER_BROKER_LISTENER_NAME
+              value: "INTERNAL"
+            - name: ALLOW_PLAINTEXT_LISTENER
+              value: "yes"
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: kafka
-  namespace: fablewhirl
+  namespace: turron
 spec:
+  selector:
+    app: kafka
   ports:
     - port: 9092
       targetPort: 9092
-      name: kafka
-  clusterIP: None
-  selector:
-    app: kafka
+      name: external
+    - port: 29092
+      targetPort: 29092
+      name: internal
+    - port: 29093
+      targetPort: 29093
+      name: controller
+  type: ClusterIP
