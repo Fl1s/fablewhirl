@@ -13,11 +13,6 @@ spring:
       enabled: true
 
 keycloak:
-  realm: fablewhirl-realm
-  resource: auth-service
-  credentials:
-    client-id: auth-service
-    secret: MGZFsFHFgfhxk36PTzenG3G5GkJwv0By
   use-resource-role-mappings: true
 
 management:
