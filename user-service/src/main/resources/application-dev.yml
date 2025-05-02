@@ -1,36 +1,38 @@
 eureka:
   instance:
-    hostname: localhost
+    hostname: ${EUREKA.INSTANCE.HOSTNAME}
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
+      defaultZone: ${EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE}
 
 spring:
+  config:
+    import: file:user-service/.env.dev.yml
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8443/realms/fablewhirl-realm
+          issuer-uri: ${JWT_ISSUER_URI}
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA.BOOTSTRAP_SERVERS}
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/users
-    username: admin
-    password: secret
-    driver-class-name: org.postgresql.Driver
+    url: ${POSTGRES.DB_URL}
+    username: ${POSTGRES.PG_USERNAME}
+    password: ${POSTGRES.PG_PASSWORD}
+    driver-class-name: ${POSTGRES.PG_DRIVER}
   data:
     mongodb:
-      uri: mongodb://admin:secret@localhost:27017/user-media?authSource=admin
+      uri: ${MONGODB.URI}
 
 minio:
   bucket:
-    name: users
-  url: http://localhost:9000
-  root-user: admin
-  root-password: secret123
+    name: ${MINIO.BUCKET.NAME}
+  url: ${MINIO.URL}
+  root-user: ${MINIO.ROOT_USER}
+  root-password: ${MINIO.ROOT_PASSWORD}
 
 keycloak:
-  jwks-certs: http://localhost:8443/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: ${KEYCLOAK.JWKS-CERTS}

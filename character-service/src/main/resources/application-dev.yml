@@ -10,8 +10,6 @@ eureka:
 spring:
   config:
     import: file:character-service/.env.dev.yml
-  kafka:
-    bootstrap-servers: ${KAFKA.BOOTSTRAP_SERVERS}
   security:
     oauth2:
       resourceserver:
