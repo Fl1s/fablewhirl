@@ -1,16 +1,23 @@
 eureka:
   instance:
-    hostname: localhost
+    hostname: ${EUREKA.INSTANCE.HOSTNAME}
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
+      defaultZone: ${EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE}
 
 spring:
+  config:
+    import: file:auth-service/.env.dev.yml
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA.BOOTSTRAP_SERVERS}
 
 keycloak:
-  jwks-certs: http://localhost:8443/realms/fablewhirl-realm/protocol/openid-connect/certs
-  auth-server-url: http://localhost:8443/
+  realm: ${KEYCLOAK.REALM}
+  resource: ${KEYCLOAK.RESOURCE}
+  credentials:
+    client-id: ${KEYCLOAK.CREDENTIALS.CLIENT_ID}
+    secret: ${KEYCLOAK.CREDENTIALS.SECRET}
+  auth-server-url: ${KEYCLOAK.AUTH_SERVER_URL}
+  jwks-certs: ${KEYCLOAK.JWKS_CERTS}

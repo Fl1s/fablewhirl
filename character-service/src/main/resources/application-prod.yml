@@ -1,23 +1,23 @@
 eureka:
   instance:
-    hostname: character-server.fablewhirl.svc.cluster.local
+    hostname: ${EUREKA.INSTANCE.HOSTNAME}
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: ${EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE}
 
 spring:
-  kafka:
-    bootstrap-servers: kafka:9092
+  config:
+    import: file:character-service/.env.prod.yml
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8443/realms/fablewhirl-realm
+          issuer-uri: ${JWT_ISSUER_URI}
   data:
     mongodb:
-      uri: mongodb://admin:secret@mongodb:27017/character-data?authSource=admin
+      uri: ${MONGODB.URI}
 
 keycloak:
-  jwks-certs: http://keycloak:8443/realms/fablewhirl-realm/protocol/openid-connect/certs
+  jwks-certs: ${KEYCLOAK.JWKS_CERTS}
