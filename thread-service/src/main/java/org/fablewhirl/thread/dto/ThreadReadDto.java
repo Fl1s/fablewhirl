@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ThreadDto {
+public class ThreadReadDto {
     private String threadId;
     private String userId;
     private String title;

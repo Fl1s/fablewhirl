@@ -6,6 +6,8 @@ springdoc:
     path: /swagger-ui.html
 
 spring:
+  cache:
+    type: redis
   application:
     name: thread-service
   threads:

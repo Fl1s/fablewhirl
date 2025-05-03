@@ -60,7 +60,7 @@ services:
     image: mongo:latest
     container_name: fablewhirl-data
     volumes:
-      - mongo-data:/data/db
+      - mongo_data:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=secret
@@ -76,7 +76,14 @@ services:
       - KC_BOOTSTRAP_ADMIN_PASSWORD=secret
     ports:
       - "8443:8443"
-    command: ["start-dev", "--http-port=8443"]
+    command: [ "start-dev", "--http-port=8443" ]
+
+  redis:
+    image: redis:latest
+    volumes:
+      - redis_data:/data/cache
+    ports:
+      - "6379:6379"
 
 #  prometheus:
 #    image: prom/prometheus:latest
@@ -100,11 +107,13 @@ services:
 #      GF_SECURITY_ADMIN_PASSWORD: "secret"
 
 volumes:
-  mongo-data:
+  mongo_data:
     driver: local
   zookeeper_data:
     driver: local
   kafka_data:
     driver: local
   postgres_data:
+    driver: local
+  redis_data:
     driver: local
