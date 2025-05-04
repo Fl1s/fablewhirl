@@ -174,6 +174,7 @@ Ensure you have the following installed:
    ```sh
    cp .env.example .env
    ```
+8. BE SURE THAT YOUR .env HAS .yml format!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
