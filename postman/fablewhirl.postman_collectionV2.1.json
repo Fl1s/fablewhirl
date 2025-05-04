@@ -1,0 +1,1141 @@
+{
+	"info": {
+		"_postman_id": "711f82a2-df66-418b-8647-712344ce801b",
+		"name": "fablewhirl",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28890614"
+	},
+	"item": [
+		{
+			"name": "AuthService",
+			"item": [
+				{
+					"name": "sign-up",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"\",\n    \"username\": \"\",\n    \"password\": \"\",\n    \"bio\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/auth/sign-up",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sign-in",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"\",\n    \"password\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/auth/sign-in",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/auth/logout",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-remove",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/auth/remove-user",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"remove-user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserService",
+			"item": [
+				{
+					"name": "UserMedia",
+					"item": [
+						{
+							"name": "uploadAvatar",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{api-gateway}}/api/v1/users/media/avatar",
+									"host": [
+										"{{api-gateway}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"media",
+										"avatar"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "uploadBanner",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{api-gateway}}/api/v1/users/media/banner",
+									"host": [
+										"{{api-gateway}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"media",
+										"banner"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAvatar",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-gateway}}/api/v1/users/media/avatar",
+									"host": [
+										"{{api-gateway}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"media",
+										"avatar"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getBanner",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-gateway}}/api/v1/users/media/banner",
+									"host": [
+										"{{api-gateway}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"media",
+										"banner"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getAllUsers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/users",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/users/me",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"\",\n    \"email\": \"\",\n    \"password\": \"\",\n    \"bio\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/users",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/users",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CharacterService",
+			"item": [
+				{
+					"name": "createCharacter",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/characters",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"characters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllCharacters",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/characters",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"characters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllCharactersByUserId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/characters/byUser",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"characters",
+								"byUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCharacterById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/characters/:characterId",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"characters",
+								":characterId"
+							],
+							"variable": [
+								{
+									"key": "characterId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateCharacter",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tags\": [],\n    \"disabledBlocks\": {\n        \"info-left\": [],\n        \"info-right\": [],\n        \"notes-left\": [],\n        \"notes-right\": [],\n        \"_id\": \"\"\n    },\n    \"edition\": \"2024\",\n    \"spells\": {\n        \"mode\": \"cards\",\n        \"prepared\": [],\n        \"book\": []\n    },\n    \"data\": \"{\\\"isDefault\\\":true,\\\"jsonType\\\":\\\"character\\\",\\\"template\\\":\\\"default\\\",\\\"name\\\":{\\\"value\\\":\\\"\\\"},\\\"info\\\":{\\\"charClass\\\":{\\\"name\\\":\\\"charClass\\\",\\\"label\\\":\\\"класс и уровень\\\",\\\"value\\\":\\\"\\\"},\\\"charSubclass\\\":{\\\"name\\\":\\\"charSubclass\\\",\\\"label\\\":\\\"подкласс\\\",\\\"value\\\":\\\"\\\"},\\\"level\\\":{\\\"name\\\":\\\"level\\\",\\\"label\\\":\\\"уровень\\\",\\\"value\\\":1},\\\"background\\\":{\\\"name\\\":\\\"background\\\",\\\"label\\\":\\\"предыстория\\\",\\\"value\\\":\\\"\\\"},\\\"playerName\\\":{\\\"name\\\":\\\"playerName\\\",\\\"label\\\":\\\"имя игрока\\\",\\\"value\\\":\\\"\\\"},\\\"race\\\":{\\\"name\\\":\\\"race\\\",\\\"label\\\":\\\"раса\\\",\\\"value\\\":\\\"\\\"},\\\"alignment\\\":{\\\"name\\\":\\\"alignment\\\",\\\"label\\\":\\\"мировоззрение\\\",\\\"value\\\":\\\"\\\"},\\\"experience\\\":{\\\"name\\\":\\\"experience\\\",\\\"label\\\":\\\"опыт\\\",\\\"value\\\":\\\"\\\"}},\\\"subInfo\\\":{\\\"age\\\":{\\\"name\\\":\\\"age\\\",\\\"label\\\":\\\"возраст\\\",\\\"value\\\":\\\"\\\"},\\\"height\\\":{\\\"name\\\":\\\"height\\\",\\\"label\\\":\\\"рост\\\",\\\"value\\\":\\\"\\\"},\\\"weight\\\":{\\\"name\\\":\\\"weight\\\",\\\"label\\\":\\\"вес\\\",\\\"value\\\":\\\"\\\"},\\\"eyes\\\":{\\\"name\\\":\\\"eyes\\\",\\\"label\\\":\\\"глаза\\\",\\\"value\\\":\\\"\\\"},\\\"skin\\\":{\\\"name\\\":\\\"skin\\\",\\\"label\\\":\\\"кожа\\\",\\\"value\\\":\\\"\\\"},\\\"hair\\\":{\\\"name\\\":\\\"hair\\\",\\\"label\\\":\\\"волосы\\\",\\\"value\\\":\\\"\\\"}},\\\"spellsInfo\\\":{\\\"base\\\":{\\\"name\\\":\\\"base\\\",\\\"label\\\":\\\"Базовая характеристика заклинаний\\\",\\\"value\\\":\\\"\\\"},\\\"save\\\":{\\\"name\\\":\\\"save\\\",\\\"label\\\":\\\"Сложность спасброска\\\",\\\"value\\\":\\\"\\\"},\\\"mod\\\":{\\\"name\\\":\\\"mod\\\",\\\"label\\\":\\\"Бонус атаки заклинанием\\\",\\\"value\\\":\\\"\\\"}},\\\"spells\\\":{},\\\"spellsPact\\\":{},\\\"proficiency\\\":2,\\\"stats\\\":{\\\"str\\\":{\\\"name\\\":\\\"str\\\",\\\"label\\\":\\\"Сила\\\",\\\"score\\\":10,\\\"modifier\\\":0},\\\"dex\\\":{\\\"name\\\":\\\"dex\\\",\\\"label\\\":\\\"Ловкость\\\",\\\"score\\\":10,\\\"modifier\\\":0},\\\"con\\\":{\\\"name\\\":\\\"con\\\",\\\"label\\\":\\\"Телосложение\\\",\\\"score\\\":10,\\\"modifier\\\":0},\\\"int\\\":{\\\"name\\\":\\\"int\\\",\\\"label\\\":\\\"Интеллект\\\",\\\"score\\\":10,\\\"modifier\\\":0},\\\"wis\\\":{\\\"name\\\":\\\"wis\\\",\\\"label\\\":\\\"Мудрость\\\",\\\"score\\\":10,\\\"modifier\\\":0},\\\"cha\\\":{\\\"name\\\":\\\"cha\\\",\\\"label\\\":\\\"Харизма\\\",\\\"score\\\":10,\\\"modifier\\\":0}},\\\"saves\\\":{\\\"str\\\":{\\\"name\\\":\\\"str\\\",\\\"isProf\\\":false},\\\"dex\\\":{\\\"name\\\":\\\"dex\\\",\\\"isProf\\\":false},\\\"con\\\":{\\\"name\\\":\\\"con\\\",\\\"isProf\\\":false},\\\"int\\\":{\\\"name\\\":\\\"int\\\",\\\"isProf\\\":false},\\\"wis\\\":{\\\"name\\\":\\\"wis\\\",\\\"isProf\\\":false},\\\"cha\\\":{\\\"name\\\":\\\"cha\\\",\\\"isProf\\\":false}},\\\"skills\\\":{\\\"acrobatics\\\":{\\\"baseStat\\\":\\\"dex\\\",\\\"name\\\":\\\"acrobatics\\\",\\\"label\\\":\\\"Акробатика\\\"},\\\"investigation\\\":{\\\"baseStat\\\":\\\"int\\\",\\\"name\\\":\\\"investigation\\\",\\\"label\\\":\\\"Анализ\\\"},\\\"athletics\\\":{\\\"baseStat\\\":\\\"str\\\",\\\"name\\\":\\\"athletics\\\",\\\"label\\\":\\\"Атлетика\\\"},\\\"perception\\\":{\\\"baseStat\\\":\\\"wis\\\",\\\"name\\\":\\\"perception\\\",\\\"label\\\":\\\"Восприятие\\\"},\\\"survival\\\":{\\\"baseStat\\\":\\\"wis\\\",\\\"name\\\":\\\"survival\\\",\\\"label\\\":\\\"Выживание\\\"},\\\"performance\\\":{\\\"baseStat\\\":\\\"cha\\\",\\\"name\\\":\\\"performance\\\",\\\"label\\\":\\\"Выступление\\\"},\\\"intimidation\\\":{\\\"baseStat\\\":\\\"cha\\\",\\\"name\\\":\\\"intimidation\\\",\\\"label\\\":\\\"Запугивание\\\"},\\\"history\\\":{\\\"baseStat\\\":\\\"int\\\",\\\"name\\\":\\\"history\\\",\\\"label\\\":\\\"История\\\"},\\\"sleight of hand\\\":{\\\"baseStat\\\":\\\"dex\\\",\\\"name\\\":\\\"sleight of hand\\\",\\\"label\\\":\\\"Ловкость рук\\\"},\\\"arcana\\\":{\\\"baseStat\\\":\\\"int\\\",\\\"name\\\":\\\"arcana\\\",\\\"label\\\":\\\"Магия\\\"},\\\"medicine\\\":{\\\"baseStat\\\":\\\"wis\\\",\\\"name\\\":\\\"medicine\\\",\\\"label\\\":\\\"Медицина\\\"},\\\"deception\\\":{\\\"baseStat\\\":\\\"cha\\\",\\\"name\\\":\\\"deception\\\",\\\"label\\\":\\\"Обман\\\"},\\\"nature\\\":{\\\"baseStat\\\":\\\"int\\\",\\\"name\\\":\\\"nature\\\",\\\"label\\\":\\\"Природа\\\"},\\\"insight\\\":{\\\"baseStat\\\":\\\"wis\\\",\\\"name\\\":\\\"insight\\\",\\\"label\\\":\\\"Проницательность\\\"},\\\"religion\\\":{\\\"baseStat\\\":\\\"int\\\",\\\"name\\\":\\\"religion\\\",\\\"label\\\":\\\"Религия\\\"},\\\"stealth\\\":{\\\"baseStat\\\":\\\"dex\\\",\\\"name\\\":\\\"stealth\\\",\\\"label\\\":\\\"Скрытность\\\"},\\\"persuasion\\\":{\\\"baseStat\\\":\\\"cha\\\",\\\"name\\\":\\\"persuasion\\\",\\\"label\\\":\\\"Убеждение\\\"},\\\"animal handling\\\":{\\\"baseStat\\\":\\\"wis\\\",\\\"name\\\":\\\"animal handling\\\",\\\"label\\\":\\\"Уход за животными\\\"}},\\\"vitality\\\":{\\\"hp-dice-current\\\":{\\\"value\\\":1},\\\"hp-dice-multi\\\":{}},\\\"attunementsList\\\":[{\\\"id\\\":\\\"attunement-1737568557270\\\",\\\"checked\\\":false,\\\"value\\\":\\\"\\\"}],\\\"weaponsList\\\":[{\\\"id\\\":\\\"weapon-1737568557270\\\",\\\"name\\\":{\\\"value\\\":\\\"\\\"},\\\"mod\\\":{\\\"value\\\":\\\"+0\\\"},\\\"dmg\\\":{\\\"value\\\":\\\"\\\"}}],\\\"weapons\\\":{},\\\"text\\\":{},\\\"coins\\\":{},\\\"resources\\\":{},\\\"bonusesSkills\\\":{},\\\"bonusesStats\\\":{},\\\"conditions\\\":[]}\",\n    \"jsonType\": \"character\",\n    \"version\": \"2\",\n    \"userId\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/characters/:characterId",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"characters",
+								":characterId"
+							],
+							"variable": [
+								{
+									"key": "characterId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCharacter",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/characters/:characterId",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"characters",
+								":characterId"
+							],
+							"variable": [
+								{
+									"key": "characterId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ThreadService",
+			"item": [
+				{
+					"name": "createThread",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"\",\n    \"content\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/threads",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"threads"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllThreads",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/threads",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"threads"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getThreadById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/threads/:threadId",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"threads",
+								":threadId"
+							],
+							"variable": [
+								{
+									"key": "threadId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getThreadsByUserId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/threads/byUser",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"threads",
+								"byUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteThread",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/threads/:threadId",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"threads",
+								":threadId"
+							],
+							"variable": [
+								{
+									"key": "threadId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CommentService",
+			"item": [
+				{
+					"name": "createComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/comments/:threadId",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								":threadId"
+							],
+							"variable": [
+								{
+									"key": "threadId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "replyComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/comments/:threadId/:parentId/reply",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								":threadId",
+								":parentId",
+								"reply"
+							],
+							"variable": [
+								{
+									"key": "threadId",
+									"value": ""
+								},
+								{
+									"key": "parentId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllCommentsByThreadId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/comments/thread/:threadId",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								"thread",
+								":threadId"
+							],
+							"variable": [
+								{
+									"key": "threadId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllCommentsByUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/comments/me",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCommentById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/comments/:commentId",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								":commentId"
+							],
+							"variable": [
+								{
+									"key": "commentId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/comments/:commentId",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								":commentId"
+							],
+							"variable": [
+								{
+									"key": "commentId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/comments/:commentId",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								":commentId"
+							],
+							"variable": [
+								{
+									"key": "commentId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api-gateway",
+			"value": "http://localhost:3000",
+			"type": "default"
+		},
+		{
+			"key": "jwt_token",
+			"value": "your-token",
+			"type": "string"
+		}
+	]
+}
