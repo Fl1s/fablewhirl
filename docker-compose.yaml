@@ -84,6 +84,9 @@ services:
       - redis_data:/data/cache
     ports:
       - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=secret123
+    command: [ "redis-server", "--requirepass", "secret123" ]
 
 #  prometheus:
 #    image: prom/prometheus:latest
