@@ -1,6 +1,7 @@
 package org.fablewhirl.thread.mapper;
 
-import org.fablewhirl.thread.dto.ThreadDto;
+import org.fablewhirl.thread.dto.ThreadCreateDto;
+import org.fablewhirl.thread.dto.ThreadReadDto;
 import org.fablewhirl.thread.entity.ThreadEntity;
 import org.mapstruct.Mapper;
 
@@ -8,7 +9,7 @@ import org.mapstruct.Mapper;
         componentModel = "spring"
 )
 public interface ThreadMapper {
-    ThreadEntity toEntity(ThreadDto threadEntity);
+    ThreadEntity toEntity(ThreadCreateDto threadEntity);
 
-    ThreadDto toDto(ThreadEntity threadEntity);
+    ThreadReadDto toDto(ThreadEntity threadEntity);
 }

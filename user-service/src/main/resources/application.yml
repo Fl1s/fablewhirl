@@ -6,6 +6,9 @@ springdoc:
     path: /swagger-ui.html
 
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
   application:
     name: user-service
   threads:

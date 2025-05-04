@@ -8,6 +8,9 @@ eureka:
       defaultZone: ${EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE}
 
 spring:
+  data:
+    redis:
+      url: ${REDIS.URL}
   config:
     import: file:auth-service/.env.dev.yml
   kafka:

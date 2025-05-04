@@ -16,6 +16,8 @@ spring:
         jwt:
           issuer-uri: ${JWT_ISSUER_URI}
   data:
+    redis:
+      url: ${REDIS.URL}
     mongodb:
       uri: ${MONGODB.URI}
 
