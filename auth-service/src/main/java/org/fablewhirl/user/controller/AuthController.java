@@ -26,7 +26,7 @@ public class AuthController {
     public ResponseEntity<?> signUp(@RequestBody UserRegistrationEvent event) {
         event.setCorrelationId(UUID.randomUUID().toString());
         userEventListener.handleUserRegistration(event);
-        return ResponseEntity.ok("[User successfully signed up!]");
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/sign-in")
