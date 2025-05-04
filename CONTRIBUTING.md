@@ -216,7 +216,7 @@ To report a bug or suggest an idea:
 
 Questions? Reach out:
 - **GitHub Issues**: [https://github.com/fl1s/fablewhirl/issues](https://github.com/fl1s/fablewhirl/issues)
-- **Email**: fablewhirl@example.com
+- **Maintainer**: [Fl1s](https://github.com/fl1s)
 
 Project Link: [https://github.com/fl1s/fablewhirl](https://github.com/fl1s/fablewhirl)
 
