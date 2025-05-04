@@ -170,11 +170,15 @@ Ensure you have the following installed:
    ```sh
    kubectl apply -f k8s/
    ```
-7. Configure Keycloak and environment variables(in every microservice):
+7. Configure Keycloak and environment variables:
+Keycloak Realm config -
+- **File**: `fablewhirl-realm.json`
+- **Location**: `/.config/keycloak`
    ```sh
-   cp .env.example .env
+   cp .env.dev.example .env.dev.yml
+  cp .env.prod.example .env.prod.yml
    ```
-8. BE SURE THAT YOUR .env HAS .yml format!
+8. Be sure that your .env has .yml format!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -199,8 +203,8 @@ curl -X POST http://localhost:3000/api/v1/auth/sign-up -H "Content-Type: applica
 
 Fablewhirl provides a comprehensive set of API endpoints for all microservices. A Postman collection with environment variables for dev and prod is included:
 
-- **File**: `fablewhirl-postman-collection.json`
-- **Location**: `/postman/fablewhirl-postman-collection.json`
+- **File**: `fablewhirl.postman-collectionV2.json` or `fablewhirl.postman-collectionV2.1.json`
+- **Location**: `/.config/postman`
 
 Import the JSON file into Postman to test all endpoints. The collection includes variables for {{jwt_token}} and {{api-gateway}}.
 
