@@ -287,7 +287,7 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 <!-- CONTACT -->
 ## Contact
 
-fl1s - [GitHub](https://github.com/fl1s) - fablewhirl@example.com
+fl1s - [GitHub](https://github.com/fl1s)
 
 Project Link: [https://github.com/fl1s/fablewhirl](https://github.com/fl1s/fablewhirl)
 
