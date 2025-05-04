@@ -38,6 +38,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
+	implementation 'redis.clients:jedis:6.0.0'
 	implementation 'org.keycloak:keycloak-admin-client:26.0.4'
 	implementation 'org.keycloak:keycloak-admin-client-jakarta:21.1.2'
 	implementation 'org.keycloak:keycloak-spring-boot-starter:24.0.5'

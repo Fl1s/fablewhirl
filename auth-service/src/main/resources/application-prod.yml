@@ -10,9 +10,7 @@ eureka:
 spring:
   data:
     redis:
-      host: ${REDIS.HOST}
-      port: ${REDIS.PORT}
-      password: ${REDIS.PASSWORD}
+      url: ${REDIS.URL}
   config:
     import: file:auth-service/.env.prod.yml
   kafka:
