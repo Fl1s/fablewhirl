@@ -8,39 +8,39 @@ scrape_configs:
     static_configs:
       - targets: [ 'docker.for.mac.localhost:3000' ]
         labels:
-          application: 'Api Gateway Application'
+          application: 'Api Gateway'
 
   - job_name: 'auth-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'docker.for.mac.localhost:8081' ]
+      - targets: [ 'docker.for.mac.localhost:8091' ]
         labels:
-          application: 'Auth Service Application'
+          application: 'Auth Service'
 
   - job_name: 'user-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'docker.for.mac.localhost:8082' ]
+      - targets: [ 'docker.for.mac.localhost:8092' ]
         labels:
-          application: 'User Service Application'
+          application: 'User Service'
 
   - job_name: 'character-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'docker.for.mac.localhost:8083' ]
+      - targets: [ 'docker.for.mac.localhost:8093' ]
         labels:
-          application: 'Character Service Application'
+          application: 'Character Service'
 
   - job_name: 'thread-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'docker.for.mac.localhost:8084' ]
+      - targets: [ 'docker.for.mac.localhost:8094' ]
         labels:
-          application: 'Thread Service Application'
+          application: 'Thread Service'
 
   - job_name: 'comment-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'docker.for.mac.localhost:8085' ]
+      - targets: [ 'docker.for.mac.localhost:8095' ]
         labels:
-          application: 'Comment Service Application'
+          application: 'Comment Service'
