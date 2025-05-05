@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.fablewhirl.user.event.UserLoginEvent;
 import org.fablewhirl.user.event.UserRegistrationEvent;
 import org.fablewhirl.user.event.UserRemoveEvent;
-import org.fablewhirl.user.listener.AuthEventListener;
+import org.fablewhirl.user.producer.AuthProducer;
 import org.fablewhirl.user.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthEventListener userEventListener;
+    private final AuthProducer userEventListener;
     private final AuthService authService;
 
     @PostMapping("/sign-up")
