@@ -2,19 +2,16 @@ package org.fablewhirl.user.service;
 
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
-import org.keycloak.OAuth2Constants;
+import org.fablewhirl.user.dto.UserLoginDto;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -69,18 +66,24 @@ public class AuthService {
         return userId;
     }
 
-    public AccessTokenResponse authenticateUser(String username, String password) {
-        String userId = keycloakAdminClient
-                .realm(keycloakRealm)
-                .users()
-                .search(username)
-                .stream()
-                .filter(user -> user.getUsername().equalsIgnoreCase(username))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("User not found"))
-                .getId();
-        ;
-        return tokenCacheService.getCachedToken(userId, username, password);
+    public ResponseEntity<?> handleUserLogin(UserLoginDto dto) {
+        try {
+            String userId = keycloakAdminClient
+                    .realm(keycloakRealm)
+                    .users()
+                    .search(dto.getUsername())
+                    .stream()
+                    .filter(user -> user.getUsername().equalsIgnoreCase(dto.getUsername()))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("User not found"))
+                    .getId();
+            logger.info("[User login successful! Access token generated.]");
+            return ResponseEntity.ok(tokenCacheService.getCachedToken(userId, dto.getUsername(), dto.getPassword()));
+        } catch (Exception e) {
+            logger.severe("[User login failed. Error: " + e.getMessage() + "]");
+            ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.status(401).build();
     }
 
     @CacheEvict(value = "AUTH_TOKEN", key = "#userId")
@@ -114,5 +117,4 @@ public class AuthService {
             throw new RuntimeException("[Failed to remove user from Keycloak: " + e.getMessage() + "]", e);
         }
     }
-
 }
