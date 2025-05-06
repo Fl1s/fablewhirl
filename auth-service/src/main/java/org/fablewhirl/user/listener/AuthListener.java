@@ -1,7 +1,8 @@
 package org.fablewhirl.user.listener;
 
 import lombok.RequiredArgsConstructor;
-import org.fablewhirl.user.event.*;
+import org.fablewhirl.user.event.UserRegisteredEvent;
+import org.fablewhirl.user.event.UserRemovedEvent;
 import org.fablewhirl.user.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;

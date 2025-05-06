@@ -1,16 +1,16 @@
 package org.fablewhirl.user.producer;
 
 import lombok.RequiredArgsConstructor;
-import org.fablewhirl.user.event.UserLoginEvent;
+import org.fablewhirl.user.dto.UserRegistrationDto;
+import org.fablewhirl.user.dto.UserRemoveDto;
 import org.fablewhirl.user.event.UserRegistrationEvent;
 import org.fablewhirl.user.event.UserRemoveEvent;
 import org.fablewhirl.user.listener.AuthListener;
 import org.fablewhirl.user.service.AuthService;
-import org.keycloak.representations.AccessTokenResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
@@ -21,17 +21,17 @@ public class AuthProducer {
     private final KafkaTemplate<String, UserRemoveEvent> userRemoveTemplate;
     private final AuthService authService;
 
-    public void handleUserRegistration(UserRegistrationEvent event) {
+    public void handleUserRegistration(UserRegistrationDto dto) {
         try {
-            String keycloakUserId = authService.registerUser(event.getUsername(), event.getEmail(), event.getPassword());
-
+            String keycloakUserId = authService.registerUser(dto.getUsername(), dto.getEmail(), dto.getPassword());
+            String correlationId = UUID.randomUUID().toString();
             userRegistrationTemplate.send("user-registration", new UserRegistrationEvent(
-                    event.getCorrelationId(),
+                    correlationId,
                     keycloakUserId,
-                    event.getEmail(),
-                    event.getUsername(),
-                    event.getPassword(),
-                    event.getBio()
+                    dto.getEmail(),
+                    dto.getUsername(),
+                    dto.getPassword(),
+                    dto.getBio()
             ));
 
             logger.info("[User successfully registered! Keycloak ID: " + keycloakUserId + "]");
@@ -40,21 +40,13 @@ public class AuthProducer {
         }
     }
 
-    public ResponseEntity<?> handleUserLogin(UserLoginEvent event) {
+    public void handleUserRemove(UserRemoveDto dto) {
+        String correlationId = UUID.randomUUID().toString();
         try {
-            AccessTokenResponse tokenResponse = authService.authenticateUser(event.getUsername(), event.getPassword());
-            logger.info("[User login successful! Access token generated.]");
-            return ResponseEntity.ok(tokenResponse);
-        } catch (Exception e) {
-            logger.severe("[User login failed. Error: " + e.getMessage() + "]");
-            ResponseEntity.status(401).build();
-        }
-        return ResponseEntity.status(401).build();
-    }
-
-    public void handleUserRemove(UserRemoveEvent event) {
-        try {
-            userRemoveTemplate.send("user-remove", event);
+            userRemoveTemplate.send("user-remove", new UserRemoveEvent(
+                    correlationId,
+                    dto.getUserId()
+            ));
             logger.info("[User logged out successfully!]");
         } catch (Exception e) {
             logger.severe("[Logout failed. Error: " + e.getMessage() + "]");
