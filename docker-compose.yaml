@@ -11,7 +11,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     env_file:
-      - api-gateway/.env.prod.yml
+      - api-gateway/.env.prod
     depends_on:
       - eureka-server
     networks:
@@ -22,7 +22,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     env_file:
-      - auth-service/.env.prod.yml
+      - auth-service/.env.prod
     depends_on:
       - eureka-server
     networks:
@@ -33,7 +33,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     env_file:
-      - user-service/.env.prod.yml
+      - user-service/.env.prod
     depends_on:
       - eureka-server
     networks:
@@ -44,7 +44,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     env_file:
-      - character-service/.env.prod.yml
+      - character-service/.env.prod
     depends_on:
       - eureka-server
     networks:
@@ -55,7 +55,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     env_file:
-      - thread-service/.env.prod.yml
+      - thread-service/.env.prod
     depends_on:
       - eureka-server
     networks:
@@ -66,7 +66,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     env_file:
-      - comment-service/.env.prod.yml
+      - comment-service/.env.prod
     depends_on:
       - eureka-server
     networks:
