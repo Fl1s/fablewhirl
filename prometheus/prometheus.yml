@@ -1,0 +1,31 @@
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: [ 'prometheus:9090' ]
+  - job_name: 'api-gateway'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'api-gateway:3000' ]
+  - job_name: 'auth-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'auth-service:8091' ]
+  - job_name: 'user-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'user-service:8092' ]
+  - job_name: 'character-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'character-service:8093' ]
+  - job_name: 'thread-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'thread-service:8094' ]
+  - job_name: 'comment-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'comment-service:8095' ]

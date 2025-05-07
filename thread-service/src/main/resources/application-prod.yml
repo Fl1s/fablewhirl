@@ -9,7 +9,7 @@ eureka:
 
 spring:
   config:
-    import: file:thread-service/.env.prod.yml
+    import: file:thread-service/.env.prod[.properties]
   security:
     oauth2:
       resourceserver:

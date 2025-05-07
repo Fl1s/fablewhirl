@@ -9,7 +9,7 @@ eureka:
 
 spring:
   config:
-    import: file:character-service/.env.dev.yml
+    import: file:character-service/.env.dev[.properties]
   security:
     oauth2:
       resourceserver:

@@ -9,7 +9,7 @@ eureka:
 
 spring:
   config:
-    import: file:comment-service/.env.prod.yml
+    import: file:comment-service/.env.prod[.properties]
   security:
     oauth2:
       resourceserver:
