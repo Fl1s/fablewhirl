@@ -28,21 +28,21 @@ ext {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
-	implementation 'redis.clients:jedis:6.0.0'
-	implementation 'org.keycloak:keycloak-admin-client:26.0.4'
+	implementation 'org.keycloak:keycloak-admin-client:26.0.5'
 	implementation 'org.keycloak:keycloak-admin-client-jakarta:21.1.2'
 	implementation 'org.keycloak:keycloak-spring-boot-starter:24.0.5'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.springframework.security:spring-security-oauth2-client'

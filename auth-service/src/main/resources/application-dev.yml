@@ -8,11 +8,11 @@ eureka:
       defaultZone: ${EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE}
 
 spring:
+  config:
+    import: vault://secret/dev/auth-service
   data:
     redis:
       url: ${REDIS.URL}
-  config:
-    import: file:auth-service/.env.dev[.properties]
   kafka:
     bootstrap-servers: ${KAFKA.BOOTSTRAP_SERVERS}
 

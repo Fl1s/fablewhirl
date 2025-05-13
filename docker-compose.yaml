@@ -71,6 +71,21 @@ services:
       - eureka-server
     networks:
       - "fablewhirl-network"
+
+  vault:
+    image: hashicorp/vault:latest
+    container_name: vault-dev
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: root
+      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - vault-data:/vault/file
+    restart: unless-stopped
+
   zookeeper:
     image: wurstmeister/zookeeper:latest
     container_name: zookeeper
@@ -130,7 +145,7 @@ services:
 
   mongo:
     image: mongo:latest
-    container_name: fablewhirl-data
+    container_name: fablewhirl-mongo
     volumes:
       - mongo_data:/data/db
     environment:
@@ -141,7 +156,7 @@ services:
     restart: unless-stopped
 
   keycloak:
-    container_name: keycloak_web
+    container_name: keycloak
     image: quay.io/keycloak/keycloak:26.1.0
     environment:
       - KC_BOOTSTRAP_ADMIN_USERNAME=admin
@@ -152,13 +167,12 @@ services:
 
   redis:
     image: redis:latest
+    container_name: redis
     volumes:
       - redis_data:/data/cache
     ports:
       - "6379:6379"
-    environment:
-      - REDIS_PASSWORD=secret123
-    command: [ "redis-server", "--requirepass", "secret123" ]
+    command: [ "redis-server"]
 
   prometheus:
     image: prom/prometheus:latest
@@ -186,6 +200,8 @@ services:
       - monitoring
 
 volumes:
+  vault-data:
+    driver: local
   mongo_data:
     driver: local
   zookeeper_data:
@@ -198,7 +214,7 @@ volumes:
     driver: local
 
 networks:
-  "fablewhirl-network":
+  fablewhirl-network:
     driver: bridge
   monitoring:
     driver: bridge
