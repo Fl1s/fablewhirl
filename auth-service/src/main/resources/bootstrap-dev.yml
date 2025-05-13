@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: vault://secret/dev/auth-service
   cloud:
     vault:
       uri: http://localhost:8200

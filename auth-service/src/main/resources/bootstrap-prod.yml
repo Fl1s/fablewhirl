@@ -1,9 +1,13 @@
 spring:
+  config:
+    import: vault://secret/prod/auth-service
   cloud:
     vault:
-      uri: http://vault:8200
-      authentication: token
-      token: root
+      uri: https://vault:8200
+      authentication: kubernetes
+      kubernetes:
+        role: auth-service-prod
+        service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
       kv:
         enabled: true
         backend: secret

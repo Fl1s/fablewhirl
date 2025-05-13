@@ -8,8 +8,6 @@ eureka:
       defaultZone: ${EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE}
 
 spring:
-  config:
-    import: vault://secret/dev/auth-service
   data:
     redis:
       url: ${REDIS.URL}
