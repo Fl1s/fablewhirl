@@ -1,0 +1,13 @@
+spring:
+  config:
+    import: vault://secret/prod/comment-service
+  cloud:
+    vault:
+      uri: http://localhost:8200
+      authentication: token
+      token: root
+      kv:
+        enabled: true
+        backend: secret
+        application-name: prod/comment-service
+      enabled: true
