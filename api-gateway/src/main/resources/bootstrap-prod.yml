@@ -1,0 +1,13 @@
+spring:
+  config:
+    import: vault://secret/prod/api-gateway
+  cloud:
+    vault:
+      uri: http://localhost:8200
+      authentication: token
+      token: root
+      kv:
+        enabled: true
+        backend: secret
+        application-name: prod/api-gateway
+      enabled: true

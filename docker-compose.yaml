@@ -84,7 +84,6 @@ services:
       - IPC_LOCK
     volumes:
       - vault-data:/vault/file
-    restart: unless-stopped
 
   zookeeper:
     image: wurstmeister/zookeeper:latest

@@ -8,8 +8,6 @@ eureka:
       defaultZone: ${EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE}
 
 spring:
-  config:
-    import: file:api-gateway/.env.dev[.properties]
   security:
     oauth2:
       resourceserver:
