@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-config
+  namespace: fablewhirl
+data:
+  vault.hcl: |
+    listener "tcp" {
+      address       = "0.0.0.0:8200"
+      tls_cert_file = "/vault/config/tls/tls.crt"
+      tls_key_file  = "/vault/config/tls/tls.key"
+    }
+    storage "file" {
+      path = "/vault/data"
+    }
+    ui = true
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vault-tls
+  namespace: fablewhirl
+type: kubernetes.io/tls
+data:
+  tls.crt: <BASE64_crt>
+  tls.key: <BASE64_key>
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vault-pvc
+  namespace: fablewhirl
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vault-sa
+  namespace: fablewhirl
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: vault-auth-role
+  namespace: fablewhirl
+rules:
+  - apiGroups: [""]
+    resources: ["serviceaccounts"]
+    verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: vault-auth-rolebinding
+  namespace: fablewhirl
+subjects:
+  - kind: ServiceAccount
+    name: vault-sa
+    namespace: fablewhirl
+roleRef:
+  kind: Role
+  name: vault-auth-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault
+  namespace: fablewhirl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      serviceAccountName: vault-sa
+      volumes:
+        - name: config
+          configMap:
+            name: vault-config
+        - name: tls
+          secret:
+            secretName: vault-tls
+        - name: data
+          persistentVolumeClaim:
+            claimName: vault-pvc
+      containers:
+        - name: vault
+          image: hashicorp/vault:latest
+          args:
+            - "server"
+            - "-config=/vault/config/vault.hcl"
+          ports:
+            - containerPort: 8200
+              name: vault-port
+          env:
+            - name: VAULT_ADDR
+              value: "https://vault.fablewhirl.svc.cluster.local:8200"
+          volumeMounts:
+            - name: config
+              mountPath: /vault/config
+            - name: tls
+              mountPath: /vault/config/tls
+            - name: data
+              mountPath: /vault/data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault
+  namespace: fablewhirl
+spec:
+  type: ClusterIP
+  selector:
+    app: vault
+  ports:
+    - port: 8200
+      targetPort: vault-port
+      name: vault
