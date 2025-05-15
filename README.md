@@ -170,15 +170,34 @@ Ensure you have the following installed:
    ```sh
    kubectl apply -f k8s/
    ```
-7. Configure Keycloak and environment variables:
-Keycloak Realm config -
-- **File**: `fablewhirl-realm.json`
+7. Configure Keycloak:
+- **Realm config file**: `fablewhirl-realm.json`
 - **Location**: `/.config/keycloak`
+- Import it into your Keycloak server manually or via REST API.
    ```sh
    cp .env.dev.example .env.dev.yml
   cp .env.prod.example .env.prod.yml
    ```
-8. Be sure that your .env has .yml format!
+8. Set secrets in Vault:
+   Environment variables for microservices are now stored securely in **Spring Cloud Vault**(HashiCorp) instead of local `.env` files.  
+   You can manually populate them using the Vault CLI:
+
+<details>
+<summary>Example (dev): auth-service</summary>
+
+```bash
+vault kv put secret/dev/auth-service \
+  EUREKA.INSTANCE.HOSTNAME=localhost \
+  EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE=http://localhost:8761/eureka/ \
+  JWT_ISSUER_URI=http://localhost:8443/realms/fablewhirl-realm \
+  KAFKA.BOOTSTRAP_SERVERS=localhost:9092 \
+  REDIS.URL=redis://localhost:6379 \
+  KEYCLOAK.REALM=fablewhirl-realm \
+  KEYCLOAK.RESOURCE=auth-service \
+  KEYCLOAK.CREDENTIALS.CLIENT_ID=auth-service \
+  KEYCLOAK.CREDENTIALS.SECRET=aurh49l7fHgD1K4DQ8RlUmzAMPAxWtd8 \
+  KEYCLOAK.AUTH_SERVER_URL=http://localhost:8443/ \
+  KEYCLOAK.JWKS_CERTS=http://localhost:8443/realms/fablewhirl-realm/protocol/openid-connect/certs
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

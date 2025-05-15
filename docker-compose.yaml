@@ -1,4 +1,90 @@
 services:
+  eureka-server:
+    image: ghcr.io/fl1s/fablewhirl/eureka-server:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - "fablewhirl-network"
+
+  api-gateway:
+    image: ghcr.io/fl1s/fablewhirl/api-gateway:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - api-gateway/.env.prod
+    depends_on:
+      - eureka-server
+    networks:
+      - "fablewhirl-network"
+
+  auth-service:
+    image: ghcr.io/fl1s/fablewhirl/auth-service:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - auth-service/.env.prod
+    depends_on:
+      - eureka-server
+    networks:
+      - "fablewhirl-network"
+
+  user-service:
+    image: ghcr.io/fl1s/fablewhirl/user-service:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - user-service/.env.prod
+    depends_on:
+      - eureka-server
+    networks:
+      - "fablewhirl-network"
+
+  character-service:
+    image: ghcr.io/fl1s/fablewhirl/character-service:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - character-service/.env.prod
+    depends_on:
+      - eureka-server
+    networks:
+      - "fablewhirl-network"
+
+  thread-service:
+    image: ghcr.io/fl1s/fablewhirl/thread-service:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - thread-service/.env.prod
+    depends_on:
+      - eureka-server
+    networks:
+      - "fablewhirl-network"
+
+  comment-service:
+    image: ghcr.io/fl1s/fablewhirl/comment-service:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - comment-service/.env.prod
+    depends_on:
+      - eureka-server
+    networks:
+      - "fablewhirl-network"
+
+  vault:
+    image: hashicorp/vault:latest
+    container_name: vault-dev
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: root
+      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - vault-data:/vault/file
+
   zookeeper:
     image: wurstmeister/zookeeper:latest
     container_name: zookeeper
@@ -58,7 +144,7 @@ services:
 
   mongo:
     image: mongo:latest
-    container_name: fablewhirl-data
+    container_name: fablewhirl-mongo
     volumes:
       - mongo_data:/data/db
     environment:
@@ -69,7 +155,7 @@ services:
     restart: unless-stopped
 
   keycloak:
-    container_name: keycloak_web
+    container_name: keycloak
     image: quay.io/keycloak/keycloak:26.1.0
     environment:
       - KC_BOOTSTRAP_ADMIN_USERNAME=admin
@@ -80,36 +166,41 @@ services:
 
   redis:
     image: redis:latest
+    container_name: redis
     volumes:
       - redis_data:/data/cache
     ports:
       - "6379:6379"
-    environment:
-      - REDIS_PASSWORD=secret123
-    command: [ "redis-server", "--requirepass", "secret123" ]
+    command: [ "redis-server"]
 
-#  prometheus:
-#    image: prom/prometheus:latest
-#    container_name: prometheus
-#    volumes:
-#      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-#    ports:
-#      - "9090:9090"
-#
-#  grafana:
-#    image: grafana/grafana:latest
-#    container_name: grafana
-#    ports:
-#      - "3001:3000"
-#    links:
-#      - prometheus:prometheus
-#    volumes:
-#      - ./grafana:/var/lib/grafana
-#    environment:
-#      GF_SECURITY_ADMIN_USER: "admin"
-#      GF_SECURITY_ADMIN_PASSWORD: "secret"
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    links:
+      - prometheus:prometheus
+    volumes:
+      - ./grafana:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: "admin"
+      GF_SECURITY_ADMIN_PASSWORD: "secret"
+    networks:
+      - monitoring
 
 volumes:
+  vault-data:
+    driver: local
   mongo_data:
     driver: local
   zookeeper_data:
@@ -120,3 +211,9 @@ volumes:
     driver: local
   redis_data:
     driver: local
+
+networks:
+  fablewhirl-network:
+    driver: bridge
+  monitoring:
+    driver: bridge
