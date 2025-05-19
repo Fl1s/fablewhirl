@@ -1,0 +1,13 @@
+spring:
+  config:
+    import: vault://secret/dev/thread-service
+  cloud:
+    vault:
+      uri: http://localhost:8200
+      authentication: token
+      token: root
+      kv:
+        enabled: true
+        backend: secret
+        application-name: dev/thread-service
+      enabled: true

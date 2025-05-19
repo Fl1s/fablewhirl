@@ -8,8 +8,6 @@ eureka:
       defaultZone: ${EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE}
 
 spring:
-  config:
-    import: file:comment-service/.env.prod.yml
   security:
     oauth2:
       resourceserver:

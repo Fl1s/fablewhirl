@@ -35,5 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
-.env.dev.yml
-.env.prod.yml
+
+.env.dev
+.env.prod

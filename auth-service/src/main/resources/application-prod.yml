@@ -11,8 +11,6 @@ spring:
   data:
     redis:
       url: ${REDIS.URL}
-  config:
-    import: file:auth-service/.env.prod.yml
   kafka:
     bootstrap-servers: ${KAFKA.BOOTSTRAP_SERVERS}
 
