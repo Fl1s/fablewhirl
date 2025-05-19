@@ -1,38 +1,36 @@
 package org.fablewhirl.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.fablewhirl.user.event.UserLoginEvent;
-import org.fablewhirl.user.event.UserRegistrationEvent;
-import org.fablewhirl.user.event.UserRemoveEvent;
-import org.fablewhirl.user.listener.AuthEventListener;
+import org.fablewhirl.user.dto.UserLoginDto;
+import org.fablewhirl.user.dto.UserRegistrationDto;
+import org.fablewhirl.user.dto.UserRemoveDto;
+import org.fablewhirl.user.producer.AuthProducer;
 import org.fablewhirl.user.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Validated
 public class AuthController {
-    private final AuthEventListener userEventListener;
+    private final AuthProducer userEventProducer;
     private final AuthService authService;
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> signUp(@RequestBody UserRegistrationEvent event) {
-        event.setCorrelationId(UUID.randomUUID().toString());
-        userEventListener.handleUserRegistration(event);
+    public ResponseEntity<?> signUp(@RequestBody UserRegistrationDto dto) {
+        userEventProducer.handleUserRegistration(dto);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<?> signIn(@RequestBody UserLoginEvent event) {
-        event.setCorrelationId(UUID.randomUUID().toString());
-        return ResponseEntity.ok(userEventListener.handleUserLogin(event));
+    public ResponseEntity<?> signIn(@RequestBody UserLoginDto dto) {
+        return ResponseEntity.ok(authService.handleUserLogin(dto));
     }
 
     @PostMapping("/logout")
@@ -42,10 +40,9 @@ public class AuthController {
     }
 
     @PostMapping("/remove-user")
-    public ResponseEntity<?> removeUser(@RequestBody UserRemoveEvent event) {
-        event.setCorrelationId(UUID.randomUUID().toString());
-        userEventListener.handleUserRemove(event);
-        return ResponseEntity.ok("[User with ID: " + event.getUserId() + "successfully removed!]");
+    public ResponseEntity<?> removeUser(@RequestBody UserRemoveDto dto) {
+        userEventProducer.handleUserRemove(dto);
+        return ResponseEntity.ok("[User with ID: " + dto.getUserId() + "successfully removed!]");
     }
 }
 
